@@ -1,6 +1,6 @@
 <?php
 
-use FilipFonal\FilamentLogManager\Pages\Logs;
+use App\Filament\Pages\CustomLogs;
 
 return [
     /**
@@ -32,5 +32,5 @@ return [
     /**
      * Allow set custom logs page class.
      */
-    'page_class' => Logs::class,
+    'page_class' => CustomLogs::class,
 ];

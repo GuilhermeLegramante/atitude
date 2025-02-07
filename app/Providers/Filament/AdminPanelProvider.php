@@ -74,7 +74,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Configurações'),
                 NavigationGroup::make()
-                    ->label('Parâmetros')
+                    ->label('Cadastros')
                     ->collapsed(),
             ])
             ->widgets([

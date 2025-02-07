@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Faker\Provider\ar_EG\Address;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +23,11 @@ class Student extends Model
         'phone',
         'note',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function address()
     {

@@ -2,61 +2,48 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Forms\UserForm;
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Filament\Tables\Columns;
-use App\Filament\Tables\TableColumns;
-use App\Models\User;
+use App\Filament\Forms\FormFields;
+use App\Filament\Forms\StudentForm;
+use App\Filament\Resources\StudentResource\Pages;
+use App\Filament\Resources\StudentResource\RelationManagers;
+use App\Filament\Tables\StudentTable;
+use App\Models\Student;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Hash;
 
-class UserResource extends Resource
+class StudentResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = Student::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $modelLabel = 'usuário';
+    protected static ?string $modelLabel = 'aluno';
 
-    protected static ?string $pluralModelLabel = 'usuários';
+    protected static ?string $pluralModelLabel = 'alunos';
 
     protected static ?string $navigationGroup = 'Cadastros';
 
-    protected static ?string $slug = 'usuario';
+    protected static ?string $slug = 'aluno';
 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema(UserForm::form());
-    }
+            ->schema(StudentForm::form());
+        }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('name')
-                    ->label('Nome')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->label('E-mail')
-                    ->searchable(),
-                TableColumns::createdAt(),
-                TableColumns::updatedAt(),
-            ])
+            ->columns(StudentTable::table())
             ->filters([
                 //
             ])
@@ -73,10 +60,19 @@ class UserResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageUsers::route('/'),
+            'index' => Pages\ListStudents::route('/'),
+            'create' => Pages\CreateStudent::route('/criar'),
+            'edit' => Pages\EditStudent::route('/{record}/editar'),
         ];
     }
 

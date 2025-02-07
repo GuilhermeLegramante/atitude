@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('rg')->nullable(); // RG
             $table->string('cpf')->nullable(); // CPF
             $table->string('gender')->nullable();
-            $table->foreignId('address_id')->constrained('addresses')->nullable();
+            $table->foreignId('address_id')->nullable()->constrained('addresses');
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->text('note')->nullable();

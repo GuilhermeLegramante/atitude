@@ -12,6 +12,7 @@ class Guardian extends Model
     protected $fillable = [
         'name',
         'photo',
+        'relationship',
         'birth_date',
         'rg',
         'cpf',
@@ -25,6 +26,11 @@ class Guardian extends Model
     public function students()
     {
         return $this->hasMany(Student::class); // A guardian can have many students
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 
 }

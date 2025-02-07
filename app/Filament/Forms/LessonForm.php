@@ -17,27 +17,24 @@ class LessonForm
                 ->preload()
                 ->searchable()
                 ->required()
+                ->columnSpanFull()
                 ->relationship('class', 'name')
                 ->createOptionForm(ClassForm::form()),
             TextInput::make('title')
                 ->label('Título')
                 ->required()
+                ->columnSpanFull()
                 ->maxLength(255),
             FormFields::description(),
             TextInput::make('video_link')
-                ->maxLength(255)
-                ->live()
-                ->afterStateUpdated(fn($state, $get, $set) => $set('video_iframe', $get('video_link'))),
-
-
-            // ViewField::make('video_iframe')
-            //     ->view('components.video-iframe')
-            //     ->columnSpanFull(),
-
+                ->label('Link do Vídeo')
+                ->url()
+                ->maxLength(255),
             FormFields::note(),
         ];
     }
-    // Esperar resposta no github
+    // Esperar resposta no github pra ver o uso em forms
+    // Resolveu comentando a linha 31 da trait \hugomyb\filament-media-action\src\Concerns\HasMedia.php
     // MediaAction::make('tutorial')
     //     ->iconButton()
     //     ->icon('heroicon-o-video-camera')

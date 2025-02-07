@@ -15,8 +15,17 @@ class ClassForm
                 ->preload()
                 ->searchable()
                 ->required()
+                ->columnSpanFull()
                 ->relationship('course', 'name')
                 ->createOptionForm(CourseForm::form()),
+            Select::make('student_id')
+                ->label('Alunos')
+                ->multiple()
+                ->preload()
+                ->searchable()
+                ->columnSpanFull()
+                ->relationship('students', 'name')
+                ->createOptionForm(StudentForm::form(hasSection: false)),
             FormFields::name(),
             FormFields::note(),
         ];

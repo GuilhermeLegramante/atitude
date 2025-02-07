@@ -19,12 +19,12 @@ class ClassModel extends Model
 
     public function students()
     {
-        return $this->belongsToMany(Student::class, 'student_class');
+        return $this->belongsToMany(Student::class, 'student_class', 'class_id', 'student_id');
     }
 
     public function lessons()
     {
-        return $this->hasMany(Lesson::class);  // Uma classe pode ter várias aulas
+        return $this->hasMany(Lesson::class, 'class_id');  // Uma classe pode ter várias aulas
     }
 
     public function course()

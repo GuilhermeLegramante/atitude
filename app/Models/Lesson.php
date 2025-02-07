@@ -17,7 +17,7 @@ class Lesson extends Model
         'note',
     ];
 
-    public function classModel()
+    public function class()
     {
         return $this->belongsTo(ClassModel::class);  // Cada lição pertence a uma classe
     }

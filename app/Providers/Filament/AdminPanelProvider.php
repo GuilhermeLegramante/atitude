@@ -72,10 +72,12 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Controle de Acesso'),
                 NavigationGroup::make()
-                    ->label('Configurações'),
-                NavigationGroup::make()
-                    ->label('Cadastros')
+                    ->label('Configurações')
                     ->collapsed(),
+                NavigationGroup::make()
+                    ->label('Administração'),
+                NavigationGroup::make()
+                    ->label('Ensino'),
             ])
             ->widgets([
                 Widgets\AccountWidget::class,

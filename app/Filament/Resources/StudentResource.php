@@ -30,7 +30,7 @@ class StudentResource extends Resource
 
     protected static ?string $pluralModelLabel = 'alunos';
 
-    protected static ?string $navigationGroup = 'Cadastros';
+    protected static ?string $navigationGroup = 'Administração';
 
     protected static ?string $slug = 'aluno';
 

@@ -10,27 +10,39 @@ use Leandrocfe\FilamentPtbrFormFields\Cep;
 
 class FormFields
 {
-    public static function note(): Textarea
+    public static function note(bool $required = false): Textarea
     {
         return Textarea::make('note')
             ->label('Observação')
+            ->required($required)
             ->maxLength(65535)
             ->columnSpanFull();
     }
 
-    public static function name(): TextInput
+    public static function name(bool $required = true): TextInput
     {
         return TextInput::make('name')
             ->label('Nome')
-            ->required()
+            ->required($required)
             ->columnSpanFull()
             ->maxLength(255);
     }
 
-    public static function email(): TextInput
+    public static function description(bool $required = true): TextInput
+    {
+        return TextInput::make('description')
+            ->label('Descrição')
+            ->required($required)
+            ->columnSpanFull()
+            ->maxLength(255);
+    }
+
+
+    public static function email(bool $required = false): TextInput
     {
         return TextInput::make('email')
             ->email()
+            ->required($required)
             ->label('E-mail')
             ->maxLength(255);
     }

@@ -29,7 +29,7 @@ class GuardianResource extends Resource
 
     protected static ?string $pluralModelLabel = 'responsáveis';
 
-    protected static ?string $navigationGroup = 'Cadastros';
+    protected static ?string $navigationGroup = 'Administração';
 
     protected static ?string $slug = 'responsavel';
 

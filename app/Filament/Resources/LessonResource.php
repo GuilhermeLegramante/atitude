@@ -10,7 +10,12 @@ use App\Models\Lesson;
 use Filament\Forms;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Enums\ActionsPosition;
@@ -39,7 +44,8 @@ class LessonResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema(LessonForm::form());
+            ->schema(LessonForm::form())
+            ->columns(['sm' => 4, 'lg' => null]);;
     }
 
     public static function table(Table $table): Table
@@ -59,6 +65,7 @@ class LessonResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
@@ -81,8 +88,9 @@ class LessonResource extends Resource
     {
         return [
             'index' => Pages\ListLessons::route('/'),
-            'create' => Pages\CreateLesson::route('/create'),
-            'edit' => Pages\EditLesson::route('/{record}/edit'),
+            'create' => Pages\CreateLesson::route('/criar'),
+            'view' => Pages\ViewLesson::route('/{record}'),
+            'edit' => Pages\EditLesson::route('/{record}/editar'),
         ];
     }
 

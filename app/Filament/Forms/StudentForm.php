@@ -26,7 +26,6 @@ class StudentForm
                 ->previewable()
                 ->openable()
                 ->downloadable()
-                ->moveFiles()
                 ->imageEditor(),
             FormFields::email(),
             Select::make('user_id')

@@ -51,13 +51,18 @@ class LessonForm
                             return $record->created_at ? "{$record->created_at->format(config('filament-logger.datetime_format', 'd/m/Y H:i:s'))}" : '-';
                         }),
                 ])
-            ]),
+            ])->hiddenOn('create'),
             Section::make(
                 [
                     TextInput::make('video_link')
                         ->label('Link do vídeo')
                         ->columnSpanFull()
-                        ->prefixIconColor('success')
+                        ->required()
+                        ->maxLength(255)
+                        ->visibleOn('create'),
+                    TextInput::make('video_link')
+                        ->label('Link do vídeo')
+                        ->columnSpanFull()
                         ->prefixAction(
                             fn($record) =>
                             \Hugomyb\FilamentMediaAction\Forms\Components\Actions\MediaAction::make('Assistir')
@@ -66,8 +71,9 @@ class LessonForm
 
                         )
                         ->required()
-                        ->maxLength(255),
-                        
+                        ->maxLength(255)
+                        ->hiddenOn('create'),
+
                 ]
             )
         ];

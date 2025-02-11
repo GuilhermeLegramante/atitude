@@ -29,7 +29,6 @@ class GuardianForm
                 ->previewable()
                 ->openable()
                 ->downloadable()
-                ->moveFiles()
                 ->imageEditor(),
             TextInput::make('relationship')
                 ->label('Grau de parentesco (pai, mãe, tutor legal, etc.)')

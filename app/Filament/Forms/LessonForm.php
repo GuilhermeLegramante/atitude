@@ -67,6 +67,7 @@ class LessonForm
                         )
                         ->required()
                         ->maxLength(255),
+                        
                 ]
             )
         ];

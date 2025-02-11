@@ -34,6 +34,7 @@ class MaterialsRelationManager extends RelationManager
                     ->label('Arquivo')
                     ->previewable()
                     ->openable()
+                    ->maxSize(102400)
                     ->downloadable()
                     ->columnSpanFull()
                     ->imageEditor(),

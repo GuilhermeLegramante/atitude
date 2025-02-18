@@ -26,14 +26,6 @@ class LessonTable
             TextColumn::make('class.name')
                 ->label('Turma')
                 ->sortable(),
-            TextColumn::make('created_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('updated_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
             TableColumns::createdAt(),
             TableColumns::updatedAt(),
         ];

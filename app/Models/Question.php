@@ -9,7 +9,6 @@ class Question extends Model
 {
     use HasFactory;
 
-    // Campos que podem ser preenchidos em massa
     protected $fillable = ['assessment_id', 'question_type_id', 'question_text'];
 
     public function assessment()

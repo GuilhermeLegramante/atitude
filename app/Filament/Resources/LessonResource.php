@@ -51,6 +51,22 @@ class LessonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function ($query) {
+                // Obtém o usuário logado
+                $user = auth()->user();
+
+                // Obtém o estudante associado ao usuário logado
+                $student = $user->student;
+
+                if ($student) {
+                    // Filtra as aulas relacionadas às turmas do estudante logado
+                    return $query->whereHas('class.students', function ($q) use ($student) {
+                        $q->where('students.id', $student->id);
+                    });
+                } else {
+                    return $query;
+                }
+            })
             ->columns(LessonTable::table())
             ->filters([
                 //
@@ -81,6 +97,7 @@ class LessonResource extends Resource
     {
         return [
             RelationManagers\MaterialsRelationManager::class,
+            // RelationManagers\AssessmentsRelationManager::class,
         ];
     }
 
@@ -96,6 +113,26 @@ class LessonResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        // Obtém o usuário logado
+        $user = auth()->user();
+
+        // Obtém o estudante vinculado ao usuário logado
+        $student = $user->student;
+
+        if (!$student) {
+            return static::getModel()::count();
+        }
+
+        // Conta o número de aulas associadas ao estudante (considerando suas turmas)
+        $lessonCount = $student->classes()
+            ->with('lessons')  // Carrega as aulas associadas a cada turma
+            ->get()
+            ->flatMap(function ($classModel) {
+                return $classModel->lessons;
+            })
+            ->count();
+
+        // Retorna o número de aulas, ou null se não houver aulas
+        return $lessonCount > 0 ? (string) $lessonCount : null;
     }
 }

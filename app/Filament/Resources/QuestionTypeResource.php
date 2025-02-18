@@ -72,4 +72,9 @@ class QuestionTypeResource extends Resource
             'edit' => Pages\EditQuestionType::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 }

@@ -27,6 +27,11 @@ class Lesson extends Model
         return $this->hasMany(Material::class);  // Uma aula pode ter vários materiais
     }
 
+    public function assessments()
+    {
+        return $this->hasMany(Assessment::class);  // Uma aula pode ter várias atividades avaliativas
+    }
+
     public function students()
     {
         return $this->belongsToMany(Student::class, 'lesson_student')  // Relacionamento com Student através da tabela pivô 'lesson_student'

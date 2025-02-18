@@ -36,7 +36,7 @@ class Student extends Model
 
     public function classes()
     {
-        return $this->belongsToMany(ClassModel::class); // ClassModel to avoid conflict with reserved 'class'
+        return $this->belongsToMany(ClassModel::class, 'student_class', 'student_id', 'class_id');
     }
 
     public function watchedLessons()
@@ -49,4 +49,8 @@ class Student extends Model
         return $this->belongsTo(Guardian::class); // Relationship to the guardian
     }
 
+    // public function assessments()
+    // {
+    //     return $this->hasManyThrough(Assessment::class, Lesson::class);
+    // }
 }

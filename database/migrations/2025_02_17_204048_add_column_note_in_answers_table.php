@@ -9,13 +9,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('question_files', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('answer_id')->constrained()->onDelete('cascade');
-            $table->string('file_path');
-            $table->timestamps();
+        Schema::table('answers', function (Blueprint $table) {
+            $table->text('note')->nullable()->after('file_path');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('question_files');
+        Schema::table('answers', function (Blueprint $table) {
+            $table->dropColumn('note');
+        });
     }
 };

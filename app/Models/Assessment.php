@@ -9,13 +9,15 @@ class Assessment extends Model
 {
     use HasFactory;
 
-    // Campos que podem ser preenchidos em massa
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'lesson_id'];
 
     public function questions()
     {
         return $this->hasMany(Question::class);
     }
+
+    public function lesson()
+    {
+        return $this->belongsTo(Lesson::class);
+    }
 }
-
-

@@ -81,4 +81,9 @@ class AlternativeResource extends Resource
             'edit' => Pages\EditAlternative::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 }

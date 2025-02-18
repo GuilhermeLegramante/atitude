@@ -31,4 +31,9 @@ class ClassModel extends Model
     {
         return $this->belongsTo(Course::class);  // Cada classe pertence a um curso
     }
+
+    public function assessment()
+    {
+        return $this->hasMany(Assessment::class);
+    }
 }

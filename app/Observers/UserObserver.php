@@ -29,6 +29,7 @@ class UserObserver
         Notification::make()
             ->title('Usuário Editado')
             ->sendToDatabase(auth()->user(), isEventDispatched: true);
+            
     }
 
     /**

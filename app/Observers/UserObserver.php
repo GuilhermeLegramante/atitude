@@ -17,10 +17,6 @@ class UserObserver
     {
         // // $recipient = auth()->user();
         // $recipient = User::all();
-
-        // Notification::make()
-        //     ->title('Usuário Criado')
-        //     ->sendToDatabase($recipient, isEventDispatched: true);
     }
 
     /**
@@ -29,6 +25,10 @@ class UserObserver
     public function updated(User $user): void
     {
         Mail::to(auth()->user())->queue(new FirstEmail('Mensagem do email'));
+
+        Notification::make()
+            ->title('Usuário Editado')
+            ->sendToDatabase(auth()->user(), isEventDispatched: true);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Forms;
 
+use App\Models\User;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -14,6 +15,20 @@ class CourseForm
         return [
             FormFields::name(),
             FormFields::description(required: false),
+            Select::make('user_id')
+                ->label('Professor')
+                ->options(function () {
+                    // Filtra usuários com o perfil super_admin ou professor
+                    return User::whereIn('perfil', ['super_admin', 'professor'])
+                        ->pluck('name', 'id'); // Pluck irá pegar 'name' como label e 'id' como valor
+                })
+                ->columnSpanFull()
+                ->live()
+                ->preload()
+                ->searchable()
+                ->required()
+                ->relationship('user', 'name')
+                ->createOptionForm(UserForm::form()),
             FormFields::note(),
         ];
     }

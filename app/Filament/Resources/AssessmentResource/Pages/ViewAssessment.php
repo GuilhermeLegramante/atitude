@@ -3,9 +3,12 @@
 namespace App\Filament\Resources\AssessmentResource\Pages;
 
 use App\Filament\Resources\AssessmentResource;
+use App\Mail\AnswerSent;
 use App\Models\Alternative;
 use App\Models\Answer;
+use App\Models\Question;
 use App\Models\QuestionType;
+use App\Models\Student;
 use App\Utils\AssessmentCalc;
 use Filament\Actions;
 use Filament\Actions\Action;
@@ -21,11 +24,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Filament\Tables\Columns\ViewColumn;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
 use Livewire\WithFileUploads;
 
@@ -141,6 +146,29 @@ class ViewAssessment extends EditRecord
 
             // Salvando os dados no modelo Answer
             Answer::create($answerData);
+        }
+
+        // Envia notificação para o professor
+        $user = auth()->user();
+
+        if (isset($user->student)) {
+            $student = Student::find(auth()->user()->student->name);
+
+            $question = Question::find($answerData['question_id']);
+
+            $teacher = $question->assessment->lesson->class->course->user->name;
+
+            $course = $question->assessment->lesson->class->course->name;
+
+            $class = $question->assessment->lesson->class->name;
+
+            $activity = $question->assessment->lesson->title;
+
+            Mail::to(auth()->user())->queue(new AnswerSent($teacher, $student, $course, $class, $activity));
+
+            Notification::make()
+                ->title('Atividade enviada')
+                ->sendToDatabase(auth()->user(), isEventDispatched: true);
         }
     }
 

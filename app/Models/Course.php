@@ -20,4 +20,9 @@ class Course extends Model
         return $this->hasMany(ClassModel::class);  // Um curso pode ter várias classes
     }
 
+    public function user() // Professor
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

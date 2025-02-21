@@ -12,6 +12,9 @@ class CourseTable
             TextColumn::make('name')
                 ->label('Nome')
                 ->searchable(),
+            TextColumn::make('user.name')
+                ->label('Professor')
+                ->searchable(),
             TableColumns::createdAt(),
             TableColumns::updatedAt(),
         ];

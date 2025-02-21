@@ -3,9 +3,9 @@
 
 Resposta enviada pelo aluno {{ $student }}.
     
-## Curso: *{{ $course}}*
-## Turma: *{{ $class }}*
-## Atividade: *{{ $activity }}*
+## Curso: {{ $course}}
+## Turma: {{ $class }}
+## Atividade: {{ $activity }}
 
 <x-mail::button :url="'https://ead.atitudeidiomas.com/admin/resposta-enviada'">
 Ver resposta

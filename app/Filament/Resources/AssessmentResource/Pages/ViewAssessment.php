@@ -168,6 +168,7 @@ class ViewAssessment extends EditRecord
 
             Notification::make()
                 ->title('Atividade enviada')
+                ->body($course . ' - ' . $class . ' - ' . $activity . ' - ' . $student)
                 ->sendToDatabase(auth()->user(), isEventDispatched: true);
         }
     }

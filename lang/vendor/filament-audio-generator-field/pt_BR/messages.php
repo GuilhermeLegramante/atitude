@@ -2,7 +2,7 @@
 
 return [
     'labels' => [
-        'generate-audio' => 'Converta um texto em áudio para análise de pronúncia correta das palavras.',
+        'generate-audio' => 'Converta um texto em áudio para análise da pronúncia correta das palavras.',
     ],
 
     'form' => [

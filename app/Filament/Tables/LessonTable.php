@@ -4,6 +4,8 @@ namespace App\Filament\Tables;
 
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Illuminate\Support\Facades\DB;
 
 class LessonTable
 {

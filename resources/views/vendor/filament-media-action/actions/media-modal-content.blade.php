@@ -129,5 +129,14 @@
         @else
             <p>{{ __('filament-media-action::unsupported-media-type') }}</p>
         @endif
+
+        <br>
+        <label>
+            <x-filament::input.checkbox wire:model.lazy="watched" />
+         
+            <span>
+                Assistida
+            </span>
+        </label>
     </div>
 </div>

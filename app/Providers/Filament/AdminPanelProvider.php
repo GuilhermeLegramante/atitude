@@ -78,6 +78,8 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Administração'),
                 NavigationGroup::make()
                     ->label('Ensino'),
+                NavigationGroup::make()
+                    ->label('Ferramentas'),
             ])
             ->widgets([
                 Widgets\AccountWidget::class,

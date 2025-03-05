@@ -11,13 +11,13 @@ class AudioGeneratorPage extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-speaker-wave';
 
     protected static string $view = 'filament.pages.audio-generator-page';
 
-    protected static ?string $title = 'Gerador de Áudio';
+    protected static ?string $title = 'Converter Texto em Áudio';
 
-    protected static ?string $slug = 'gerador-de-audio';
+    protected static ?string $slug = 'converter-texto-em-audio';
 
     public static function getNavigationGroup(): ?string
     {

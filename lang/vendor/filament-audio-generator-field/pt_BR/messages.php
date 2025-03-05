@@ -2,7 +2,7 @@
 
 return [
     'labels' => [
-        'generate-audio' => 'Gerar áudio usando Inteligência Artificial',
+        'generate-audio' => 'Converta um texto em áudio para análise de pronúncia correta das palavras.',
     ],
 
     'form' => [

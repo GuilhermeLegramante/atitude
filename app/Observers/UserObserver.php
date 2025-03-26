@@ -24,11 +24,11 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        Mail::to(auth()->user())->queue(new FirstEmail('Mensagem do email'));
+        // Mail::to(auth()->user())->queue(new FirstEmail('Mensagem do email'));
 
-        Notification::make()
-            ->title('Usuário Editado')
-            ->sendToDatabase(auth()->user(), isEventDispatched: true);
+        // Notification::make()
+        //     ->title('Usuário Editado')
+        //     ->sendToDatabase(auth()->user(), isEventDispatched: true);
             
     }
 

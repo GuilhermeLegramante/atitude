@@ -33,7 +33,7 @@ class FileResource extends Resource
 
     protected static ?string $navigationGroup = 'Ensino';
 
-    protected static ?string $slug = 'Materiais';
+    protected static ?string $slug = 'materiais';
 
     public static function form(Form $form): Form
     {

@@ -26,7 +26,7 @@ class AnswerResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    protected static ?string $modelLabel = 'resposta enviadas';
+    protected static ?string $modelLabel = 'resposta enviada';
 
     protected static ?string $pluralModelLabel = 'respostas enviadas';
 

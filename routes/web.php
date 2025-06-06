@@ -4,6 +4,8 @@ use App\Mail\FirstEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
+use App\Models\Payment;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 Livewire::setScriptRoute(function ($handle) {
     return Route::get('/atitude/public/livewire/livewire.js', $handle);
@@ -24,3 +26,13 @@ Route::get('/login', function () {
 Route::get('/', function () {
     return redirect(route('filament.admin.pages.dashboard'));
 });
+
+Route::get('/payments/{payment}/receipt', function (Payment $payment) {
+    $pdf = Pdf::loadView('payments.receipt', compact('payment'));
+
+    // Forçar download:
+    // return $pdf->download('recibo_pagamento_'.$payment->id.'.pdf');
+
+    // Ou abrir direto no navegador:
+    return $pdf->stream('recibo_pagamento_' . $payment->id . '.pdf');
+})->name('payments.receipt');

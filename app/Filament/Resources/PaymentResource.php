@@ -70,7 +70,30 @@ class PaymentResource extends Resource
                         ->label('Forma de pagamento')
                         ->placeholder('Pix, boleto, dinheiro...'),
                 ])
-                ->columns(2) // define duas colunas para melhor layout
+                ->columns(2),
+            Forms\Components\Section::make('Recorrência')
+                ->schema([
+                    Forms\Components\Toggle::make('is_recurring')
+                        ->label('Pagamento Recorrente')
+                        ->reactive(),
+
+                    Forms\Components\Select::make('recurrence_type')
+                        ->label('Tipo de recorrência')
+                        ->options([
+                            'mensal' => 'Mensal',
+                            'anual' => 'Anual',
+                            'semestral' => 'Semestral',
+                            'trimestral' => 'Trimestral',
+                            'diario' => 'Diário',
+                        ])
+                        ->visible(fn($get) => $get('is_recurring'))
+                        ->required(fn($get) => $get('is_recurring')),
+
+                    Forms\Components\DatePicker::make('recurrence_end_date')
+                        ->label('Repetir até')
+                        ->visible(fn($get) => $get('is_recurring')),
+                ])
+                ->columns(2),
         ]);
     }
 
@@ -93,6 +116,10 @@ class PaymentResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('due_date')->label('Data de vencimento')->date('d/m/Y'),
                 Tables\Columns\TextColumn::make('payment_date')->label('Data de pagamento')->date('d/m/Y'),
+                Tables\Columns\TextColumn::make('is_recurring')
+                    ->label('Recorrente')
+                    ->formatStateUsing(fn($state) => $state ? 'Sim' : 'Não'),
+
             ])
             ->deferFilters()
             ->filtersApplyAction(
@@ -169,8 +196,6 @@ class PaymentResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-
-
 
     public static function getRelations(): array
     {

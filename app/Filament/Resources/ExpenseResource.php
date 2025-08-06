@@ -87,7 +87,9 @@ class ExpenseResource extends Resource
                         ->options([
                             'mensal' => 'Mensal',
                             'anual' => 'Anual',
-                            'semanal' => 'Semanal',
+                            'semestral' => 'Semestral',
+                            'trimestral' => 'Trimestral',
+                            'diario' => 'Diário',
                         ])
                         ->visible(fn($get) => $get('is_recurring'))
                         ->required(fn($get) => $get('is_recurring')),
@@ -122,6 +124,9 @@ class ExpenseResource extends Resource
                 ->label('Recorrente')
                 ->formatStateUsing(fn($state) => $state ? 'Sim' : 'Não'),
             Tables\Columns\TextColumn::make('attachments')->label('Anexos')->getStateUsing(fn($record) => count($record->attachments ?? []) . ' arquivo(s)'),
+            Tables\Columns\TextColumn::make('is_recurring')
+                ->label('Recorrente')
+                ->formatStateUsing(fn($state) => $state ? 'Sim' : 'Não'),
         ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -188,42 +193,7 @@ class ExpenseResource extends Resource
                         ]);
                     }),
                 Tables\Actions\EditAction::make(),
-                Action::make('gerarRecorrencia')
-                    ->label('Gerar Próxima Recorrência')
-                    ->icon('heroicon-m-plus')
-                    ->requiresConfirmation()
-                    ->visible(fn($record) => $record->is_recurring)
-                    ->action(function ($record) {
-                        $nextDueDate = match ($record->recurrence_type) {
-                            'semanal' => Carbon::parse($record->due_date)->addWeek(),
-                            'mensal' => Carbon::parse($record->due_date)->addMonth(),
-                            'anual' => Carbon::parse($record->due_date)->addYear(),
-                            default => null,
-                        };
 
-                        if ($nextDueDate && $record->recurrence_end_date && $nextDueDate > $record->recurrence_end_date) {
-                            Notification::make()
-                                ->title('Aviso')
-                                ->body('Recorrência encerrada.')
-                                ->warning()
-                                ->send();
-                            return;
-                        }
-
-                        $record->replicate()->fill([
-                            'due_date' => $nextDueDate,
-                            'payment_date' => null,
-                            'status' => 'aberto',
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ])->save();
-
-                        Notification::make()
-                            ->title('Aviso')
-                            ->body('Próxima recorrência gerada com sucesso!')
-                            ->success()
-                            ->send();
-                    }),
             ])->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);

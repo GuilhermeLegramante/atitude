@@ -19,7 +19,7 @@ class EditPayment extends EditRecord
         ];
     }
 
-    protected function afterUpdate(): void
+    protected function afterSave(): void
     {
         $payment = $this->record;
 

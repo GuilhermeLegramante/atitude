@@ -57,12 +57,12 @@ class EditAnswer extends EditRecord
                             ->visible($this->record->question->questionType->type_name == "Discursiva")
                             ->columnSpanFull(),
                         FileUpload::make('file_path')
-                            ->label('Áudio enviado')
+                            ->label('Arquivo enviado')
                             ->disabled()
                             ->previewable()
                             ->openable()
                             ->downloadable()
-                            ->visible($this->record->question->questionType->type_name == "Upload de Áudio")
+                            ->visible(in_array($this->record->question->questionType->type_name, ['Upload de Áudio', 'Upload de Vídeo']))
                             ->columnSpanFull(),
                         Textarea::make('note')
                             ->label('Comentário do Professor')

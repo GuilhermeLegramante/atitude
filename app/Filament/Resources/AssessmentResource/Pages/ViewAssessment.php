@@ -334,6 +334,22 @@ class ViewAssessment extends EditRecord
                 $fields[] = $this->getFeedback($answerForQuestion->note, $fields);
 
                 break;
+
+            case 'Upload de Vídeo':
+                $videoPath = $answerForQuestion->file_path;
+                if ($videoPath) {
+                    $fields[] = ViewField::make($answerForQuestion->file_path)
+                        ->label('Vídeo enviado')
+                        ->view('forms.video-link', ['videoPath' => $videoPath]);
+                } else {
+                    $fields[] = Placeholder::make($question->id . '_video')
+                        ->columnSpanFull()
+                        ->label('Nenhum vídeo carregado.');
+                }
+
+                $fields[] = $this->getFeedback($answerForQuestion->note, $fields);
+
+                break;
         }
 
         return $fields; // Retornando um array de campos
@@ -388,6 +404,20 @@ class ViewAssessment extends EditRecord
                     ->validationMessages(['required' => 'Por favor, envie um arquivo de áudio.'])
                     ->required()
                     ->directory('uploads/audio');
+                break;
+
+            case 'Upload de Vídeo':
+                $fields[] = FileUpload::make($question->id . "_upload")
+                    ->label('Upload de Vídeo')
+                    ->previewable()    // exibe preview se suportado
+                    ->openable()       // permite abrir o arquivo no navegador
+                    ->downloadable()
+                    ->columnSpanFull()
+                    ->acceptedFileTypes(['video/mp4', 'video/avi', 'video/mov', 'video/webm', 'video/mkv'])
+                    ->rules(['file' => 'mimes:mp4,avi,mov,webm,mkv|max:51200']) // 50MB por exemplo
+                    ->validationMessages(['required' => 'Por favor, envie um arquivo de vídeo.'])
+                    ->required()
+                    ->directory('uploads/video');
                 break;
         }
 

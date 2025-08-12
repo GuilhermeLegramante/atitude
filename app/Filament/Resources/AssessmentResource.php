@@ -12,6 +12,7 @@ use App\Models\ClassModel;
 use App\Models\Lesson;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -52,6 +53,10 @@ class AssessmentResource extends Resource
                     ->createOptionForm(LessonForm::form()),
                 FormFields::name(),
                 FormFields::description(false),
+                Toggle::make('visible')
+                    ->label('Visível')
+                    ->default(true)
+                    ->helperText('Defina se esta avaliação estará visível ou não.'),
             ]);
     }
 

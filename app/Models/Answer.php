@@ -18,7 +18,6 @@ class Answer extends Model
         'note',
         'checked',
         'is_correct',
-        'gabarito'
     ];
 
     public function question()

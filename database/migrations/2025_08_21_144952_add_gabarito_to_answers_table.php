@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('answers', function (Blueprint $table) {
+        Schema::table('questions', function (Blueprint $table) {
             $table->text('gabarito')->nullable()->after('note'); // pode ser null se o professor ainda não cadastrou
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('answers', function (Blueprint $table) {
+        Schema::table('questions', function (Blueprint $table) {
             $table->dropColumn('gabarito');
         });
     }

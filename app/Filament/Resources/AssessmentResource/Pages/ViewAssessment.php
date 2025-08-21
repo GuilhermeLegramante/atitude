@@ -317,10 +317,10 @@ class ViewAssessment extends EditRecord
                     ->columnSpanFull();
 
                 // Exibir gabarito do professor, se houver
-                if ($answerForQuestion->gabarito) {
+                if ($question->gabarito) {
                     $fields[] = Placeholder::make($question->id . '_gabarito')
                         ->label('Gabarito do Professor:')
-                        ->content($answerForQuestion->gabarito)
+                        ->content($question->gabarito)
                         ->columnSpanFull();
                 }
 

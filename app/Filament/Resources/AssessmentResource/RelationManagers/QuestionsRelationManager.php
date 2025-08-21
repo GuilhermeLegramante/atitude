@@ -42,13 +42,24 @@ class QuestionsRelationManager extends RelationManager
                     ->required()
                     ->columnSpanFull()
                     ->relationship('questionType', 'type_name'),
+
                 TextInput::make('question_text')
                     ->label('Enunciado da Questão')
                     ->required()
                     ->columnSpanFull()
                     ->maxLength(255),
-                
-               
+
+                // Campo para gabarito, apenas se for Discursiva
+                Textarea::make('gabarito')
+                    ->label('Gabarito (apenas para questões discursivas)')
+                    ->maxLength(65535)
+                    ->columnSpanFull()
+                    ->visible(function (Get $get) {
+                        $typeId = $get('question_type_id');
+                        $type = $typeId ? QuestionType::find($typeId) : null;
+                        return $type && $type->type_name === 'Discursiva';
+                    }),
+
                 Repeater::make('alternatives')
                     ->label('Alternativas')
                     ->relationship('alternatives')

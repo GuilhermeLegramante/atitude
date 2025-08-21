@@ -312,9 +312,19 @@ class ViewAssessment extends EditRecord
             case 'Discursiva':
                 $text = $answerForQuestion->answer_text;
                 $fields[] = Placeholder::make($question->id . '_answer')
-                    ->label('Sua Resposta: ' . $text)
+                    ->label('Sua Resposta:')
+                    ->content($text)
                     ->columnSpanFull();
 
+                // Exibir gabarito do professor, se houver
+                if ($answerForQuestion->gabarito) {
+                    $fields[] = Placeholder::make($question->id . '_gabarito')
+                        ->label('Gabarito do Professor:')
+                        ->content($answerForQuestion->gabarito)
+                        ->columnSpanFull();
+                }
+
+                // Feedback do professor
                 $fields[] = $this->getFeedback($answerForQuestion->note, $fields);
 
                 break;

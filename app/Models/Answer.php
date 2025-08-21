@@ -9,8 +9,17 @@ class Answer extends Model
 {
     use HasFactory;
 
-    // Campos que podem ser preenchidos em massa
-    protected $fillable = ['question_id', 'user_id', 'answer_text', 'alternative_id', 'file_path', 'note', 'checked', 'is_correct'];
+    protected $fillable = [
+        'question_id',
+        'user_id',
+        'answer_text',
+        'alternative_id',
+        'file_path',
+        'note',
+        'checked',
+        'is_correct',
+        'gabarito'
+    ];
 
     public function question()
     {

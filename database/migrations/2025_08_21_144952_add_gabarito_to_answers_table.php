@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('questions', function (Blueprint $table) {
-            $table->text('gabarito')->nullable()->after('note'); // pode ser null se o professor ainda não cadastrou
+            $table->text('gabarito')->nullable()->after('question_text'); // pode ser null se o professor ainda não cadastrou
         });
     }
 

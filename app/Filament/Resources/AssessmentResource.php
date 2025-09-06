@@ -11,7 +11,9 @@ use App\Models\Assessment;
 use App\Models\ClassModel;
 use App\Models\Lesson;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -52,7 +54,24 @@ class AssessmentResource extends Resource
                     ->getOptionLabelFromRecordUsing(fn(Lesson $record) => "{$record->title} - {$record->class->name} - {$record->class->course->name}")
                     ->createOptionForm(LessonForm::form()),
                 FormFields::name(),
-                FormFields::description(false),
+                Textarea::make('description')
+                    ->label('Descrição')
+                    ->rows(3)
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
+                FileUpload::make('audio_path')
+                    ->label('Áudio')
+                    ->disk('public') // ou outro disk configurado
+                    ->directory('audios')
+                    ->acceptedFileTypes(['audio/*'])
+                    ->nullable(),
+                FileUpload::make('image_path')
+                    ->label('Imagem')
+                    ->disk('public')
+                    ->directory('images')
+                    ->image()
+                    ->maxSize(2048) // 2MB
+                    ->nullable(),
                 Toggle::make('visible')
                     ->label('Visível')
                     ->default(true)

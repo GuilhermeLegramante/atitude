@@ -6,6 +6,7 @@ use App\Filament\Forms\LessonForm;
 use App\Filament\Resources\LessonResource\Pages;
 use App\Filament\Resources\LessonResource\RelationManagers;
 use App\Filament\Tables\LessonTable;
+use App\Filament\Tables\TableColumns;
 use App\Models\Lesson;
 use Filament\Forms;
 use Filament\Forms\Components\ViewField;
@@ -18,12 +19,19 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Grid;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Hugomyb\FilamentMediaAction\Actions\MediaAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 
 class LessonResource extends Resource
 {
@@ -52,22 +60,41 @@ class LessonResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function ($query) {
-                // Obtém o usuário logado
                 $user = auth()->user();
-
-                // Obtém o estudante associado ao usuário logado
                 $student = $user->student;
 
                 if ($student) {
-                    // Filtra as aulas relacionadas às turmas do estudante logado
-                    return $query->whereHas('class.students', function ($q) use ($student) {
+                    $query = $query->whereHas('class.students', function ($q) use ($student) {
                         $q->where('students.id', $student->id);
                     });
-                } else {
-                    return $query;
                 }
+
+                // Ordena primeiro pela turma (class_id) e depois pelo campo 'order'
+                return $query->orderBy('class_id')->orderBy('order');
             })
-            ->columns(LessonTable::table())
+            ->defaultSort('class_id', 'asc')
+            ->columns([
+                Stack::make([
+                    ViewColumn::make('lesson_card')
+                        ->label('')
+                        ->view('lesson-info-to-list')
+                        ->extraAttributes([
+                            'class' => 'w-full h-64', // altura maior e largura total
+                        ]),
+                    TextColumn::make('title')
+                        ->weight(FontWeight::Bold)
+                        ->searchable()
+                        ->sortable(),
+                    TextColumn::make('class.course.name')
+                        ->label('Curso')
+                        ->sortable(),
+                    TextColumn::make('class.name')
+                        ->label('Turma')
+                        ->sortable(),
+                ])
+
+            ])
+            ->contentGrid(['md' => 2, 'xl' => 3])
             ->filters([
                 //
             ])
@@ -78,6 +105,7 @@ class LessonResource extends Resource
                 Group::make('class.course.name')
                     ->label('Curso')
                     ->collapsible(),
+
             ])
             ->actions([
                 ActionGroup::make([

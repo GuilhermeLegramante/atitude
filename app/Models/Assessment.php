@@ -9,7 +9,14 @@ class Assessment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'lesson_id', 'visible'];
+    protected $fillable = [
+        'name',
+        'description',
+        'lesson_id',
+        'visible',
+        'audio_path',
+        'image_path',
+    ];
 
     public function questions()
     {

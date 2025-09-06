@@ -14,6 +14,8 @@ class ViewLesson extends ViewRecord
 
     public $watched;
 
+    protected static string $view = 'view-lesson';
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $watched = DB::table('lesson_student')

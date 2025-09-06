@@ -15,6 +15,8 @@ class Lesson extends Model
         'description',
         'video_link',
         'note',
+        'image_path',
+        'order',
     ];
 
     public function class()

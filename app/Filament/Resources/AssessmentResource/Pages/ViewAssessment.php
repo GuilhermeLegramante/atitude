@@ -33,6 +33,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
 use Livewire\WithFileUploads;
+use Filament\Forms\Components\HtmlContent;
 
 class ViewAssessment extends EditRecord
 {
@@ -110,8 +111,14 @@ class ViewAssessment extends EditRecord
             // Definindo o question_id, baseado no primeiro número antes do underline
             $question_id = $parts[0];
 
+            // Se não for numérico, ignora este campo
+            if (!is_numeric($question_id)) {
+                continue;
+            }
+            $question_id = (int) $question_id;
+
             // Pegando o tipo da questão (objective, discursive, upload)
-            $type = $parts[1];
+            $type = $parts[1] ?? null;
 
             // Pegando o ID do usuário autenticado
             $user_id = auth()->user()->id;
@@ -125,26 +132,29 @@ class ViewAssessment extends EditRecord
             // Dependendo do tipo, preenchendo os campos de forma diferente
             switch ($type) {
                 case 'objective':
-                    // Para tipo 'objective', pegamos o alternative_id
                     $answerData['alternative_id'] = $value;
                     break;
 
                 case 'discursive':
-                    // Para tipo 'discursive', pegamos o texto da resposta
-                    $answerData['answer_text'] = $value; // Se for discursive, pode ser o texto da resposta
+                    $answerData['answer_text'] = $value;
                     break;
 
                 case 'upload':
-                    // Para tipo 'upload', o file_path seria algum caminho relacionado ao arquivo
-                    $answerData['file_path'] = $value; // Aqui você deve colocar a lógica para salvar o caminho do arquivo
+                    // Se for upload, $value é um objeto UploadedFile ou o caminho gerado pelo FileUpload
+                    if (is_string($value)) {
+                        $answerData['file_path'] = $value;
+                    } elseif (is_object($value) && method_exists($value, 'store')) {
+                        // Para uploads diretos (se estiver enviando o arquivo)
+                        $answerData['file_path'] = $value->store('uploads', 'public');
+                    }
                     break;
 
                 default:
-                    // Caso o tipo não seja reconhecido, pode-se ignorar ou adicionar uma lógica de erro
-                    break;
+                    // Ignora campos que não correspondem a tipos conhecidos
+                    continue 2;
             }
 
-            // Salvando os dados no modelo Answer
+            // Salva a resposta
             Answer::create($answerData);
         }
 
@@ -152,24 +162,31 @@ class ViewAssessment extends EditRecord
         $user = auth()->user();
 
         if (isset($user->student)) {
-            $student = Student::find(auth()->user()->student->name);
+            $student = Student::find($user->student->id ?? $user->student->name);
 
-            $question = Question::find($answerData['question_id']);
+            // Pega a última questão salva para enviar detalhes da atividade
+            $lastAnswer = Answer::where('user_id', $user->id)
+                ->latest()
+                ->first();
 
-            $teacher = $question->assessment->lesson->class->course->user->name;
+            if ($lastAnswer) {
+                $question = Question::find($lastAnswer->question_id);
+                $assessment = $question->assessment ?? null;
 
-            $course = $question->assessment->lesson->class->course->name;
+                if ($assessment) {
+                    $teacher = $assessment->lesson->class->course->user->name ?? '';
+                    $course = $assessment->lesson->class->course->name ?? '';
+                    $class = $assessment->lesson->class->name ?? '';
+                    $activity = $assessment->lesson->title ?? '';
 
-            $class = $question->assessment->lesson->class->name;
+                    Mail::to($user)->queue(new AnswerSent($teacher, $student, $course, $class, $activity));
 
-            $activity = $question->assessment->lesson->title;
-
-            Mail::to(auth()->user())->queue(new AnswerSent($teacher, $student, $course, $class, $activity));
-
-            Notification::make()
-                ->title('Atividade enviada')
-                ->body($course . ' - ' . $class . ' - ' . $activity . ' - ' . $student)
-                ->sendToDatabase(auth()->user(), isEventDispatched: true);
+                    Notification::make()
+                        ->title('Atividade enviada')
+                        ->body($course . ' - ' . $class . ' - ' . $activity . ' - ' . $student)
+                        ->sendToDatabase($user, isEventDispatched: true);
+                }
+            }
         }
     }
 
@@ -197,7 +214,6 @@ class ViewAssessment extends EditRecord
 
         // Verifica se há respostas
         $hasAnswers = $answers->isNotEmpty();
-
         $this->hasAnswers = $hasAnswers;
 
         // Carregando tipos de perguntas para evitar múltiplos finds
@@ -212,10 +228,34 @@ class ViewAssessment extends EditRecord
                     $assessment = $this->record;
                     $questions = $assessment->questions;
 
-                    $fieldSets = []; // Usando array ao invés de coleção
+                    $fieldSets = [];
 
+                    // =========================
+                    // Conteúdo multimídia da atividade
+                    // =========================
+                    if ($assessment->image_path) {
+                        $fieldSets[] = ViewField::make('atividade_imagem')
+                            ->label('Imagem da Atividade')
+                            ->view('components.assessment-image', [
+                                'imagePath' => $assessment->image_path,
+                            ])
+                            ->columnSpanFull();
+                    }
+
+                    if ($assessment->audio_path) {
+                        $fieldSets[] = ViewField::make('atividade_audio')
+                            ->label('Áudio da Atividade')
+                            ->view('components.assessment-audio', [
+                                'audioPath' => $assessment->audio_path,
+                            ])
+                            ->columnSpanFull();
+                    }
+
+                    // =========================
+                    // Loop das questões
+                    // =========================
                     foreach ($questions as $key => $question) {
-                        $fields = []; // Usando array ao invés de coleção
+                        $fields = [];
                         $questionType = $questionTypes[$question->question_type_id] ?? null;
                         $questionText = $question->question_text;
 
@@ -223,6 +263,34 @@ class ViewAssessment extends EditRecord
                         $fields[] = Placeholder::make($question->id)
                             ->columnSpanFull()
                             ->label($questionText);
+
+                        // 🔽 NOVO: exibir imagem ou áudio da questão se existir
+                        if ($question->image_path) {
+                            $fields[] = ViewField::make('question_' . $question->id . '_image')
+                                ->label('')
+                                ->view('components.question-image', [
+                                    'imagePath' => $question->image_path,
+                                ])
+                                ->columnSpanFull();
+                        }
+
+                        if ($question->audio_path) {
+                            $fields[] = ViewField::make('question_' . $question->id . '_audio')
+                                ->label('')
+                                ->view('components.question-audio', [
+                                    'audioPath' => $question->audio_path,
+                                ])
+                                ->columnSpanFull();
+                        }
+
+                        if ($question->pdf_path) {
+                            $fields[] = ViewField::make('question_' . $question->id . '_pdf')
+                                ->label('')
+                                ->view('components.question-pdf', [
+                                    'pdfPath' => $question->pdf_path,
+                                ])
+                                ->columnSpanFull();
+                        }
 
                         if ($hasAnswers) {
                             $answerForQuestion = $answers->where('question_id', $question->id)->first();
@@ -235,9 +303,9 @@ class ViewAssessment extends EditRecord
                             $fields = array_merge($fields, $this->getInputFields($question, $questionType));
                         }
 
-                        // Agrupando os campos, já como array
+                        // Agrupando os campos
                         $fieldSets[] = Fieldset::make('Questão ' . ($key + 1))
-                            ->schema($fields); // Passando diretamente o array
+                            ->schema($fields);
                     }
 
                     if ($checked == false) {
@@ -248,6 +316,7 @@ class ViewAssessment extends EditRecord
                 }),
         ]);
     }
+
 
     private function getResult($answers): FieldSet
     {
@@ -263,25 +332,19 @@ class ViewAssessment extends EditRecord
     private function getAnswerFields($question, $answerForQuestion, $questionType)
     {
         $fields = []; // Usando array ao invés de coleção
-
         $correctionText = 'A resposta está ERRADA';
 
         switch ($questionType->type_name) {
             case 'Objetiva':
-                // Primeiramente, buscamos a alternativa que o usuário escolheu
                 $selectedAlternative = Alternative::find($answerForQuestion->alternative_id);
 
-                // Exibindo todas as alternativas, destacando a selecionada
                 foreach ($question->alternatives as $key => $alternative) {
                     $text = $key + 1 . ' - ' . $alternative->alternative_text;
 
-                    // Se for a alternativa que o usuário marcou, destacamos
                     if ($alternative->id == $selectedAlternative->id && $alternative->is_correct) {
-                        // Atualizar a coluna is_correct do Model Answer
                         $answerForQuestion->is_correct = true;
                         $answerForQuestion->checked = true;
                         $answerForQuestion->save();
-
                         $correctionText = 'A resposta está CORRETA';
                     }
 
@@ -289,34 +352,28 @@ class ViewAssessment extends EditRecord
                         $text = '<strong>' . $text . '</strong>';
                     }
 
-                    // Adicionando um Placeholder para cada alternativa
                     $fields[] = Placeholder::make($question->id . '_alternative_' . $alternative->id)
                         ->label('')
                         ->content(new HtmlString($text))
-                        ->columnSpanFull(); // Exibe a alternativa
+                        ->columnSpanFull();
                 }
 
-                // Exibindo a alternativa marcada pelo usuário
                 $fields[] = Placeholder::make($question->id . '_answer')
                     ->label('Sua Resposta: ' . $selectedAlternative->alternative_text)
-                    ->columnSpanFull(); // Exibe a resposta do usuário
+                    ->columnSpanFull();
 
-                // Exibindo a correção
                 $fields[] = Placeholder::make($question->id . '_answer')
                     ->label('')
                     ->content($correctionText)
-                    ->columnSpanFull(); // Exibe a resposta do usuário
-
+                    ->columnSpanFull();
                 break;
 
             case 'Discursiva':
-                $text = $answerForQuestion->answer_text;
                 $fields[] = Placeholder::make($question->id . '_answer')
                     ->label('Sua Resposta:')
-                    ->content($text)
+                    ->content($answerForQuestion->answer_text)
                     ->columnSpanFull();
 
-                // Exibir gabarito do professor, se houver
                 if ($question->gabarito) {
                     $fields[] = Placeholder::make($question->id . '_gabarito')
                         ->label('Gabarito do Professor:')
@@ -324,15 +381,13 @@ class ViewAssessment extends EditRecord
                         ->columnSpanFull();
                 }
 
-                // Feedback do professor
                 $fields[] = $this->getFeedback($answerForQuestion->note, $fields);
-
                 break;
 
             case 'Upload de Áudio':
                 $audioPath = $answerForQuestion->file_path;
                 if ($audioPath) {
-                    $fields[] = ViewField::make($answerForQuestion->file_path)
+                    $fields[] = ViewField::make('audio_' . $question->id)
                         ->label('Áudio enviado')
                         ->view('forms.audio-link', ['audioPath' => $audioPath]);
                 } else {
@@ -340,15 +395,13 @@ class ViewAssessment extends EditRecord
                         ->columnSpanFull()
                         ->label('Nenhum áudio carregado.');
                 }
-
                 $fields[] = $this->getFeedback($answerForQuestion->note, $fields);
-
                 break;
 
             case 'Upload de Vídeo':
                 $videoPath = $answerForQuestion->file_path;
                 if ($videoPath) {
-                    $fields[] = ViewField::make($answerForQuestion->file_path)
+                    $fields[] = ViewField::make('video_' . $question->id)
                         ->label('Vídeo enviado')
                         ->view('forms.video-link', ['videoPath' => $videoPath]);
                 } else {
@@ -356,14 +409,49 @@ class ViewAssessment extends EditRecord
                         ->columnSpanFull()
                         ->label('Nenhum vídeo carregado.');
                 }
-
                 $fields[] = $this->getFeedback($answerForQuestion->note, $fields);
+                break;
 
+            case 'Upload de Imagem':
+                $imagePath = $answerForQuestion->file_path;
+
+                if ($imagePath) {
+                    $url = asset('storage/' . $imagePath); // gera URL pública
+
+                    $fields[] = ViewField::make('image_' . $question->id)
+                        ->label('Imagem enviada')
+                        ->view('forms.image-link', ['imagePath' => $url])
+                        ->columnSpanFull();
+                } else {
+                    $fields[] = Placeholder::make('image_' . $question->id)
+                        ->label('Nenhuma imagem carregada')
+                        ->columnSpanFull();
+                }
+                break;
+
+            case 'Upload de PDF':
+                $filePath = $answerForQuestion->file_path;
+
+                if ($filePath) {
+                    $url = asset('storage/' . $filePath); // gera URL completa
+
+                    $fields[] = Placeholder::make('file_' . $question->id)
+                        ->label('PDF enviado')
+                        ->content(new HtmlString('<a href="' . $url . '" target="_blank">Abrir PDF</a>'))
+                        ->columnSpanFull();
+                } else {
+                    $fields[] = Placeholder::make('file_' . $question->id)
+                        ->label('Nenhum PDF carregado')
+                        ->columnSpanFull();
+                }
+                break;
+                $fields[] = $this->getFeedback($answerForQuestion->note, $fields);
                 break;
         }
 
-        return $fields; // Retornando um array de campos
+        return $fields;
     }
+
 
     private function getFeedback($note, $fields): Placeholder
     {
@@ -394,7 +482,7 @@ class ViewAssessment extends EditRecord
                 break;
 
             case 'Discursiva':
-                $fields[] = Textinput::make($question->id . "_discursive")
+                $fields[] = TextInput::make($question->id . "_discursive")
                     ->label('Resposta')
                     ->required()
                     ->validationMessages(['required' => 'Por favor, forneça uma resposta para a questão.'])
@@ -410,7 +498,7 @@ class ViewAssessment extends EditRecord
                     ->downloadable()
                     ->columnSpanFull()
                     ->acceptedFileTypes(['audio/mpeg', 'audio/wav', 'audio/ogg'])
-                    ->rules(['file' => 'mimes:mp3,wav,ogg|max:10240']) // 10MB 
+                    ->rules(['file' => 'mimes:mp3,wav,ogg|max:10240']) // 10MB
                     ->validationMessages(['required' => 'Por favor, envie um arquivo de áudio.'])
                     ->required()
                     ->directory('uploads/audio');
@@ -419,15 +507,44 @@ class ViewAssessment extends EditRecord
             case 'Upload de Vídeo':
                 $fields[] = FileUpload::make($question->id . "_upload")
                     ->label('Upload de Vídeo')
-                    ->previewable()    // exibe preview se suportado
-                    ->openable()       // permite abrir o arquivo no navegador
+                    ->previewable()
+                    ->openable()
                     ->downloadable()
                     ->columnSpanFull()
                     ->acceptedFileTypes(['video/mp4', 'video/avi', 'video/mov', 'video/webm', 'video/mkv'])
-                    ->rules(['file' => 'mimes:mp4,avi,mov,webm,mkv|max:51200']) // 50MB por exemplo
+                    ->rules(['file' => 'mimes:mp4,avi,mov,webm,mkv|max:51200']) // 50MB
                     ->validationMessages(['required' => 'Por favor, envie um arquivo de vídeo.'])
                     ->required()
                     ->directory('uploads/video');
+                break;
+
+            case 'Upload de Imagem':
+                $fields[] = FileUpload::make($question->id . "_upload")
+                    ->label('Upload de Imagem')
+                    ->image()
+                    ->previewable()
+                    ->openable()
+                    ->downloadable()
+                    ->columnSpanFull()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])
+                    ->rules(['file' => 'mimes:jpg,jpeg,png,gif|max:10240']) // 10MB
+                    ->validationMessages(['required' => 'Por favor, envie uma imagem.'])
+                    ->required()
+                    ->directory('uploads/images');
+                break;
+
+            case 'Upload de PDF':
+                $fields[] = FileUpload::make($question->id . "_upload")
+                    ->label('Upload de PDF')
+                    ->previewable(false) // PDF geralmente não tem preview direto
+                    ->openable()
+                    ->downloadable()
+                    ->columnSpanFull()
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->rules(['file' => 'max:10240']) // 10MB
+                    ->validationMessages(['required' => 'Por favor, envie um arquivo PDF.'])
+                    ->required()
+                    ->directory('uploads/pdf');
                 break;
         }
 

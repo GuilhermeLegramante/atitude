@@ -49,7 +49,53 @@ class QuestionsRelationManager extends RelationManager
                     ->columnSpanFull()
                     ->maxLength(255),
 
-                // Campo para gabarito, apenas se for Discursiva
+                // Upload de imagem (condicional)
+                FileUpload::make('image_path')
+                    ->label('Imagem da Questão')
+                    ->image()
+                    ->directory('questions/images')
+                    ->maxSize(10240) // 10 MB
+                    ->openable()
+                    ->downloadable()
+                    ->previewable()
+                    ->columnSpanFull()
+                    ->visible(function (Get $get) {
+                        $typeId = $get('question_type_id');
+                        $type = $typeId ? QuestionType::find($typeId) : null;
+                        return $type && $type->type_name === 'Upload de Imagem';
+                    }),
+
+                // Upload de áudio (condicional)
+                FileUpload::make('audio_path')
+                    ->label('Áudio da Questão')
+                    ->directory('questions/audio')
+                    ->acceptedFileTypes(['audio/mpeg', 'audio/wav', 'audio/ogg'])
+                    ->maxSize(10240) // 10 MB
+                    ->openable()
+                    ->downloadable()
+                    ->columnSpanFull()
+                    ->visible(function (Get $get) {
+                        $typeId = $get('question_type_id');
+                        $type = $typeId ? QuestionType::find($typeId) : null;
+                        return $type && $type->type_name === 'Upload de Áudio';
+                    }),
+
+                // Upload de PDF (condicional)
+                // FileUpload::make('pdf_path')
+                //     ->label('PDF da Questão')
+                //     ->directory('questions/pdf')
+                //     ->acceptedFileTypes(['application/pdf'])
+                //     ->maxSize(20480) // 20 MB
+                //     ->openable()
+                //     ->downloadable()
+                //     ->columnSpanFull()
+                //     ->visible(function (Get $get) {
+                //         $typeId = $get('question_type_id');
+                //         $type = $typeId ? QuestionType::find($typeId) : null;
+                //         return $type && $type->type_name === 'Upload de PDF';
+                //     }),
+
+                // Gabarito → só Discursiva
                 Textarea::make('gabarito')
                     ->label('Gabarito (apenas para questões discursivas)')
                     ->maxLength(65535)
@@ -60,12 +106,15 @@ class QuestionsRelationManager extends RelationManager
                         return $type && $type->type_name === 'Discursiva';
                     }),
 
+                // Alternativas → só Objetiva
                 Repeater::make('alternatives')
                     ->label('Alternativas')
                     ->relationship('alternatives')
                     ->columnSpanFull()
                     ->visible(function (Get $get) {
-                        return !is_null($get('question_type_id')) && QuestionType::find($get('question_type_id'))->type_name == 'Objetiva';
+                        $typeId = $get('question_type_id');
+                        $type = $typeId ? QuestionType::find($typeId) : null;
+                        return $type && $type->type_name === 'Objetiva';
                     })
                     ->schema([
                         TextInput::make('alternative_text')

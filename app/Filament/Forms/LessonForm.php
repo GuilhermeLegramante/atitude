@@ -97,7 +97,8 @@ class LessonForm
                             ?->pivot
                             ?->watched;
                     })
-                    ->afterStateUpdated(function ($state, callable $set, $get, $record) {
+                    ->reactive() // importante para atualizar o estado imediatamente
+                    ->afterStateUpdated(function ($state, $set, $get, $record) {
                         $student = auth()->user();
                         if ($student && $record) {
                             $student->watchedLessons()->updateExistingPivot($record->id, ['watched' => $state]);
@@ -105,6 +106,7 @@ class LessonForm
                     })
                     ->dehydrated(false)
                     ->columnSpanFull(),
+
                 FormFields::note(),
 
             ])->columns(2),

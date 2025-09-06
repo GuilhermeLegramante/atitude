@@ -87,20 +87,6 @@ class LessonForm
                     ->required()
                     ->maxLength(255)
                     ->hiddenOn('create'),
-                Toggle::make('watched')
-                    ->label('Aula assistida')
-                    ->default(function ($record) {
-                        return auth()->user()->student
-                            ?->watchedLessons()
-                            ->where('lesson_id', $record->id)
-                            ->first()
-                            ?->pivot
-                            ?->watched;
-                    })
-                    ->disabled() // torna apenas leitura
-                    ->dehydrated(false)
-                    ->columnSpanFull(),
-
                 FormFields::note(),
 
             ])->columns(2),

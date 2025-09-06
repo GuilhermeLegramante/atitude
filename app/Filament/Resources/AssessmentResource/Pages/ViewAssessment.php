@@ -179,7 +179,7 @@ class ViewAssessment extends EditRecord
                     $class = $assessment->lesson->class->name ?? '';
                     $activity = $assessment->lesson->title ?? '';
 
-                    Mail::to($user)->queue(new AnswerSent($teacher, $student, $course, $class, $activity));
+                    Mail::to($user)->queue(new AnswerSent($teacher, $student->name, $course, $class, $activity));
 
                     Notification::make()
                         ->title('Atividade enviada')

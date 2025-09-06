@@ -89,7 +89,6 @@ class LessonForm
                     ->hiddenOn('create'),
                 Toggle::make('watched')
                     ->label('Aula assistida')
-                    ->visible(fn() => Filament::getCurrentPanel()?->getCurrentRouteName() === 'filament.app.resources.lessons.view')
                     ->default(function ($record) {
                         return auth()->user()
                             ?->watchedLessons()

@@ -11,6 +11,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ViewField;
 use Illuminate\Validation\Rule;
 
@@ -85,6 +86,19 @@ class LessonForm
                     ->required()
                     ->maxLength(255)
                     ->hiddenOn('create'),
+                Toggle::make('watched')
+                    ->label('Aula assistida')
+                    ->default(false)
+                    ->afterStateUpdated(function ($state, callable $set, $get, $record) {
+                        $student = auth()->user(); // ou use o aluno logado de outro modo
+
+                        if ($student && $record) {
+                            $student->lessons()->updateExistingPivot($record->id, ['watched' => $state]);
+                        }
+                    })
+                    ->visible(fn($record) => $record !== null)
+                    ->dehydrated(false) // evitar que ele envie esse campo na requisição principal
+                    ->columnSpanFull(),
                 FormFields::note(),
 
             ])->columns(2),

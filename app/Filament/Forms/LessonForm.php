@@ -8,6 +8,7 @@ use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -87,7 +88,26 @@ class LessonForm
                     ->required()
                     ->maxLength(255)
                     ->hiddenOn('create'),
-                FormFields::note(),
+                // FormFields::note(),
+                RichEditor::make('note')
+                    ->label('Observação')
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'strike',
+                        'underline',
+                        'link',
+                        'bulletList',
+                        'orderedList',
+                        'blockquote',
+                        'codeBlock',
+                        'h2',
+                        'h3',
+                        'redo',
+                        'undo',
+                    ])
+                    ->columnSpanFull()
+                    ->nullable(),
 
             ])->columns(2),
 

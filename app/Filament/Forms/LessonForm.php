@@ -89,22 +89,6 @@ class LessonForm
                     ->hiddenOn('create'),
                 Toggle::make('watched')
                     ->label('Aula assistida')
-                    ->default(function ($record) {
-                        return auth()->user()
-                            ?->watchedLessons()
-                            ->where('lesson_id', $record->id)
-                            ->first()
-                            ?->pivot
-                            ?->watched;
-                    })
-                    ->reactive() // importante para atualizar o estado imediatamente
-                    ->afterStateUpdated(function ($state, $set, $get, $record) {
-                        $student = auth()->user();
-                        if ($student && $record) {
-                            $student->watchedLessons()->updateExistingPivot($record->id, ['watched' => $state]);
-                        }
-                    })
-                    ->dehydrated(false)
                     ->columnSpanFull(),
 
                 FormFields::note(),

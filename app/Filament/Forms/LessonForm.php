@@ -3,6 +3,7 @@
 namespace App\Filament\Forms;
 
 use App\Models\Lesson;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -88,16 +89,22 @@ class LessonForm
                     ->hiddenOn('create'),
                 Toggle::make('watched')
                     ->label('Aula assistida')
-                    ->default(false)
+                    ->visible(fn() => Filament::getCurrentPanel()?->getCurrentRouteName() === 'filament.app.resources.lessons.view')
+                    ->default(function ($record) {
+                        return auth()->user()
+                            ?->watchedLessons()
+                            ->where('lesson_id', $record->id)
+                            ->first()
+                            ?->pivot
+                            ?->watched;
+                    })
                     ->afterStateUpdated(function ($state, callable $set, $get, $record) {
-                        $student = auth()->user(); // ou use o aluno logado de outro modo
-
+                        $student = auth()->user();
                         if ($student && $record) {
                             $student->watchedLessons()->updateExistingPivot($record->id, ['watched' => $state]);
                         }
                     })
-                    ->visible(fn($record) => $record !== null)
-                    ->dehydrated(false) // evitar que ele envie esse campo na requisição principal
+                    ->dehydrated(false)
                     ->columnSpanFull(),
                 FormFields::note(),
 

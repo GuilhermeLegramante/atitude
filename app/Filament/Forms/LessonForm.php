@@ -51,6 +51,7 @@ class LessonForm
                             ->where('class_id', $record?->class_id)
                             ->ignore($record?->id);
                     })
+                    ->hiddenOn('view')
                     ->helperText('Número único para cada aula dentro da turma'),
 
                 Textarea::make('description')

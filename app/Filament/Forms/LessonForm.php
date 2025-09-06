@@ -93,7 +93,7 @@ class LessonForm
                         $student = auth()->user(); // ou use o aluno logado de outro modo
 
                         if ($student && $record) {
-                            $student->lessons()->updateExistingPivot($record->id, ['watched' => $state]);
+                            $student->watchedLessons()->updateExistingPivot($record->id, ['watched' => $state]);
                         }
                     })
                     ->visible(fn($record) => $record !== null)

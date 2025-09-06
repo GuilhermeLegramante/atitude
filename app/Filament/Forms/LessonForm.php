@@ -59,8 +59,8 @@ class LessonForm
 
                 Textarea::make('description')
                     ->label('Descrição')
-                    ->rows(2)
-                    ->hiddenOn('view')
+                    ->rows(3)
+                    // ->hiddenOn('view')
                     ->columnSpanFull(),
                 FileUpload::make('image_path')
                     ->label('Thumbnail da Aula')

@@ -97,10 +97,10 @@ class LessonResource extends Resource
             ])
             ->contentGrid(['md' => 2, 'xl' => 3])
             ->filters([
-                SelectFilter::make('course')
-                    ->label('Curso')
-                    ->relationship('class.course', 'name')
-                    ->placeholder('Selecione um curso'),
+                SelectFilter::make('class')
+                    ->label('Turma')
+                    ->relationship('class', 'name')
+                    ->placeholder('Selecione uma turma'),
             ])
             // ->groups([
             //     Group::make('class.name')

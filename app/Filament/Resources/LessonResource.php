@@ -113,8 +113,7 @@ class LessonResource extends Resource
                         })
                         ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
                         ->color(fn($state) => $state ? 'success' : 'secondary')    // cor da badge/texto
-                        ->sortable()
-                        ->formatStateUsing(fn($state) => $state ? '✔️' : ''),
+                        ->sortable(),
                 ])
 
             ])

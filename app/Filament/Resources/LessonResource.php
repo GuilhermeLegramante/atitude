@@ -73,7 +73,7 @@ class LessonResource extends Resource
                 // Ordena primeiro pela turma (class_id) e depois pelo campo 'order'
                 return $query->orderBy('class_id')->orderBy('order');
             })
-            ->defaultSort('class_id', 'asc')
+            ->defaultSort('order', 'asc')
             ->columns([
                 Stack::make([
                     ViewColumn::make('lesson_card')

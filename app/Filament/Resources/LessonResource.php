@@ -104,19 +104,22 @@ class LessonResource extends Resource
                             $student = $user->student;
 
                             if (! $student) {
-                                return false;
+                                return 0;
                             }
 
-                            $pivot = $record->students()->where('students.id', $student->id)->first();
+                            $pivot = $record->students()
+                                ->where('students.id', $student->id)
+                                ->first();
 
-                            return $pivot?->pivot->watched ?? false;
+                            return $pivot?->pivot->watched ? 1 : 0;
                         })
-                        ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
+                        // ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
                         ->color(fn($state) => $state ? 'success' : 'secondary')    // cor da badge/texto
                         ->sortable()
+                        ->formatStateUsing(fn($state) => $state ? '✔️' : '')
                         ->summarize([
                             Average::make()
-                                ->label('Progresso')
+                                ->label('Progresso médio')
                                 ->formatStateUsing(fn($value) => round($value * 100) . '%'),
                         ]),
                 ])

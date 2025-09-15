@@ -19,6 +19,8 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Split;
@@ -91,6 +93,22 @@ class LessonResource extends Resource
                         ->sortable(),
                     TextColumn::make('class.name')
                         ->label('Turma')
+                        ->sortable(),
+                    IconColumn::make('watched')
+                        ->label('Assistida')
+                        ->getStateUsing(function ($record) {
+                            $user = auth()->user();
+                            $student = $user->student;
+
+                            if (! $student) {
+                                return false;
+                            }
+
+                            $pivot = $record->students()->where('students.id', $student->id)->first();
+
+                            return $pivot?->pivot->watched ?? false;
+                        })
+                        ->boolean() // true = check verde, false = X cinza
                         ->sortable(),
                 ])
 

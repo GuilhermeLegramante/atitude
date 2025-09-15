@@ -112,6 +112,9 @@ class AssessmentResource extends Resource
                     ->label('Curso')
                     ->sortable(),
             ])
+            ->groups([
+                'lesson.class.course.name' => 'Curso',
+            ])
             ->filters([
                 //
             ])

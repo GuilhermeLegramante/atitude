@@ -98,30 +98,28 @@ class LessonResource extends Resource
                         ->label('Turma')
                         ->sortable(),
                     TextColumn::make('watched')
-                        ->label('Assistida')
+                        ->label('Progresso')
                         ->getStateUsing(function ($record) {
-                            $user = auth()->user();
-                            $student = $user->student;
+                            $student = auth()->user()->student;
+                            if (! $student) return 0;
 
-                            if (! $student) {
-                                return 0;
-                            }
-
-                            $pivot = $record->students()
-                                ->where('students.id', $student->id)
-                                ->first();
-
+                            $pivot = $record->students()->where('students.id', $student->id)->first();
                             return $pivot?->pivot->watched ? 1 : 0;
                         })
-                        // ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
-                        ->color(fn($state) => $state ? 'success' : 'secondary')    // cor da badge/texto
-                        ->sortable()
+                        ->numeric()
                         ->formatStateUsing(fn($state) => $state ? '✔️' : '')
-                        ->summarize([
-                            Average::make()
-                                ->label('Progresso médio')
-                                ->formatStateUsing(fn($value) => round($value * 100) . '%'),
-                        ]),
+                        ->summary(function ($records) {
+                            $student = auth()->user()->student;
+                            if (! $student) return '';
+
+                            $total = $records->count();
+                            $watched = $records->map(function ($record) use ($student) {
+                                $pivot = $record->students()->where('students.id', $student->id)->first();
+                                return $pivot?->pivot->watched ? 1 : 0;
+                            })->sum();
+
+                            return $total > 0 ? round(($watched / $total) * 100) . '%' : '0%';
+                        }),
                 ])
 
             ])

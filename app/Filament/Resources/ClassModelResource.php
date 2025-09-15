@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -46,6 +47,13 @@ class ClassModelResource extends Resource
             ->filters([
                 //
             ])
+            ->groups([
+                Group::make('course.name')
+                    ->label('Curso')
+                    ->collapsible(),
+            ])
+            // define o agrupamento padrão (pode receber string ou Group::make(...))
+            ->defaultGroup('course.name')
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),

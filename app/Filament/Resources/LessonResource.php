@@ -63,7 +63,7 @@ class LessonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->headerActions([
+            ->footerActions([
                 Action::make('progress')
                     ->label('')
                     ->view('components.lesson-progress-widget'),

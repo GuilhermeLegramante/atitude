@@ -70,8 +70,7 @@ class LessonResource extends Resource
                     });
                 }
 
-                // Ordena primeiro pela turma (class_id) e depois pelo campo 'order'
-                return $query->orderBy('class_id')->orderBy('order');
+                return $query->orderBy('order');
             })
             ->defaultSort('order', 'asc')
             ->columns([

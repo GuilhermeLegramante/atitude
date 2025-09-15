@@ -97,7 +97,7 @@ class LessonResource extends Resource
             ])
             ->contentGrid(['md' => 2, 'xl' => 3])
             ->filters([
-                SelectFilter::make('classModel')
+                SelectFilter::make('class_id')
                     ->label('Turma')
                     ->placeholder('Selecione uma turma')
                     ->options(function () {

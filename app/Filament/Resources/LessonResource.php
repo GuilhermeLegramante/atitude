@@ -26,6 +26,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\Summarizers\Average;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Enums\ActionsPosition;
@@ -112,7 +113,12 @@ class LessonResource extends Resource
                         })
                         ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
                         ->color(fn($state) => $state ? 'success' : 'secondary')    // cor da badge/texto
-                        ->sortable(),
+                        ->sortable()
+                        ->summarize([
+                            Average::make()
+                                ->label('Progresso')
+                                ->formatStateUsing(fn($value) => round($value * 100) . '%'),
+                        ]),
                 ])
 
             ])

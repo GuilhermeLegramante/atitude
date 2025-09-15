@@ -10,6 +10,10 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use App\Filament\Pages\Auth\Register;
+use App\Filament\Widgets\AccountWidget;
+use App\Filament\Widgets\LogoWidget;
+use App\Filament\Widgets\StudentProgressChart;
+use App\Filament\Widgets\StudentStatsCard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -87,8 +91,9 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Administração'),
             ])
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                AccountWidget::class,
+                StudentStatsCard::class,
+                LogoWidget::class,
             ])
             ->resources([
                 config('filament-logger.activity_resource')

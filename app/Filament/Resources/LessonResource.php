@@ -72,6 +72,7 @@ class LessonResource extends Resource
 
                 return $query->orderBy('order');
             })
+            ->persistFiltersInSession()
             ->defaultSort('order', 'asc')
             ->columns([
                 Stack::make([

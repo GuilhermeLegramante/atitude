@@ -130,6 +130,29 @@ class LessonResource extends Resource
                         // Pega só as turmas do estudante logado
                         return $student->classes()->pluck('name', 'id');
                     }),
+
+                // Filtro por aulas assistidas
+                SelectFilter::make('watched')
+                    ->label('Aula Assistida')
+                    ->placeholder('Selecione')
+                    ->options([
+                        '1' => 'Sim',
+                        '0' => 'Não',
+                    ])
+                    ->query(function ($query, $value) {
+                        $user = auth()->user();
+                        $student = $user->student;
+
+                        if (! $student) {
+                            return $query;
+                        }
+
+                        // Filtra na tabela pivô lesson_student
+                        return $query->whereHas('students', function ($q) use ($student, $value) {
+                            $q->where('students.id', $student->id)
+                                ->wherePivot('watched', $value);
+                        });
+                    }),
             ])
             // ->groups([
             //     Group::make('class.name')

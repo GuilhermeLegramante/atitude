@@ -18,6 +18,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
@@ -62,6 +63,11 @@ class LessonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                Action::make('progress')
+                    ->label('')
+                    ->view('components.lesson-progress-widget'),
+            ])
             ->modifyQueryUsing(function ($query) {
                 $user = auth()->user();
                 $student = $user->student;
@@ -145,51 +151,6 @@ class LessonResource extends Resource
                 ]),
             ]);
     }
-
-    public static function getTableHeader(): array
-    {
-        $user = auth()->user();
-        $student = $user->student;
-
-        if (! $student) {
-            return [];
-        }
-
-        // Pega a turma filtrada
-        $filters = request()->query('tableFilters') ?? [];
-        $classId = $filters['class_id'] ?? $student->classes()->first()?->id;
-
-        if (! $classId) {
-            return [];
-        }
-
-        $class = $student->classes()->where('id', $classId)->first();
-
-        if (! $class) {
-            return [];
-        }
-
-        $totalLessons = $class->lessons()->count();
-        $watchedLessons = $class->lessons()
-            ->whereHas('students', function ($q) use ($student) {
-                $q->where('students.id', $student->id)
-                    ->where('lesson_student.watched', 1);
-            })->count();
-
-        $percent = $totalLessons > 0 ? round(($watchedLessons / $totalLessons) * 100) : 0;
-
-        return [
-            \Filament\Tables\Columns\ViewColumn::make('progress')
-                ->label('')
-                ->view('components.lesson-progress', [
-                    'percent' => $percent,
-                    'className' => $class->name,
-                    'courseName' => $class->course->name,
-                ])
-                ->extraAttributes(['class' => 'w-full']),
-        ];
-    }
-
 
     public static function getRelations(): array
     {

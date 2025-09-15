@@ -27,7 +27,6 @@ use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Summarizers\Average;
-use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Enums\ActionsPosition;
@@ -101,23 +100,21 @@ class LessonResource extends Resource
                     TextColumn::make('watched')
                         ->label('Assistida')
                         ->getStateUsing(function ($record) {
-                            $student = auth()->user()->student;
-                            if (! $student) return 0;
+                            $user = auth()->user();
+                            $student = $user->student;
+
+                            if (! $student) {
+                                return false;
+                            }
 
                             $pivot = $record->students()->where('students.id', $student->id)->first();
-                            return $pivot?->pivot->watched ? 1 : 0;
+
+                            return $pivot?->pivot->watched ?? false;
                         })
-                        ->numeric()
-                        ->formatStateUsing(fn($state) => $state ? '✔️' : '')
-                        ->summarize([
-                            Count::make()
-                                ->label('Aulas assistidas')
-                                ->query(fn(Builder $query) => $query->whereHas('students', function ($q) {
-                                    $student = auth()->user()->student;
-                                    $q->where('students.id', $student->id)
-                                        ->wherePivot('watched', true);
-                                })),
-                        ]),
+                        // ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
+                        ->color(fn($state) => $state ? 'success' : 'secondary')    // cor da badge/texto
+                        ->sortable()
+                        ->formatStateUsing(fn($state) => $state ? '✔️' : ''),
                 ])
 
             ])

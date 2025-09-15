@@ -132,28 +132,28 @@ class LessonResource extends Resource
                     }),
 
                 // Filtro por aulas assistidas
-                SelectFilter::make('watched')
-                    ->label('Aula Assistida')
-                    ->placeholder('Selecione')
-                    ->options([
-                        '1' => 'Sim',
-                        '0' => 'Não',
-                    ])
-                    ->query(function ($query, $filter) {
-                        $user = auth()->user();
-                        $student = $user->student;
+                // SelectFilter::make('watched')
+                //     ->label('Aula Assistida')
+                //     ->placeholder('Selecione')
+                //     ->options([
+                //         '1' => 'Sim',
+                //         '0' => 'Não',
+                //     ])
+                //     ->query(function ($query, $filter) {
+                //         $user = auth()->user();
+                //         $student = $user->student;
 
-                        if (! $student || empty($filter)) {
-                            return $query;
-                        }
+                //         if (! $student || empty($filter)) {
+                //             return $query;
+                //         }
 
-                        $watched = $filter === '1' ? 1 : 0; // pivot armazenado como inteiro
+                //         $watched = $filter === '1' ? 1 : 0; // pivot armazenado como inteiro
 
-                        return $query->whereHas('students', function ($q) use ($student, $watched) {
-                            $q->where('students.id', $student->id)
-                                ->where('lesson_student.watched', $watched); // aqui usamos a coluna real da pivot
-                        });
-                    }),
+                //         return $query->whereHas('students', function ($q) use ($student, $watched) {
+                //             $q->where('students.id', $student->id)
+                //                 ->where('lesson_student.watched', $watched); // aqui usamos a coluna real da pivot
+                //         });
+                //     }),
             ])
             // ->groups([
             //     Group::make('class.name')

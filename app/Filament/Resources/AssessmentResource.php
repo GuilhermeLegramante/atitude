@@ -95,8 +95,8 @@ class AssessmentResource extends Resource
                     });
                 }
 
-                // Ordena pelo created_at do mais antigo para o mais novo
-                return $query->orderBy('created_at', 'asc');
+                // Ordena pelo name do mais antigo para o mais novo
+                return $query->orderBy('name', 'asc');
             })
             ->columns([
                 TextColumn::make('name')

@@ -90,13 +90,13 @@ class AssessmentResource extends Resource
                 $student = $user->student;
 
                 if ($student) {
-                    // Modifica a consulta para filtrar as avaliações do estudante
-                    return $query->whereHas('lesson.class.students', function ($q) use ($student) {
+                    $query->whereHas('lesson.class.students', function ($q) use ($student) {
                         $q->where('students.id', $student->id);
                     });
-                } else {
-                    return $query;
                 }
+
+                // Ordena pelo created_at do mais antigo para o mais novo
+                return $query->orderBy('created_at', 'asc');
             })
             ->columns([
                 TextColumn::make('name')

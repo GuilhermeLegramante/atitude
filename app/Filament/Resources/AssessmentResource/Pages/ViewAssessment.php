@@ -220,15 +220,31 @@ class ViewAssessment extends EditRecord
         $questionTypes = QuestionType::all()->keyBy('id');
 
         return $form->schema([
-            Section::make($this->record->lesson->class->course->name . '  >  ' .
-                $this->record->lesson->class->name . '  >  ' .
-                $this->record->lesson->title . '  >  ' .
-                $this->record->name)
-                ->schema(function () use ($answers, $hasAnswers, $questionTypes, $checked) {
-                    $assessment = $this->record;
+            Section::make(
+                $assessment->lesson->class->course->name . '  >  ' .
+                    $assessment->lesson->class->name . '  >  ' .
+                    $assessment->lesson->title . '  >  ' .
+                    $assessment->name
+            )
+                ->schema(function () use ($answers, $hasAnswers, $questionTypes, $checked, $assessment) {
                     $questions = $assessment->questions;
 
                     $fieldSets = [];
+
+                    // =========================
+                    // Título e descrição da avaliação
+                    // =========================
+                    $fieldSets[] = Placeholder::make('assessment_name')
+                        ->label('Título da Avaliação')
+                        ->content($assessment->name)
+                        ->columnSpanFull();
+
+                    if ($assessment->description) {
+                        $fieldSets[] = Placeholder::make('assessment_description')
+                            ->label('Descrição')
+                            ->content($assessment->description)
+                            ->columnSpanFull();
+                    }
 
                     // =========================
                     // Conteúdo multimídia da atividade
@@ -264,7 +280,7 @@ class ViewAssessment extends EditRecord
                             ->columnSpanFull()
                             ->label($questionText);
 
-                        // 🔽 NOVO: exibir imagem ou áudio da questão se existir
+                        // 🔽 multimídia da questão
                         if ($question->image_path) {
                             $fields[] = ViewField::make('question_' . $question->id . '_image')
                                 ->label('')
@@ -316,7 +332,6 @@ class ViewAssessment extends EditRecord
                 }),
         ]);
     }
-
 
     private function getResult($answers): FieldSet
     {

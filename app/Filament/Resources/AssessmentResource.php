@@ -116,6 +116,7 @@ class AssessmentResource extends Resource
             ->groups([
                 Group::make('lesson.class.course.name')
                     ->label('Curso')
+                    ->default()
                     ->collapsible(),
             ])
             ->filters([

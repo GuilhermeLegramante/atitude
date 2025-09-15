@@ -47,7 +47,6 @@ class LessonForm
                 TextInput::make('order')
                     ->label('Ordem da Aula')
                     ->numeric()
-                    ->minValue(1)
                     ->required()
                     ->rule(function ($record) {
                         return Rule::unique('lessons', 'order')

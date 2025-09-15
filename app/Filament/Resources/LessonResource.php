@@ -102,15 +102,15 @@ class LessonResource extends Resource
                     ->relationship('class.course', 'name')
                     ->placeholder('Selecione um curso'),
             ])
-            ->groups([
-                Group::make('class.name')
-                    ->label('Turma')
-                    ->collapsible(),
-                Group::make('class.course.name')
-                    ->label('Curso')
-                    ->collapsible(),
+            // ->groups([
+            //     Group::make('class.name')
+            //         ->label('Turma')
+            //         ->collapsible(),
+            //     Group::make('class.course.name')
+            //         ->label('Curso')
+            //         ->collapsible(),
 
-            ])
+            // ])
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\ViewAction::make(),

@@ -26,6 +26,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Hugomyb\FilamentMediaAction\Actions\MediaAction;
@@ -96,7 +97,10 @@ class LessonResource extends Resource
             ])
             ->contentGrid(['md' => 2, 'xl' => 3])
             ->filters([
-                //
+                SelectFilter::make('course')
+                    ->label('Curso')
+                    ->relationship('class.course', 'name')
+                    ->placeholder('Selecione um curso'),
             ])
             ->groups([
                 Group::make('class.name')

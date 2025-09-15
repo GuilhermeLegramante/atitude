@@ -108,7 +108,7 @@ class LessonResource extends Resource
 
                             return $pivot?->pivot->watched ?? false;
                         })
-                        ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : 'NÃO ASSISTIDA') // substitui enum
+                        ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
                         ->color(fn($state) => $state ? 'success' : 'secondary')    // cor da badge/texto
                         ->sortable(),
                 ])

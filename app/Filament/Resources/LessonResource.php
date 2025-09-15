@@ -37,6 +37,7 @@ use Hugomyb\FilamentMediaAction\Actions\MediaAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
+use Filament\Tables\Columns\Summarizers\Callback;
 
 class LessonResource extends Resource
 {

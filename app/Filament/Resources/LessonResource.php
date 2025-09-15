@@ -99,8 +99,18 @@ class LessonResource extends Resource
             ->filters([
                 SelectFilter::make('class')
                     ->label('Turma')
-                    ->relationship('class', 'name')
-                    ->placeholder('Selecione uma turma'),
+                    ->placeholder('Selecione uma turma')
+                    ->options(function () {
+                        $user = auth()->user();
+                        $student = $user->student;
+
+                        if (! $student) {
+                            return [];
+                        }
+
+                        // Pega só as turmas do estudante logado
+                        return $student->classes()->pluck('name', 'id');
+                    }),
             ])
             // ->groups([
             //     Group::make('class.name')

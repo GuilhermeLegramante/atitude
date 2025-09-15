@@ -147,12 +147,11 @@ class LessonResource extends Resource
                             return $query;
                         }
 
-                        // Converte string '1'/'0' para boolean
-                        $watched = $filter === '1' ? true : false;
+                        $watched = $filter === '1' ? 1 : 0; // pivot armazenado como inteiro
 
                         return $query->whereHas('students', function ($q) use ($student, $watched) {
                             $q->where('students.id', $student->id)
-                                ->wherePivot('watched', $watched);
+                                ->where('lesson_student.watched', $watched); // aqui usamos a coluna real da pivot
                         });
                     }),
             ])

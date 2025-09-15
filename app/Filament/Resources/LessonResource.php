@@ -139,18 +139,19 @@ class LessonResource extends Resource
                         '1' => 'Sim',
                         '0' => 'Não',
                     ])
-                    ->query(function ($query, $value) {
+                    ->query(function ($query, array $data) {
                         $user = auth()->user();
                         $student = $user->student;
 
-                        if (! $student) {
+                        if (! $student || empty($data['watched'])) {
                             return $query;
                         }
 
-                        // Filtra na tabela pivô lesson_student
-                        return $query->whereHas('students', function ($q) use ($student, $value) {
+                        $watched = $data['watched']; // '1' ou '0'
+
+                        return $query->whereHas('students', function ($q) use ($student, $watched) {
                             $q->where('students.id', $student->id)
-                                ->wherePivot('watched', $value);
+                                ->wherePivot('watched', $watched);
                         });
                     }),
             ])

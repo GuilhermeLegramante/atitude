@@ -27,6 +27,7 @@ use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Summarizers\Average;
+use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Enums\ActionsPosition;
@@ -37,7 +38,6 @@ use Hugomyb\FilamentMediaAction\Actions\MediaAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
-use Filament\Tables\Columns\Summarizers\Callback;
 
 class LessonResource extends Resource
 {
@@ -98,9 +98,8 @@ class LessonResource extends Resource
                     TextColumn::make('class.name')
                         ->label('Turma')
                         ->sortable(),
-
                     TextColumn::make('watched')
-                        ->label('Progresso')
+                        ->label('Assistida')
                         ->getStateUsing(function ($record) {
                             $student = auth()->user()->student;
                             if (! $student) return 0;
@@ -111,20 +110,13 @@ class LessonResource extends Resource
                         ->numeric()
                         ->formatStateUsing(fn($state) => $state ? '✔️' : '')
                         ->summarize([
-                            Callback::make('progress')
-                                ->label('Progresso do aluno')
-                                ->getStateUsing(function ($records) {
+                            Count::make()
+                                ->label('Aulas assistidas')
+                                ->query(fn(Builder $query) => $query->whereHas('students', function ($q) {
                                     $student = auth()->user()->student;
-                                    if (! $student) return '0%';
-
-                                    $total = $records->count();
-                                    $watched = $records->map(function ($record) use ($student) {
-                                        $pivot = $record->students()->where('students.id', $student->id)->first();
-                                        return $pivot?->pivot->watched ? 1 : 0;
-                                    })->sum();
-
-                                    return $total > 0 ? round(($watched / $total) * 100) . '%' : '0%';
-                                }),
+                                    $q->where('students.id', $student->id)
+                                        ->wherePivot('watched', true);
+                                })),
                         ]),
                 ])
 

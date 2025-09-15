@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,15 +46,17 @@ class ClassModelResource extends Resource
         return $table
             ->columns(ClassTable::table())
             ->filters([
-                //
-            ])
-            ->groups([
-                Group::make('course.name')
+                SelectFilter::make('course')
                     ->label('Curso')
-                    ->collapsible(),
+                    ->relationship('course', 'name')
+                    ->placeholder('Selecione um curso'),
             ])
-            // define o agrupamento padrão (pode receber string ou Group::make(...))
-            ->defaultGroup('course.name')
+            // ->groups([
+            //     Group::make('course.name')
+            //         ->label('Curso')
+            //         ->collapsible(),
+            // ])
+            // ->defaultGroup('course.name')
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),

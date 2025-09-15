@@ -63,11 +63,6 @@ class LessonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->footerActions([
-                Action::make('progress')
-                    ->label('')
-                    ->view('components.lesson-progress-widget'),
-            ])
             ->modifyQueryUsing(function ($query) {
                 $user = auth()->user();
                 $student = $user->student;

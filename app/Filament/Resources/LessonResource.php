@@ -139,15 +139,16 @@ class LessonResource extends Resource
                         '1' => 'Sim',
                         '0' => 'Não',
                     ])
-                    ->query(function ($query, array $data) {
+                    ->query(function ($query, $filter) {
                         $user = auth()->user();
                         $student = $user->student;
 
-                        if (! $student || empty($data['watched'])) {
+                        if (! $student || empty($filter)) {
                             return $query;
                         }
 
-                        $watched = $data['watched']; // '1' ou '0'
+                        // Converte string '1'/'0' para boolean
+                        $watched = $filter === '1' ? true : false;
 
                         return $query->whereHas('students', function ($q) use ($student, $watched) {
                             $q->where('students.id', $student->id)

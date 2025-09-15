@@ -108,6 +108,10 @@ class LessonResource extends Resource
 
                             return $pivot?->pivot->watched ?? false;
                         })
+                        ->colors([
+                            'success' => true,   // verde se true
+                            'info' => false,   // azul se false
+                        ])
                         ->boolean() // true = check verde, false = X cinza
                         ->sortable(),
                 ])

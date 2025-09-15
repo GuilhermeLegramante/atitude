@@ -78,6 +78,46 @@ class LessonResource extends Resource
             ->defaultSort('order', 'asc')
             ->columns([
                 Stack::make([
+                    ViewColumn::make('progress')
+                        ->label('')
+                        ->getStateUsing(function () {
+                            $user = auth()->user();
+                            $student = $user->student;
+
+                            if (! $student) {
+                                return 0;
+                            }
+
+                            // Pega o filtro de turma aplicado
+                            $filters = request()->query('tableFilters') ?? [];
+                            $classId = $filters['class_id'] ?? null;
+
+                            if (! $classId) {
+                                // Se não tiver filtro, pega a primeira turma do estudante
+                                $class = $student->classes()->first();
+                            } else {
+                                $class = $student->classes()->where('id', $classId)->first();
+                            }
+
+                            if (! $class) {
+                                return 0;
+                            }
+
+                            $totalLessons = $class->lessons()->count();
+                            if ($totalLessons === 0) {
+                                return 0;
+                            }
+
+                            $watchedLessons = $class->lessons()
+                                ->whereHas('students', function ($q) use ($student) {
+                                    $q->where('students.id', $student->id)
+                                        ->where('lesson_student.watched', 1);
+                                })->count();
+
+                            return round(($watchedLessons / $totalLessons) * 100);
+                        })
+                        ->view('components.lesson-progress')
+                        ->extraAttributes(['class' => 'w-full']),
                     ViewColumn::make('lesson_card')
                         ->label('')
                         ->view('lesson-info-to-list')
@@ -130,40 +170,7 @@ class LessonResource extends Resource
                         // Pega só as turmas do estudante logado
                         return $student->classes()->pluck('name', 'id');
                     }),
-
-                // Filtro por aulas assistidas
-                // SelectFilter::make('watched')
-                //     ->label('Aula Assistida')
-                //     ->placeholder('Selecione')
-                //     ->options([
-                //         '1' => 'Sim',
-                //         '0' => 'Não',
-                //     ])
-                //     ->query(function ($query, $filter) {
-                //         $user = auth()->user();
-                //         $student = $user->student;
-
-                //         if (! $student || empty($filter)) {
-                //             return $query;
-                //         }
-
-                //         $watched = $filter === '1' ? 1 : 0; // pivot armazenado como inteiro
-
-                //         return $query->whereHas('students', function ($q) use ($student, $watched) {
-                //             $q->where('students.id', $student->id)
-                //                 ->where('lesson_student.watched', $watched); // aqui usamos a coluna real da pivot
-                //         });
-                //     }),
             ])
-            // ->groups([
-            //     Group::make('class.name')
-            //         ->label('Turma')
-            //         ->collapsible(),
-            //     Group::make('class.course.name')
-            //         ->label('Curso')
-            //         ->collapsible(),
-
-            // ])
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\ViewAction::make(),

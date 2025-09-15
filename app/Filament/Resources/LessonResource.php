@@ -94,7 +94,7 @@ class LessonResource extends Resource
                     TextColumn::make('class.name')
                         ->label('Turma')
                         ->sortable(),
-                    IconColumn::make('watched')
+                    TextColumn::make('watched')
                         ->label('Assistida')
                         ->getStateUsing(function ($record) {
                             $user = auth()->user();
@@ -108,11 +108,14 @@ class LessonResource extends Resource
 
                             return $pivot?->pivot->watched ?? false;
                         })
-                        ->colors([
-                            'success' => true,   // verde se true
-                            'info' => false,   // azul se false
+                        ->enum([
+                            true => 'Assistida',
+                            false => 'Não assistida',
                         ])
-                        ->boolean() // true = check verde, false = X cinza
+                        ->colors([
+                            'success' => true,
+                            'secondary' => false,
+                        ])
                         ->sortable(),
                 ])
 

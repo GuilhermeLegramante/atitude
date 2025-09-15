@@ -118,6 +118,8 @@ class AssessmentResource extends Resource
                     ->label('Curso')
                     ->collapsible(),
             ])
+            // define o agrupamento padrão (pode receber string ou Group::make(...))
+            ->defaultGroup('lesson.class.course.name')
             ->filters([
                 //
             ])

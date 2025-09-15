@@ -76,48 +76,46 @@ class LessonResource extends Resource
             })
             ->persistFiltersInSession()
             ->defaultSort('order', 'asc')
+            ->renderHeader(function () {
+                $user = auth()->user();
+                $student = $user->student;
+
+                if (! $student) {
+                    return null;
+                }
+
+                // Pega a turma filtrada
+                $filters = request()->query('tableFilters') ?? [];
+                $classId = $filters['class_id'] ?? null;
+
+                if (! $classId) {
+                    $class = $student->classes()->first();
+                } else {
+                    $class = $student->classes()->where('id', $classId)->first();
+                }
+
+                if (! $class) {
+                    return null;
+                }
+
+                $totalLessons = $class->lessons()->count();
+                $watchedLessons = $class->lessons()
+                    ->whereHas('students', function ($q) use ($student) {
+                        $q->where('students.id', $student->id)
+                            ->where('lesson_student.watched', 1);
+                    })->count();
+
+                $percent = $totalLessons > 0 ? round(($watchedLessons / $totalLessons) * 100) : 0;
+
+                // Renderiza o Blade do progresso
+                return view('components.lesson-progress', [
+                    'percent' => $percent,
+                    'className' => $class->name,
+                    'courseName' => $class->course->name,
+                ]);
+            })
             ->columns([
                 Stack::make([
-                    ViewColumn::make('progress')
-                        ->label('')
-                        ->getStateUsing(function () {
-                            $user = auth()->user();
-                            $student = $user->student;
-
-                            if (! $student) {
-                                return 0;
-                            }
-
-                            // Pega o filtro de turma aplicado
-                            $filters = request()->query('tableFilters') ?? [];
-                            $classId = $filters['class_id'] ?? null;
-
-                            if (! $classId) {
-                                // Se não tiver filtro, pega a primeira turma do estudante
-                                $class = $student->classes()->first();
-                            } else {
-                                $class = $student->classes()->where('id', $classId)->first();
-                            }
-
-                            if (! $class) {
-                                return 0;
-                            }
-
-                            $totalLessons = $class->lessons()->count();
-                            if ($totalLessons === 0) {
-                                return 0;
-                            }
-
-                            $watchedLessons = $class->lessons()
-                                ->whereHas('students', function ($q) use ($student) {
-                                    $q->where('students.id', $student->id)
-                                        ->where('lesson_student.watched', 1);
-                                })->count();
-
-                            return round(($watchedLessons / $totalLessons) * 100);
-                        })
-                        ->view('components.lesson-progress')
-                        ->extraAttributes(['class' => 'w-full']),
                     ViewColumn::make('lesson_card')
                         ->label('')
                         ->view('lesson-info-to-list')

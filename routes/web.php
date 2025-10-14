@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LessonController;
 use App\Mail\FirstEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,10 @@ Route::get('/', function () {
     return redirect(route('filament.admin.pages.dashboard'));
 });
 
+Route::get('/', function () {
+    return view('home');
+})->name('home');
+
 Route::get('/payments/{payment}/receipt', function (Payment $payment) {
     $pdf = Pdf::loadView('payments.receipt', compact('payment'));
 
@@ -36,3 +41,7 @@ Route::get('/payments/{payment}/receipt', function (Payment $payment) {
     // Ou abrir direto no navegador:
     return $pdf->stream('recibo_pagamento_' . $payment->id . '.pdf');
 })->name('payments.receipt');
+
+
+Route::get('/aulas/{lesson}', [LessonController::class, 'show'])
+    ->name('lessons.show');

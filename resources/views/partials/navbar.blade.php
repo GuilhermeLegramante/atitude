@@ -79,7 +79,7 @@
               </nav>
 
               <div class="mt-6 border-t border-white/10 pt-4">
-                  <a href="#"
+                  <a href="{{ route('filament.admin.auth.login') }}"
                       class="block w-full text-center bg-[#c0ff01] text-[#111827] font-semibold rounded-md px-4 py-2">Entrar</a>
               </div>
           </div>

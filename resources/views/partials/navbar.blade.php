@@ -22,7 +22,7 @@
           <!-- Ações / botão mobile -->
           <div class="flex items-center gap-3">
               <div class="hidden md:flex items-center gap-3">
-                  <a href="#" class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">Entrar</a>
+                  <a href="{{ route('filament.admin.auth.login') }}" class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">Entrar</a>
               </div>
 
               <!-- botão mobile -->

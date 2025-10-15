@@ -66,7 +66,7 @@
                                 @php
                                     $watched = auth()
                                         ->user()
-                                        ?->lessons()
+                                        ->student?->watchedLessons()
                                         ->where('lesson_id', $lesson->id)
                                         ->wherePivot('watched', true)
                                         ->exists();

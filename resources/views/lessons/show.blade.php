@@ -54,15 +54,15 @@
 
                             <div class="flex items-center gap-2 flex-wrap">
                                 {{-- Botão baixar materiais --}}
-                                <a href="{{ $lesson->resources_download ?? '#' }}"
+                                {{-- <a href="{{ $lesson->resources_download ?? '#' }}"
                                     class="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded-md bg-sky-600 text-white text-xs font-medium hover:bg-sky-700 transition">
-                                    Baixar
-                                </a>
+                                    Material de Apoio
+                                </a> --}}
 
                                 {{-- Relatar problema --}}
                                 <a href="#"
                                     class="px-2 py-1 rounded-md border text-xs text-gray-700 hover:bg-gray-100 transition">
-                                    Problema
+                                    Relatar Problema
                                 </a>
 
                                 {{-- Marcar como assistida --}}
@@ -71,7 +71,7 @@
                                     <button type="submit"
                                         class="px-2 py-1 rounded-md text-xs font-medium text-white transition
            {{ $lesson->watched_by_student ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }}">
-                                        {{ $lesson->watched_by_student ? '✔ Assistida' : 'Marcar' }}
+                                        {{ $lesson->watched_by_student ? '✔ Assistida' : 'Marcar como assistida' }}
                                     </button>
                                 </form>
                             </div>

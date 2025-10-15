@@ -36,7 +36,7 @@
                             <div>
                                 <h1 class="text-2xl font-semibold">{{ $lesson->title }}</h1>
                                 <p class="text-sm text-slate-500 mt-1">
-                                    {{ $lesson->course->name ?? '' }}
+                                    {{ $lesson->class->course->name ?? '' }}
                                 </p>
 
                                 <div class="mt-4 flex items-center gap-4 text-sm text-slate-600">
@@ -76,25 +76,27 @@
                             </div>
 
                             <ul class="mt-4 space-y-3">
-                                @foreach ($lesson->resources ?? [] as $res)
+                                @foreach ($lesson->materials ?? [] as $res)
                                     <li class="flex items-center justify-between gap-4">
                                         <div class="flex items-center gap-3">
                                             <div
                                                 class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 font-medium">
-                                                {{ strtoupper(substr($res['name'], 0, 2)) }}</div>
+                                                {{ strtoupper(substr($res->name, 0, 2)) }}
+                                            </div>
                                             <div>
-                                                <div class="font-medium">{{ $res['name'] }}</div>
-                                                <div class="text-xs text-slate-500">{{ $res['meta'] ?? '' }}</div>
+                                                <div class="font-medium">{{ $res->name }}</div>
+                                                <div class="text-xs text-slate-500">{{ $res->note ?? '' }}</div>
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <a href="{{ $res['url'] }}"
+                                            <a href="{{ $res->url }}"
                                                 class="px-3 py-1 rounded-md border text-sm">Abrir</a>
-                                            <a href="{{ $res['url'] }}" download
+                                            <a href="{{ $res->url }}" download
                                                 class="px-3 py-1 rounded-md bg-slate-100 text-sm">Baixar</a>
                                         </div>
                                     </li>
                                 @endforeach
+
                             </ul>
 
                             <!-- Q&A / Comments -->

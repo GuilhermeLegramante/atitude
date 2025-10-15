@@ -3,6 +3,7 @@
 namespace App\Filament\Tables;
 
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 
 class ClassTable
 {
@@ -15,6 +16,9 @@ class ClassTable
             TextColumn::make('course.name')
                 ->label('Curso')
                 ->searchable(),
+            TextInputColumn::make('order')
+                ->sortable()
+                ->label('Ordem'),
             TableColumns::createdAt(),
             TableColumns::updatedAt(),
         ];

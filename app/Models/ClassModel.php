@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class ClassModel extends Model
 {
@@ -15,6 +17,11 @@ class ClassModel extends Model
         'course_id',
         'name',
         'note',
+        'order',
+    ];
+
+    protected $casts = [
+        'order' => 'integer',
     ];
 
     public function students()
@@ -35,5 +42,12 @@ class ClassModel extends Model
     public function assessment()
     {
         return $this->hasMany(Assessment::class);
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('ordered', function (Builder $builder) {
+            $builder->orderBy('order');
+        });
     }
 }

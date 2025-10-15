@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Lesson extends Model
 {
@@ -38,5 +39,12 @@ class Lesson extends Model
     {
         return $this->belongsToMany(Student::class, 'lesson_student')  // Relacionamento com Student através da tabela pivô 'lesson_student'
             ->withPivot('watched');  // Incluindo o campo 'watched' da tabela pivô
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('ordered', function (Builder $builder) {
+            $builder->orderBy('order');
+        });
     }
 }

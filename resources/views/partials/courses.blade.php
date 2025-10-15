@@ -13,19 +13,6 @@
             </button>
         </div>
 
-        <!-- 🔹 Progresso -->
-        {{-- <div class="mt-4 md:mt-0 md:w-1/3">
-            <div class="bg-white rounded-2xl shadow p-4">
-                <div class="flex justify-between mb-2 text-sm font-medium">
-                    <span>Curso Atual: Inglês para Iniciantes</span>
-                    <span>45%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-3">
-                    <div class="bg-sky-500 h-3 rounded-full" style="width: 45%"></div>
-                </div>
-            </div>
-        </div> --}}
-
         @if ($currentCourse)
             <div class="bg-white rounded-2xl shadow p-6">
                 <div class="flex justify-between mb-2 text-sm font-medium">

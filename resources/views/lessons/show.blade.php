@@ -52,36 +52,29 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 flex-wrap">
                                 {{-- Botão baixar materiais --}}
                                 <a href="{{ $lesson->resources_download ?? '#' }}"
-                                    class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-sky-600 text-white font-medium">
-                                    Baixar materiais
+                                    class="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded-md bg-sky-600 text-white text-xs font-medium hover:bg-sky-700 transition">
+                                    Baixar
                                 </a>
 
                                 {{-- Relatar problema --}}
-                                <a href="#" class="px-3 py-2 rounded-lg border text-sm">Relatar problema</a>
+                                <a href="#"
+                                    class="px-2 py-1 rounded-md border text-xs text-gray-700 hover:bg-gray-100 transition">
+                                    Problema
+                                </a>
 
                                 {{-- Marcar como assistida --}}
-                                @php
-                                    $watched = auth()
-                                        ->user()
-                                        ->student?->watchedLessons()
-                                        ->where('lesson_id', $lesson->id)
-                                        ->wherePivot('watched', true)
-                                        ->exists();
-                                @endphp
-
                                 <form method="POST" action="{{ route('lessons.toggleWatched', $lesson->id) }}">
                                     @csrf
                                     <button type="submit"
-                                        class="px-3 py-2 rounded-lg font-medium text-white transition
-                   {{ $watched ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }}">
-                                        {{ $watched ? 'Assistida ✔' : 'Marcar como assistida' }}
+                                        class="px-2 py-1 rounded-md text-xs font-medium text-white transition
+           {{ $lesson->watched_by_student ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }}">
+                                        {{ $lesson->watched_by_student ? '✔ Assistida' : 'Marcar' }}
                                     </button>
                                 </form>
                             </div>
-
                         </div>
 
                         <div class="mt-4 text-sm text-slate-700">

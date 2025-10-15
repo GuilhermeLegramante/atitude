@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class Lesson extends Model
 {
@@ -56,5 +57,23 @@ class Lesson extends Model
             ->where('order', '>', $currentOrder)
             ->orderBy('order', 'asc')
             ->first();
+    }
+
+    /**
+     * Retorna se a aula foi assistida pelo aluno logado
+     */
+    public function getWatchedByStudentAttribute(): bool
+    {
+        $student = Auth::user()?->student;
+
+        if (! $student) {
+            return false;
+        }
+
+        // Verifica se existe na tabela pivot com watched = true
+        return $this->students()
+            ->where('student_id', $student->id)
+            ->wherePivot('watched', true)
+            ->exists();
     }
 }

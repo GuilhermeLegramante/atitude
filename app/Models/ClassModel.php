@@ -50,4 +50,9 @@ class ClassModel extends Model
             $builder->orderBy('order');
         });
     }
+
+    public function getTotalLessonsAttribute()
+    {
+        return $this->lessons()->count();
+    }
 }

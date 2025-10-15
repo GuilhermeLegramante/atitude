@@ -47,4 +47,13 @@ class Lesson extends Model
             $builder->orderBy('order');
         });
     }
+
+    // Acesso à próxima aula na mesma turma
+    public function getNextLessonAttribute()
+    {
+        return $this->class?->lessons()
+            ->where('order', '>', $this->order) // próxima aula
+            ->orderBy('order', 'asc')
+            ->first(); // retorna null se não houver próxima
+    }
 }

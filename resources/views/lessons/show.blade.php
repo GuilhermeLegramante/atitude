@@ -11,9 +11,9 @@
                     <!-- ✅ Player do YouTube -->
                     <div class="relative bg-black rounded-t-2xl overflow-hidden" style="aspect-ratio:16/9">
                         <iframe class="absolute top-0 left-0 w-full h-full"
-                            src="{{ Str::contains($lesson->video_url, 'youtube.com') || Str::contains($lesson->video_url, 'youtu.be')
-                                ? preg_replace(['/youtu\\.be\\//', '/watch\\?v=/', '/\\&.*/'], ['embed/', 'embed/', ''], $lesson->video_url)
-                                : $lesson->video_url }}"
+                            src="{{ Str::contains($lesson->video_link, 'youtube.com') || Str::contains($lesson->video_link, 'youtu.be')
+                                ? preg_replace(['/youtu\\.be\\//', '/watch\\?v=/', '/\\&.*/'], ['embed/', 'embed/', ''], $lesson->video_link)
+                                : $lesson->video_link }}"
                             title="{{ $lesson->title }}" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
@@ -27,23 +27,18 @@
                             <div>
                                 <h1 class="text-2xl font-semibold">{{ $lesson->title }}</h1>
                                 <p class="text-sm text-slate-500 mt-1">
-                                    {{ $lesson->subtitle ?? ($lesson->description ? Str::limit($lesson->description, 140) : '') }}
+                                    {{ $lesson->course->name ?? '' }}
                                 </p>
 
                                 <div class="mt-4 flex items-center gap-4 text-sm text-slate-600">
                                     <div class="flex items-center gap-3">
-                                        <img src="{{ $lesson->teacher->avatar ?? asset('img/avatar-placeholder.png') }}"
+                                        <img src="{{ $lesson->course->user->avatar ?? asset('img/avatar-placeholder.png') }}"
                                             alt="Professor" class="w-9 h-9 rounded-full object-cover">
                                         <div>
-                                            <div class="font-medium">{{ $lesson->teacher->name ?? 'Professor' }}</div>
+                                            <div class="font-medium">Prof. {{ $lesson->course->user->name ?? 'Professor' }}
+                                            </div>
                                             <div class="text-xs text-slate-500">{{ $lesson->duration ?? '—' }}</div>
                                         </div>
-                                    </div>
-
-                                    <div class="flex items-center gap-2">
-                                        <progress value="{{ $lesson->progressPercent ?? 0 }}" max="100"
-                                            class="w-40 h-2"></progress>
-                                        <div class="text-xs">{{ $lesson->progressPercent ?? 0 }}% concluído</div>
                                     </div>
                                 </div>
                             </div>
@@ -119,27 +114,37 @@
                     <aside class="bg-white rounded-2xl shadow border p-4 h-fit">
                         <div class="flex items-center justify-between">
                             <div>
-                                <div class="text-xs text-slate-500">Aula</div>
-                                <div class="font-semibold">{{ $lesson->module->title ?? 'Módulo' }}</div>
-                                <div class="text-xs text-slate-500">{{ $lesson->module->lessons_count ?? '—' }} aulas
+                                <div class="text-xs text-slate-500">Curso</div>
+                                <div class="font-semibold">{{ $lesson->class->course->name ?? 'Módulo' }}</div>
+                                <div class="text-xs text-slate-500">{{ $lesson->class->course->total_lessons ?? '—' }}
+                                    aulas
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-4">
-                            <h4 class="text-sm font-medium">Próxima</h4>
-                            <a href="{{ $lesson->next_url ?? '#' }}"
-                                class="mt-2 block rounded-lg p-3 bg-slate-50 border">{{ $lesson->next_title ?? 'Próxima aula' }}</a>
-                        </div>
+                            <h4 class="text-sm font-medium">Próxima Aula</h4>
 
+                            @if ($lesson->next_lesson)
+                                <a href="{{ route('lessons.show', $lesson->next_lesson->id) }}"
+                                    class="mt-2 block rounded-lg p-3 bg-slate-50 border hover:bg-slate-100 transition">
+                                    {{ $lesson->next_lesson->title }}
+                                </a>
+                            @else
+                                <div class="mt-2 block rounded-lg p-3 bg-green-50 border text-green-700 font-semibold">
+                                    Esta é a última aula do módulo 🎓
+                                </div>
+                            @endif
+                        </div>
+                        
                         <div class="mt-4">
                             <h4 class="text-sm font-medium">Progresso do curso</h4>
                             <div class="mt-2">
                                 <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                                    <div style="width: {{ $lesson->courseProgress ?? 0 }}%"
+                                    <div style="width: {{ $lesson->course->progress ?? 0 }}%"
                                         class="h-2 rounded-full bg-gradient-to-r from-emerald-500 to-sky-500"></div>
                                 </div>
-                                <div class="text-xs text-slate-500 mt-2">{{ $lesson->courseProgress ?? 0 }}% completo
+                                <div class="text-xs text-slate-500 mt-2">{{ $lesson->course->progress ?? 0 }}% completo
                                 </div>
                             </div>
                         </div>
@@ -147,46 +152,48 @@
                         <div class="mt-4">
                             <h4 class="text-sm font-medium">Aulas do módulo</h4>
                             <ul class="mt-2 space-y-2 max-h-52 overflow-auto pr-2">
-                                @foreach ($lesson->module->lessons ?? [] as $li)
-                                    <li class="flex items-center gap-3">
-                                        <a href="{{ $li->url }}" class="flex items-center gap-3 w-full">
-                                            <img src="{{ $li->thumb ?? asset('img/atitude_logo_contorno.png') }}"
-                                                class="w-12 h-8 rounded-md object-cover">
-                                            <div class="flex-1 text-sm truncate">{{ $li->title }}</div>
-                                            <div class="text-xs text-slate-500">{{ $li->duration ?? '' }}</div>
-                                        </a>
-                                    </li>
-                                @endforeach
+                                @if ($lesson->class->lessons->count())
+                                    <ul
+                                        class="border-t border-gray-100 bg-gray-50 px-4 py-2 space-y-1 text-xs text-gray-600">
+                                        @foreach ($lesson->class->lessons as $lesson)
+                                            @php
+                                                $watched =
+                                                    $lesson->students->where('id', auth()->id())->first()?->pivot
+                                                        ->watched ?? false;
+                                            @endphp
+                                            <li class="flex items-center gap-2">
+                                                <a href="{{ route('lessons.show', $lesson->id) }}"
+                                                    class="flex items-center gap-2 hover:text-[#2b2c43] transition">
+
+                                                    @if ($watched)
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="w-4 h-4 text-green-500 flex-shrink-0" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    @endif
+
+                                                    {{ $lesson->title }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p class="px-4 py-2 text-xs text-gray-400 bg-gray-50 border-t border-gray-100">
+                                        Nenhuma aula disponível neste módulo.
+                                    </p>
+                                @endif
                             </ul>
                         </div>
                     </aside>
                 </div>
-
-                {{-- <!-- RECOMMENDED -->
-                <div class="mt-6">
-                    <h3 class="text-lg font-semibold mb-4">Aulas recomendadas</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        @foreach ($lesson->recommended ?? [] as $rec)
-                            <a href="{{ $rec->url }}"
-                                class="block bg-white rounded-lg shadow hover:shadow-md overflow-hidden">
-                                <div class="aspect-w-16 aspect-h-9 bg-slate-200">
-                                    <img src="{{ $rec->thumb ?? asset('img/thumb-placeholder.png') }}" alt=""
-                                        class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-3">
-                                    <div class="font-medium text-sm truncate">{{ $rec->title }}</div>
-                                    <div class="text-xs text-slate-500 mt-1">{{ $rec->module->title ?? '' }}</div>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                </div> --}}
             </main>
 
             <!-- RIGHT SIDEBAR (on lg screens) -->
             <div class="hidden lg:block">
                 <div class="sticky top-6 space-y-6">
-                    <div class="bg-white rounded-2xl shadow border p-4 w-80">
+                    {{-- <div class="bg-white rounded-2xl shadow border p-4 w-80">
                         <h4 class="text-sm font-semibold">Seu progresso</h4>
                         <div class="mt-3">
                             <div class="text-sm font-medium">Nível atual: {{ $lesson->studentLevel ?? 'Iniciante' }}
@@ -199,7 +206,25 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
+
+                    @if ($currentCourse)
+                        <div class="bg-white rounded-2xl shadow p-6">
+                            <div class="flex justify-between mb-2 text-sm font-medium">
+                                <span>Curso Atual: {{ $currentCourse->name }}</span>
+                                <span>{{ $currentCourse->progress }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-sky-500 h-3 rounded-full" style="width: {{ $currentCourse->progress }}%">
+                                </div>
+                            </div>
+                            <div class="text-xs text-slate-500 mt-1">Pontos de XP: {{ $userPoints ?? 0 }}</div>
+                            <div class="text-xs text-slate-500 mt-1">Posição no Ranking: {{ $position ?? 0 }}°</div>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Última aula assistida: {{ $lastLesson->title }}
+                            </p>
+                        </div>
+                    @endif
 
                     <div class="bg-white rounded-2xl shadow border p-4 w-80">
                         <h4 class="text-sm font-semibold">Certificado</h4>

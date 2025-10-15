@@ -24,14 +24,12 @@ class LessonController extends Controller
 
     public function show(Lesson $lesson)
     {
-        $lesson->load([
+        $lesson = $lesson->load([
             'materials',
             'class.course',
             'class.lessons',
             'assessments.questions.alternatives',
         ]);
-
-        dd($lesson->assessments);
 
         $student = auth()->user()->student;
 

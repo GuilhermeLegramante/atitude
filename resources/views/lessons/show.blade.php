@@ -44,7 +44,7 @@
                                         <img src="{{ $lesson->course->user->avatar ?? asset('img/avatar-placeholder.png') }}"
                                             alt="Professor" class="w-9 h-9 rounded-full object-cover">
                                         <div>
-                                            <div class="font-medium">Prof. {{ $lesson->course->user->name ?? 'Professor' }}
+                                            <div class="font-medium">Prof. {{ $lesson->class->course->user->name ?? 'Professor' }}
                                             </div>
                                             <div class="text-xs text-slate-500">{{ $lesson->duration ?? '—' }}</div>
                                         </div>

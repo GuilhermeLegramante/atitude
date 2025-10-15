@@ -14,7 +14,7 @@
         </div>
 
         <!-- 🔹 Progresso -->
-        <div class="mt-4 md:mt-0 md:w-1/3">
+        {{-- <div class="mt-4 md:mt-0 md:w-1/3">
             <div class="bg-white rounded-2xl shadow p-4">
                 <div class="flex justify-between mb-2 text-sm font-medium">
                     <span>Curso Atual: Inglês para Iniciantes</span>
@@ -24,7 +24,22 @@
                     <div class="bg-sky-500 h-3 rounded-full" style="width: 45%"></div>
                 </div>
             </div>
+        </div> --}}
+        <div class="bg-white rounded-2xl shadow border p-4 w-80">
+            <h4 class="text-sm font-semibold">Seu progresso</h4>
+            <div class="mt-3">
+                <div class="text-sm font-medium">Curso atual: Getting Started
+                </div>
+                <div class="text-xs text-slate-500 mt-1">XP: {{ $lesson->studentXp ?? 120 }}</div>
+                <div class="mt-3">
+                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div style="width: {{ $lesson->progressPercent ?? 45 }}%"
+                            class="h-2 rounded-full bg-emerald-500"></div>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </div>
 
     <!-- 🔹 Grid de cursos -->

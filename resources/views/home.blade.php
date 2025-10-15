@@ -3,9 +3,7 @@
 @section('content')
     @include('partials.hero')
 
-
     @include('partials.courses')
-
 
     <!-- 🔥 Seção: Recomendados -->
     <section class="bg-gray-100 py-12">
@@ -26,17 +24,4 @@
         </div>
     </section>
 
-    <!-- 📈 Progresso -->
-    <section class="max-w-7xl mx-auto px-4 py-12">
-        <h3 class="text-2xl font-bold text-[#2b2c43] mb-6">Seu progresso</h3>
-        <div class="bg-white rounded-2xl shadow p-6">
-            <div class="flex justify-between mb-2 text-sm font-medium">
-                <span>Curso Atual: Inglês para Iniciantes </span>
-                <span>&nbsp;45%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div class="bg-sky-500 h-3 rounded-full" style="width: 45%"></div>
-            </div>
-        </div>
-    </section>
 @endsection

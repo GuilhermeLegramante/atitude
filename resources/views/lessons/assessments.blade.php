@@ -1,3 +1,4 @@
+<h1>{{ $lesson->assessments->count() }}</h1>
 @if ($lesson->assessments->count())
     <div class="mt-8">
         <h3 class="text-lg font-semibold text-gray-800 mb-3">Atividades Avaliativas</h3>

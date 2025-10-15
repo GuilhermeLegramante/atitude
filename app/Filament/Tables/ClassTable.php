@@ -17,7 +17,7 @@ class ClassTable
                 ->label('Curso')
                 ->searchable(),
             TextInputColumn::make('order')
-                ->sortable()
+                // ->sortable()
                 ->label('Ordem'),
             TableColumns::createdAt(),
             TableColumns::updatedAt(),

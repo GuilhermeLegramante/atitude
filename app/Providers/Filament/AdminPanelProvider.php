@@ -14,6 +14,7 @@ use App\Filament\Widgets\AccountWidget;
 use App\Filament\Widgets\LogoWidget;
 use App\Filament\Widgets\StudentProgressChart;
 use App\Filament\Widgets\StudentStatsCard;
+use App\Http\Middleware\BlockAlunosFromAdmin;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -114,12 +115,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                BlockAlunosFromAdmin::class,
             ]);
-    }
-
-    public function canAccessPanel(Panel $panel, Authenticatable $user): bool
-    {
-        // Apenas usuários que NÃO são "aluno" podem acessar
-        return $user->role !== 'aluno';
     }
 }

@@ -14,6 +14,7 @@ use App\Filament\Widgets\AccountWidget;
 use App\Filament\Widgets\LogoWidget;
 use App\Filament\Widgets\StudentProgressChart;
 use App\Filament\Widgets\StudentStatsCard;
+use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -113,5 +114,17 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+    }
+
+    public function boot(): void
+    {
+        Filament::serving(function () {
+            $user = auth()->user();
+
+            if ($user && $user->hasRole('aluno')) {
+                // Redireciona imediatamente para a rota 'home'
+                redirect()->route('home')->send();
+            }
+        });
     }
 }

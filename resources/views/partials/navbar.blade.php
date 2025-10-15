@@ -22,8 +22,29 @@
           <!-- Ações / botão mobile -->
           <div class="flex items-center gap-3">
               <div class="hidden md:flex items-center gap-3">
-                  <a href="{{ route('filament.admin.auth.login') }}" class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">Entrar</a>
+                  @auth
+                      <span class="text-sm text-white/80">Olá, {{ Auth::user()->name }} 👋</span>
+
+                      <a href="{{ route('filament.admin.pages.dashboard') }}"
+                          class="text-sm px-4 py-2 rounded-md bg-[#c0ff01] text-[#111827] font-semibold hover:bg-[#aaff00] transition">
+                          Painel
+                      </a>
+
+                      <form action="{{ route('logout') }}" method="POST">
+                          @csrf
+                          <button type="submit"
+                              class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition text-white/80">
+                              Sair
+                          </button>
+                      </form>
+                  @else
+                      <a href="{{ route('filament.admin.auth.login') }}"
+                          class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">
+                          Entrar
+                      </a>
+                  @endauth
               </div>
+
 
               <!-- botão mobile -->
               <div class="md:hidden">
@@ -79,9 +100,22 @@
               </nav>
 
               <div class="mt-6 border-t border-white/10 pt-4">
-                  <a href="{{ route('filament.admin.auth.login') }}"
-                      class="block w-full text-center bg-[#c0ff01] text-[#111827] font-semibold rounded-md px-4 py-2">Entrar</a>
+                  @auth
+                      <div class="text-center text-white">
+                          <p class="font-semibold">Olá, {{ Auth::user()->name }} 👋</p>
+                          <a href="{{ route('filament.admin.pages.dashboard') }}"
+                              class="mt-2 inline-block bg-[#c0ff01] text-[#111827] font-semibold rounded-md px-4 py-2">
+                              Acessar painel
+                          </a>
+                      </div>
+                  @else
+                      <a href="{{ route('filament.admin.auth.login') }}"
+                          class="block w-full text-center bg-[#c0ff01] text-[#111827] font-semibold rounded-md px-4 py-2">
+                          Entrar
+                      </a>
+                  @endauth
               </div>
+
           </div>
       </div>
   </nav>

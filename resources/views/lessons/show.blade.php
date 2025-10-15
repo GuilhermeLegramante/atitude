@@ -46,7 +46,7 @@
                                         <div>
                                             <div class="font-medium">{{ $lesson->class->course->user->name ?? 'Professor' }}
                                             </div>
-                                            <div class="text-xs text-slate-500">{{ $lesson->duration ?? '—' }}</div>
+                                            {{-- <div class="text-xs text-slate-500">{{ $lesson->duration ?? '—' }}</div> --}}
                                         </div>
                                     </div>
                                 </div>

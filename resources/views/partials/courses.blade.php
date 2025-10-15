@@ -1,41 +1,55 @@
 <section id="meuscursos" class="max-w-7xl mx-auto px-4 py-12">
-    <h3 class="text-2xl font-bold text-[#2b2c43] mb-6">Meus Cursos</h3>
+    <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
+        <h3 class="text-2xl font-bold text-[#2b2c43]">Meus Cursos</h3>
 
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-        <!-- 🔹 Filtros -->
-        <div class="flex items-center gap-4 flex-wrap">
-            <button class="filter-btn" data-language="all">🌐 Todos</button>
-            <button class="filter-btn" data-language="en">
-                <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm"> Inglês
-            </button>
-            <button class="filter-btn" data-language="es">
-                <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm"> Espanhol
-            </button>
-        </div>
-
-        @if ($currentCourse)
-            <div class="bg-white rounded-2xl shadow p-6">
-                <div class="flex justify-between mb-2 text-sm font-medium">
-                    <span>Curso Atual: {{ $currentCourse->name }}</span>
-                    <span>{{ $currentCourse->progress }}%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-3">
-                    <div class="bg-sky-500 h-3 rounded-full" style="width: {{ $currentCourse->progress }}%">
-                    </div>
-                </div>
-                <div class="text-xs text-slate-500 mt-1">Pontos de XP: {{ $userPoints ?? 0 }}</div>
-                <div class="text-xs text-slate-500 mt-1">Posição no Ranking: {{ $position ?? 0 }}°</div>
-                <p class="mt-1 text-xs text-gray-500">
-                    Última aula assistida: {{ $lastLesson->title }}
-                </p>
+        @auth
+            <div class="text-sm text-gray-600">
+                👋 Olá, <strong>{{ auth()->user()->name }}</strong>!
             </div>
-        @endif
-
-
+        @else
+            <div class="text-sm text-gray-600">
+                👋 Olá, visitante! <a href="{{ route('login') }}" class="text-sky-600 font-semibold hover:underline">
+                    Faça login</a> para acompanhar seu progresso.
+            </div>
+        @endauth
     </div>
 
+    <!-- 🔹 Filtros -->
+    <div class="flex flex-wrap gap-3 mb-8">
+        <button class="filter-btn active" data-language="all">🌐 Todos</button>
+        <button class="filter-btn" data-language="en">
+            <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm"> Inglês
+        </button>
+        <button class="filter-btn" data-language="es">
+            <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm"> Espanhol
+        </button>
+    </div>
+
+    <!-- 🔹 Progresso e status do aluno -->
+    @auth
+        @if ($currentCourse)
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-10 max-w-md">
+                <div class="flex justify-between items-center text-sm font-semibold mb-1">
+                    <span>{{ $currentCourse->name }}</span>
+                    <span>{{ $currentCourse->progress }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-sky-500 h-2 rounded-full transition-all duration-500"
+                        style="width: {{ $currentCourse->progress }}%">
+                    </div>
+                </div>
+                <div class="text-xs text-gray-500 mt-2">
+                    XP: <strong>{{ $userPoints ?? 0 }}</strong> • Ranking: <strong>{{ $position ?? 0 }}°</strong>
+                </div>
+                @if ($lastLesson)
+                    <p class="text-xs text-gray-500 mt-1 italic">Última aula: {{ $lastLesson->title }}</p>
+                @endif
+            </div>
+        @endif
+    @endauth
+
     <!-- 🔹 Grid de cursos -->
-    <div id="courses-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-500">
+    <div id="courses-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($courses as $course)
             @php
                 $formattedTitle = Str::slug($course->name, '+');
@@ -44,73 +58,68 @@
                     urlencode(ucwords(str_replace('+', ' ', $formattedTitle)));
             @endphp
 
-            <div class="course-card bg-white rounded-2xl shadow hover:shadow-lg transition transform duration-300 opacity-100"
+            <div class="course-card bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
                 data-language="{{ $course->language }}">
 
-                <img src="{{ $thumb }}" alt="{{ $course->name }}" class="w-full h-40 object-cover">
+                <img src="{{ $thumb }}" alt="{{ $course->name }}"
+                    class="w-full h-40 object-cover rounded-t-2xl">
 
-                <div class="p-4">
-                    <h4 class="font-semibold text-lg mb-2 text-[#2b2c43]">{{ $course->name }}</h4>
+                <div class="p-5">
+                    <h4 class="font-semibold text-lg mb-1 text-[#2b2c43] truncate">{{ $course->name }}</h4>
                     <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ $course->description }}</p>
-                    <p class="text-xs text-gray-500 mt-1">
-                        {{ $course->total_lessons }} aulas no total
-                    </p>
 
+                    @auth
+                        <div class="bg-gray-200 rounded-full h-2 mb-1">
+                            <div class="bg-green-500 h-2 rounded-full transition-all duration-500"
+                                style="width: {{ $course->progress }}%">
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3">{{ $course->progress }}% concluído •
+                            {{ $course->total_lessons }} aulas</p>
+                    @else
+                        <p class="text-xs text-gray-500 mb-3">{{ $course->total_lessons }} aulas disponíveis</p>
+                    @endauth
 
-                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                        <div class="bg-green-500 h-2 rounded-full" style="width: {{ $course->progress }}%"></div>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">{{ $course->progress }}% concluído</p>
-
-
-                    <div class="mt-4">
-                        <!-- Botão ver módulos -->
+                    <div class="space-y-3">
                         <button
-                            class="toggle-modules-btn flex items-center justify-center w-full sm:w-auto gap-1 text-[#2b2c43] font-semibold text-sm hover:text-[#003f51] transition">
+                            class="toggle-modules-btn w-full text-sm font-semibold text-[#2b2c43] hover:text-sky-600 transition">
                             Ver módulos ↓
                         </button>
 
-                        <!-- Lista de módulos -->
-                        <div class="modules-list mt-4 space-y-3 hidden">
+                        <div class="modules-list hidden space-y-2 text-sm">
                             @forelse ($course->classes as $class)
-                                <div
-                                    class="bg-[#f5f7fa] rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden">
-                                    <div class="p-4 flex items-center justify-between">
-                                        <p class="font-semibold text-sm text-[#2b2c43]">{{ $class->name }}</p>
+                                <div class="bg-gray-50 rounded-xl border border-gray-100 overflow-hidden">
+                                    <div class="p-3 flex justify-between items-center">
+                                        <span class="font-medium">{{ $class->name }}</span>
                                         <span class="text-xs text-gray-500">{{ $class->lessons->count() }} aulas</span>
                                     </div>
 
                                     @if ($class->lessons->count())
-                                        <ul
-                                            class="border-t border-gray-100 bg-gray-50 px-4 py-2 space-y-1 text-xs text-gray-600">
+                                        <ul class="border-t border-gray-100 bg-white px-4 py-2 space-y-1 text-xs">
                                             @foreach ($class->lessons as $lesson)
-                                                @php
-                                                    $watched =
-                                                        $lesson->students->where('id', auth()->id())->first()?->pivot
-                                                            ->watched ?? false;
-                                                @endphp
                                                 <li class="flex items-center gap-2">
                                                     <a href="{{ route('lessons.show', $lesson->id) }}"
-                                                        class="flex items-center gap-2 hover:text-[#2b2c43] transition">
-
-                                                        @if ($watched)
-                                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                                class="w-4 h-4 text-green-500 flex-shrink-0"
-                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                                stroke-width="3">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    d="M5 13l4 4L19 7" />
-                                                            </svg>
-                                                        @endif
-
+                                                        class="flex items-center gap-2 hover:text-sky-600 transition">
+                                                        @auth
+                                                            @if ($lesson->watched ?? false)
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    class="w-4 h-4 text-green-500 flex-shrink-0"
+                                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                                    stroke-width="3">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            @endif
+                                                        @endauth
                                                         {{ $lesson->title }}
                                                     </a>
                                                 </li>
                                             @endforeach
                                         </ul>
                                     @else
-                                        <p class="px-4 py-2 text-xs text-gray-400 bg-gray-50 border-t border-gray-100">
-                                            Nenhuma aula disponível neste módulo.
+                                        <p
+                                            class="px-4 py-2 text-xs text-gray-400 bg-gray-50 border-t border-gray-100 italic">
+                                            Nenhuma aula disponível.
                                         </p>
                                     @endif
                                 </div>
@@ -118,13 +127,20 @@
                                 <p class="text-gray-400 text-xs text-center">Nenhum módulo disponível.</p>
                             @endforelse
                         </div>
+                    </div>
 
-                        <div class="mt-4 text-center sm:text-left">
+                    <div class="mt-4 text-center">
+                        @auth
                             <a href="{{ route('lessons.show', $course->id) }}"
-                                class="inline-block bg-[#2b2c43] hover:bg-[#003f51] text-white text-sm font-medium px-6 py-2 rounded-lg shadow-md transition">
+                                class="inline-block bg-[#2b2c43] hover:bg-[#003f51] text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">
                                 Continuar
                             </a>
-                        </div>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="inline-block bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">
+                                Acessar curso
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -142,31 +158,23 @@
             const language = button.dataset.language;
 
             courseCards.forEach(card => {
-                if (language === 'all' || card.dataset.language === language) {
-                    card.style.opacity = '1';
-                    card.style.transform = 'scale(1)';
-                    card.style.pointerEvents = 'auto';
-                } else {
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.95)';
-                    card.style.pointerEvents = 'none';
-                }
+                const visible = language === 'all' || card.dataset.language === language;
+                card.style.opacity = visible ? '1' : '0';
+                card.style.transform = visible ? 'scale(1)' : 'scale(0.97)';
+                card.style.pointerEvents = visible ? 'auto' : 'none';
             });
 
-            // Botão ativo
-            filterButtons.forEach(btn => btn.classList.remove('bg-[#2b2c43]', 'text-white'));
-            button.classList.add('bg-[#2b2c43]', 'text-white');
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
         });
     });
 
     // 🔹 Toggle módulos
-    const toggleButtons = document.querySelectorAll('.toggle-modules-btn');
-    toggleButtons.forEach(btn => {
+    document.querySelectorAll('.toggle-modules-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const modulesList = btn.nextElementSibling;
-            modulesList.classList.toggle('hidden');
-            btn.textContent = modulesList.classList.contains('hidden') ? 'Ver módulos ↓' :
-                'Ocultar módulos ↑';
+            const list = btn.nextElementSibling;
+            list.classList.toggle('hidden');
+            btn.textContent = list.classList.contains('hidden') ? 'Ver módulos ↓' : 'Ocultar módulos ↑';
         });
     });
 </script>
@@ -175,24 +183,27 @@
     .filter-btn {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
+        gap: 0.4rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 0.6rem;
         font-weight: 600;
-        background-color: #e5e7eb;
-        /* gray-200 */
+        font-size: 0.9rem;
+        background-color: #f1f5f9;
         color: #374151;
-        /* gray-700 */
-        transition: all 0.3s;
-        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.25s ease;
     }
 
     .filter-btn:hover {
-        background-color: #2b2c43;
-        color: white;
+        background-color: #e2e8f0;
     }
 
-    /* Transição suave dos cards */
+    .filter-btn.active {
+        background-color: #2b2c43;
+        color: #fff;
+        border-color: #2b2c43;
+    }
+
     .course-card {
         transition: all 0.4s ease;
     }

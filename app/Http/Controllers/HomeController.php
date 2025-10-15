@@ -11,26 +11,43 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Carrega os cursos com suas classes e lições
+        // Carrega todos os cursos com classes e lições
         $courses = Course::with(['classes.lessons'])->latest()->get();
 
-        $student = auth()->user()->student;
+        // Variáveis padrão (para visitante)
+        $student = null;
+        $lastLesson = null;
+        $currentCourse = null;
+        $userPoints = 0;
+        $position = null;
 
-        $lastLesson = $student->lastWatchedLesson();
+        // Se o usuário estiver logado
+        if (Auth::check()) {
+            $student = Auth::user()->student;
 
-        $currentCourse = $lastLesson?->class?->course;
+            if ($student) {
+                $lastLesson = $student->lastWatchedLesson();
+                $currentCourse = $lastLesson?->class?->course;
+            }
 
-        $xp = DB::table('experiences')
-            ->where('user_id', Auth::id())
-            ->get()
-            ->first();
+            // Busca XP e posição no ranking
+            $xp = DB::table('experiences')
+                ->where('user_id', Auth::id())
+                ->first();
 
-        $userPoints = $xp->experience_points ?? 0;
+            $userPoints = $xp->experience_points ?? 0;
 
-        $position = DB::table('experiences')
-            ->where('experience_points', '>', $userPoints)
-            ->count() + 1;
+            $position = DB::table('experiences')
+                ->where('experience_points', '>', $userPoints)
+                ->count() + 1;
+        }
 
-        return view('home', compact('courses', 'lastLesson', 'currentCourse', 'userPoints', 'position'));
+        return view('home', compact(
+            'courses',
+            'lastLesson',
+            'currentCourse',
+            'userPoints',
+            'position'
+        ));
     }
 }

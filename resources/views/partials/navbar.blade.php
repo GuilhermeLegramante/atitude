@@ -27,7 +27,7 @@
 
                       <a href="{{ route('filament.admin.pages.dashboard') }}"
                           class="text-sm px-4 py-2 rounded-md bg-[#c0ff01] text-[#111827] font-semibold hover:bg-[#aaff00] transition">
-                          Painel
+                          Área Administrativa
                       </a>
 
                       <form action="{{ route('filament.admin.auth.logout') }}" method="POST">

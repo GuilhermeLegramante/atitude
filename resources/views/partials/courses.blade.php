@@ -1,9 +1,9 @@
 <section id="meuscursos" class="max-w-7xl mx-auto px-4 py-12">
     <h3 class="text-2xl font-bold text-[#2b2c43] mb-6">Meus Cursos</h3>
 
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-        <!-- 🔹 Filtro de idioma -->
-        <div x-data="{ filter: 'all' }" class="flex items-center gap-4 flex-wrap">
+    <div x-data="{ filter: 'all' }" class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <!-- 🔹 Filtros -->
+        <div class="flex items-center gap-4 flex-wrap">
             <button @click="filter = 'all'"
                 :class="filter === 'all' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
                 class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
@@ -49,7 +49,8 @@
                     urlencode(ucwords(str_replace('+', ' ', $formattedTitle)));
             @endphp
 
-            <div x-show="filter === 'all' || filter === '{{ $course->language }}'" x-transition
+            <!-- ✅ Ajuste: x-show verifica a variável filter contra course->language -->
+            <div x-show="filter === 'all' || filter === '{{ $course->language }}'" x-transition.opacity.duration.300ms
                 class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
 
                 <img src="{{ $thumb }}" alt="{{ $course->name }}" class="w-full h-40 object-cover">
@@ -65,7 +66,6 @@
                             <span x-show="open">Ocultar módulos ↑</span>
                         </button>
 
-                        <!-- Lista de módulos -->
                         <div x-show="open" x-collapse class="mt-4 space-y-3">
                             @forelse ($course->classes as $class)
                                 <div

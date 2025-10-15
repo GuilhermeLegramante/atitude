@@ -20,6 +20,7 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -116,15 +117,9 @@ class AdminPanelProvider extends PanelProvider
             ]);
     }
 
-    public function boot(): void
+    public function canAccessPanel(Panel $panel, Authenticatable $user): bool
     {
-        Filament::serving(function () {
-            $user = auth()->user();
-
-            if ($user && $user->hasRole('aluno')) {
-                // Redireciona imediatamente para a rota 'home'
-                redirect()->route('home')->send();
-            }
-        });
+        // Apenas usuários que NÃO são "aluno" podem acessar
+        return $user->role !== 'aluno';
     }
 }

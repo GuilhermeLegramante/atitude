@@ -2,6 +2,7 @@
 
 namespace App\Filament\Forms;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -13,6 +14,13 @@ class UserForm
     {
         return [
             FormFields::name(),
+            FileUpload::make('avatar')
+                ->label('Foto de Perfil')
+                ->image() // garante que só sejam imagens
+                ->directory('avatars') // pasta onde será salvo
+                ->maxSize(1024) // 1MB
+                ->nullable()
+                ->columnSpan('full'),
             TextInput::make('email')
                 ->required()
                 ->unique(ignoreRecord: true)

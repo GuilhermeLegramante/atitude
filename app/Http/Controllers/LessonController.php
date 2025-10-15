@@ -24,32 +24,13 @@ class LessonController extends Controller
 
     public function show(Lesson $lesson)
     {
-        // $lesson = (object) [
-        //     'title' => 'Aula 1 — Introdução ao Inglês',
-        //     'subtitle' => 'Aprenda as bases do idioma',
-        //     'description' => 'Nesta aula você vai aprender as expressões básicas e a pronúncia correta.',
-        //     'video_url' => 'https://www.youtube.com/watch?v=FJtwIGMiXX8',
-        //     'duration' => '12min',
-        //     'teacher' => (object) ['name' => 'Prof. John Doe', 'avatar' => 'https://i.pravatar.cc/100?img=3'],
-        //     'progressPercent' => 40,
-        //     'courseProgress' => 60,
-        //     'studentLevel' => 'Iniciante',
-        //     'studentXp' => 120,
-        //     'resources' => [
-        //         ['name' => 'Apostila PDF', 'url' => '#'],
-        //         ['name' => 'Lista de exercícios', 'url' => '#'],
-        //     ],
-        //     'module' => (object) [
-        //         'title' => 'Módulo 1 — Fundamentos',
-        //         'lessons_count' => 8,
-        //         'lessons' => [
-        //             (object) ['title' => 'Aula 1', 'url' => '#', 'duration' => '10min'],
-        //             (object) ['title' => 'Aula 2', 'url' => '#', 'duration' => '12min'],
-        //         ],
-        //     ],
-        //     'recommended' => [],
-        // ];
-
+        $lesson->load([
+            'materials',
+            'class.course',
+            'class.lessons',
+            'assessments.questions.alternatives',
+        ]);
+        
         $student = auth()->user()->student;
 
         $lastLesson = $student->lastWatchedLesson();

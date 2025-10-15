@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
 use App\Mail\FirstEmail;
 use Illuminate\Support\Facades\Mail;
@@ -28,9 +29,8 @@ Route::get('/', function () {
     return redirect(route('filament.admin.pages.dashboard'));
 });
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home');
 
 Route::get('/payments/{payment}/receipt', function (Payment $payment) {
     $pdf = Pdf::loadView('payments.receipt', compact('payment'));

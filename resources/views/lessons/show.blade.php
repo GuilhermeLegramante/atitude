@@ -215,6 +215,9 @@
                         </div>
                     </aside>
                 </div>
+
+                @include('lessons.assessments')
+
             </main>
 
             <!-- RIGHT SIDEBAR (on lg screens) -->

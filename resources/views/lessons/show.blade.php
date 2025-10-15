@@ -71,8 +71,7 @@
                     <div class="lg:col-span-2">
                         <div class="bg-white rounded-2xl shadow border p-6">
                             <div class="flex items-center justify-between">
-                                <h2 class="text-lg font-semibold">Recursos e Tarefas</h2>
-                                {{-- <div class="text-sm text-slate-500">Entrega: {{ $lesson->due_date ?? '—' }}</div> --}}
+                                <h2 class="text-lg font-semibold">Recursos e Atividades</h2>
                             </div>
 
                             <ul class="mt-4 space-y-3">

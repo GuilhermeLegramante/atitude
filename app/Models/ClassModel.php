@@ -55,4 +55,28 @@ class ClassModel extends Model
     {
         return $this->lessons()->count();
     }
+
+    /**
+     * Retorna o percentual de aulas assistidas pelo aluno logado nesta turma.
+     */
+    public function getProgressAttribute()
+    {
+        $student = auth()->user()?->student; // pega o student relacionado ao usuário logado
+
+        if (!$student) {
+            return 0;
+        }
+
+        $totalLessons = $this->lessons->count();
+
+        if ($totalLessons === 0) {
+            return 0;
+        }
+
+        $watchedLessons = $this->lessons->filter(function ($lesson) use ($student) {
+            return $lesson->students->where('id', $student->id)->first()?->pivot->watched ?? false;
+        })->count();
+
+        return round(($watchedLessons / $totalLessons) * 100);
+    }
 }

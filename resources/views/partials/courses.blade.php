@@ -82,15 +82,25 @@
                                         <ul
                                             class="border-t border-gray-100 bg-gray-50 px-4 py-2 space-y-1 text-xs text-gray-600">
                                             @foreach ($class->lessons as $lesson)
-                                                <li>
+                                                @php
+                                                    $watched =
+                                                        $lesson->students->where('id', auth()->id())->first()?->pivot
+                                                            ->watched ?? false;
+                                                @endphp
+                                                <li class="flex items-center gap-2">
                                                     <a href="{{ route('lessons.show', $lesson->id) }}"
                                                         class="flex items-center gap-2 hover:text-[#2b2c43] transition">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                            class="w-3.5 h-3.5 text-[#2b2c43]" viewBox="0 0 20 20"
-                                                            fill="currentColor">
-                                                            <path
-                                                                d="M2 4.5A1.5 1.5 0 013.5 3h13A1.5 1.5 0 0118 4.5v11a1.5 1.5 0 01-2.3 1.2l-4.7-3.1a1 1 0 00-1.1 0l-4.7 3.1A1.5 1.5 0 012 15.5v-11z" />
-                                                        </svg>
+
+                                                        @if ($watched)
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                class="w-4 h-4 text-green-500 flex-shrink-0"
+                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                                stroke-width="3">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        @endif
+
                                                         {{ $lesson->title }}
                                                     </a>
                                                 </li>

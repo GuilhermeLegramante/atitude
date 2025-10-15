@@ -42,7 +42,7 @@
                                 <div class="mt-4 flex items-center gap-4 text-sm text-slate-600">
                                     <div class="flex items-center gap-3">
                                         <img src="{{ $lesson->class->course->user->avatar ? asset('storage/' . $lesson->class->course->user->avatar) : asset('img/mascote.png') }}"
-                                            alt="{{ $user->name }}" class="w-12 h-12 rounded-full">
+                                            alt="{{ $lesson->class->course->user->name }}" class="w-12 h-12 rounded-full">
                                         <div>
                                             <div class="font-medium">{{ $lesson->class->course->user->name ?? 'Professor' }}
                                             </div>

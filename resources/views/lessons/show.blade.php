@@ -10,14 +10,23 @@
                 <div class="bg-white rounded-2xl shadow border overflow-hidden">
                     <!-- ✅ Player do YouTube -->
                     <div class="relative bg-black rounded-t-2xl overflow-hidden" style="aspect-ratio:16/9">
+                        @php
+                            $videoUrl = $lesson->video_link;
+
+                            if (Str::contains($videoUrl, 'youtu.be')) {
+                                // Transforma https://youtu.be/ID em https://www.youtube.com/watch?v=ID
+                                $id = last(explode('/', $videoUrl));
+                                $videoUrl = 'https://www.youtube.com/watch?v=' . $id;
+                            }
+                        @endphp
+
                         <iframe class="absolute top-0 left-0 w-full h-full"
-                            src="{{ Str::contains($lesson->video_link, 'youtube.com') || Str::contains($lesson->video_link, 'youtu.be')
-                                ? preg_replace(['/youtu\\.be\\//', '/watch\\?v=/', '/\\&.*/'], ['embed/', 'embed/', ''], $lesson->video_link)
-                                : $lesson->video_link }}"
+                            src="{{ Str::contains($videoUrl, 'youtube.com') ? preg_replace(['/watch\?v=/'], ['embed/'], $videoUrl) : $videoUrl }}"
                             title="{{ $lesson->title }}" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                         </iframe>
+
                     </div>
 
 
@@ -136,7 +145,7 @@
                                 </div>
                             @endif
                         </div>
-                        
+
                         <div class="mt-4">
                             <h4 class="text-sm font-medium">Progresso do curso</h4>
                             <div class="mt-2">

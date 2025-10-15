@@ -89,11 +89,13 @@
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <a href="{{ $res->url }}"
+                                            <a href="{{ Storage::url($res->url) }}" target="_blank"
                                                 class="px-3 py-1 rounded-md border text-sm">Abrir</a>
-                                            <a href="{{ $res->url }}" download
+
+                                            <a href="{{ Storage::url($res->url) }}" download
                                                 class="px-3 py-1 rounded-md bg-slate-100 text-sm">Baixar</a>
                                         </div>
+
                                     </li>
                                 @endforeach
 

@@ -1,27 +1,42 @@
 <section id="meuscursos" class="max-w-7xl mx-auto px-4 py-12">
     <h3 class="text-2xl font-bold text-[#2b2c43] mb-6">Meus Cursos</h3>
 
-    <!-- 🔹 Filtro de idioma -->
-    <div x-data="{ filter: 'all' }" class="flex items-center gap-4 mb-8">
-        <button @click="filter = 'all'"
-            :class="filter === 'all' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
-            class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
-            🌐 Todos
-        </button>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <!-- 🔹 Filtro de idioma -->
+        <div x-data="{ filter: 'all' }" class="flex items-center gap-4 flex-wrap">
+            <button @click="filter = 'all'"
+                :class="filter === 'all' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
+                class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
+                🌐 Todos
+            </button>
 
-        <button @click="filter = 'en'"
-            :class="filter === 'en' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
-            class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
-            <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm">
-            Inglês
-        </button>
+            <button @click="filter = 'en'"
+                :class="filter === 'en' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
+                class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
+                <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm">
+                Inglês
+            </button>
 
-        <button @click="filter = 'es'"
-            :class="filter === 'es' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
-            class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
-            <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm">
-            Espanhol
-        </button>
+            <button @click="filter = 'es'"
+                :class="filter === 'es' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
+                class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
+                <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm">
+                Espanhol
+            </button>
+        </div>
+
+        <!-- 🔹 Progresso -->
+        <div class="mt-4 md:mt-0 md:w-1/3">
+            <div class="bg-white rounded-2xl shadow p-4">
+                <div class="flex justify-between mb-2 text-sm font-medium">
+                    <span>Curso Atual: Inglês para Iniciantes</span>
+                    <span>45%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-sky-500 h-3 rounded-full" style="width: 45%"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- 🔹 Grid de cursos -->

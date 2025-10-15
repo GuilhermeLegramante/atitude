@@ -38,7 +38,7 @@
                 </div>
                 <div class="text-xs text-slate-500 mt-1">Pontos de XP: {{ $userPoints ?? 0 }}</div>
                 <div class="text-xs text-slate-500 mt-1">Posição no Ranking: {{ $position ?? 0 }}°</div>
-                <p class="mt-2 text-xs text-gray-500">
+                <p class="mt-1 text-xs text-gray-500">
                     Última aula assistida: {{ $lastLesson->title }}
                 </p>
             </div>

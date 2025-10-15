@@ -16,6 +16,7 @@ use App\Filament\Widgets\StudentProgressChart;
 use App\Filament\Widgets\StudentStatsCard;
 use App\Http\Middleware\BlockAlunosFromAdmin;
 use Filament\Facades\Filament;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -92,6 +93,14 @@ class AdminPanelProvider extends PanelProvider
                     ->collapsed(),
                 NavigationGroup::make()
                     ->label('Administração'),
+            ])
+            ->navigationItems([
+                NavigationItem::make('Plataforma de Ensino')
+                    ->url('https://ead.atitudeidiomas.com/') // sua rota
+                    ->icon('heroicon-o-book-open')
+                    ->group('Ensino') // opcional: agrupa no menu lateral
+                    ->sort(1) // posição
+                    ->openUrlInNewTab(), // se quiser abrir em nova aba
             ])
             ->widgets([
                 AccountWidget::class,

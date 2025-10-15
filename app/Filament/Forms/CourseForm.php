@@ -29,6 +29,14 @@ class CourseForm
                 ->required()
                 ->relationship('user', 'name')
                 ->createOptionForm(UserForm::form()),
+            Select::make('language')
+                ->label('Idioma')
+                ->options([
+                    'en' => 'Inglês',
+                    'es' => 'Espanhol',
+                ])
+                ->default('en')
+                ->required(),
             FormFields::note(),
         ];
     }

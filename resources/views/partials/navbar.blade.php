@@ -30,7 +30,7 @@
                           Painel
                       </a>
 
-                      <form action="{{ route('logout') }}" method="POST">
+                      <form action="{{ route('filament.admin.auth.logout') }}" method="POST">
                           @csrf
                           <button type="submit"
                               class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition text-white/80">

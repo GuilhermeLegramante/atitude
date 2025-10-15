@@ -48,12 +48,13 @@ class Lesson extends Model
         });
     }
 
-    // Acesso à próxima aula na mesma turma
     public function getNextLessonAttribute()
     {
+        $currentOrder = $this->order ?? 0;
+
         return $this->class?->lessons()
-            ->where('order', '>', $this->order) // próxima aula
+            ->where('order', '>', $currentOrder)
             ->orderBy('order', 'asc')
-            ->first(); // retorna null se não houver próxima
+            ->first();
     }
 }

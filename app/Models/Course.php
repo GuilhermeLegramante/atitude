@@ -56,4 +56,10 @@ class Course extends Model
 
         return round(($watchedLessons / $totalLessons) * 100);
     }
+
+    public function getTotalLessonsAttribute()
+    {
+        // Soma todas as lessons de todas as classes do curso
+        return $this->classes->sum(fn($class) => $class->lessons->count());
+    }
 }

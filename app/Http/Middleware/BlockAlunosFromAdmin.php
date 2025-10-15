@@ -14,6 +14,11 @@ class BlockAlunosFromAdmin
     {
         $user = $request->user();
 
+        // Permite acesso à rota de logout do Filament
+        if ($request->is('admin/logout')) {
+            return $next($request);
+        }
+
         // Se não estiver logado → deixa o Filament redirecionar normalmente
         if (! $user) {
             return $next($request);

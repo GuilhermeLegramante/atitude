@@ -30,7 +30,9 @@ class LessonController extends Controller
             'class.lessons',
             'assessments.questions.alternatives',
         ]);
-        
+
+        dd($lesson->assessments);
+
         $student = auth()->user()->student;
 
         $lastLesson = $student->lastWatchedLesson();

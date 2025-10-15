@@ -9,20 +9,18 @@ use Illuminate\Support\Facades\DB;
 
 class LessonController extends Controller
 {
-    // public function show(Lesson $lesson)
-    // {
-    //     // Carrega relacionamentos se houver
-    //     $lesson->load(['teacher', 'module.lessons']);
+    public function toggleWatched(Lesson $lesson)
+    {
+        $user = auth()->user();
 
-    //     // Exemplo de dados extras (caso não tenha ainda)
-    //     $lesson->recommended = Lesson::where('id', '!=', $lesson->id)->take(4)->get();
-    //     $lesson->progressPercent = 35;
-    //     $lesson->courseProgress = 60;
-    //     $lesson->studentLevel = 'Intermediário';
-    //     $lesson->studentXp = 320;
+        $current = $user->student->watchedLessons()->where('lesson_id', $lesson->id)->first()?->pivot->watched ?? false;
 
-    //     return view('lessons.show', compact('lesson'));
-    // }
+        $user->student->watchedLessons()->syncWithoutDetaching([
+            $lesson->id => ['watched' => !$current]
+        ]);
+
+        return back();
+    }
 
     public function show(Lesson $lesson)
     {

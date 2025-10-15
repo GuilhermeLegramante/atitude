@@ -53,11 +53,35 @@
                             </div>
 
                             <div class="flex items-center gap-2">
+                                {{-- Botão baixar materiais --}}
                                 <a href="{{ $lesson->resources_download ?? '#' }}"
-                                    class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-sky-600 text-white font-medium">Baixar
-                                    materiais</a>
+                                    class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-sky-600 text-white font-medium">
+                                    Baixar materiais
+                                </a>
+
+                                {{-- Relatar problema --}}
                                 <a href="#" class="px-3 py-2 rounded-lg border text-sm">Relatar problema</a>
+
+                                {{-- Marcar como assistida --}}
+                                @php
+                                    $watched = auth()
+                                        ->user()
+                                        ?->lessons()
+                                        ->where('lesson_id', $lesson->id)
+                                        ->wherePivot('watched', true)
+                                        ->exists();
+                                @endphp
+
+                                <form method="POST" action="{{ route('lessons.toggleWatched', $lesson->id) }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="px-3 py-2 rounded-lg font-medium text-white transition
+                   {{ $watched ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }}">
+                                        {{ $watched ? 'Assistida ✔' : 'Marcar como assistida' }}
+                                    </button>
+                                </form>
                             </div>
+
                         </div>
 
                         <div class="mt-4 text-sm text-slate-700">

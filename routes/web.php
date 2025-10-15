@@ -45,3 +45,7 @@ Route::get('/payments/{payment}/receipt', function (Payment $payment) {
 
 Route::get('/aulas/{lesson}', [LessonController::class, 'show'])
     ->name('lessons.show');
+
+Route::post('/lessons/{lesson}/toggle-watched', [LessonController::class, 'toggleWatched'])
+    ->middleware('auth')
+    ->name('lessons.toggleWatched');

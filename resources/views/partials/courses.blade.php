@@ -6,7 +6,7 @@
             @php
                 $formattedTitle = Str::slug($course->name, '+'); // transforma "Inglês para Iniciantes" em "ingles+para+iniciantes"
                 $thumb =
-                    'https://placehold.co/600x400/1e3a8a/ffffff?text=' .
+                    'https://placehold.co/600x400/2b2c43/ffffff?text=' .
                     urlencode(ucwords(str_replace('+', ' ', $formattedTitle)));
             @endphp
             <div class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden">

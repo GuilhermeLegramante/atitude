@@ -101,15 +101,20 @@
                                                     @auth
                                                         <a href="{{ route('lessons.show', $lesson->id) }}"
                                                             class="flex items-center gap-2 hover:text-sky-600 transition">
-                                                            @if ($lesson->watched_by_student ?? false)
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    class="w-4 h-4 text-green-500 flex-shrink-0"
-                                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                                    stroke-width="3">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            @endif
+
+                                                            {{-- Ícone (ou espaço vazio) --}}
+                                                            <span class="w-4 h-4 flex items-center justify-center">
+                                                                @if ($lesson->watched_by_student ?? false)
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="w-4 h-4 text-green-500 flex-shrink-0"
+                                                                        fill="none" viewBox="0 0 24 24"
+                                                                        stroke="currentColor" stroke-width="3">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                                            d="M5 13l4 4L19 7" />
+                                                                    </svg>
+                                                                @endif
+                                                            </span>
+
                                                             {{ $lesson->title }}
                                                         </a>
                                                     @else

@@ -61,6 +61,12 @@
                     <h4 class="font-semibold text-lg mb-2 text-[#2b2c43]">{{ $course->name }}</h4>
                     <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ $course->description }}</p>
 
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-green-500 h-2 rounded-full" style="width: {{ $course->progress }}%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">{{ $course->progress }}% concluído</p>
+
+
                     <div class="mt-4">
                         <!-- Botão ver módulos -->
                         <button

@@ -105,7 +105,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 StudentStatsCard::class,
-                LogoWidget::class,
+                // LogoWidget::class,
             ])
             ->resources([
                 config('filament-logger.activity_resource')

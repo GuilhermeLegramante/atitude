@@ -1,27 +1,15 @@
 <section id="meuscursos" class="max-w-7xl mx-auto px-4 py-12">
     <h3 class="text-2xl font-bold text-[#2b2c43] mb-6">Meus Cursos</h3>
 
-    <div x-data="{ filter: 'all' }" class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <!-- 🔹 Filtros -->
         <div class="flex items-center gap-4 flex-wrap">
-            <button @click="filter = 'all'"
-                :class="filter === 'all' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
-                class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
-                🌐 Todos
+            <button class="filter-btn" data-language="all">🌐 Todos</button>
+            <button class="filter-btn" data-language="en">
+                <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm"> Inglês
             </button>
-
-            <button @click="filter = 'en'"
-                :class="filter === 'en' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
-                class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
-                <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm">
-                Inglês
-            </button>
-
-            <button @click="filter = 'es'"
-                :class="filter === 'es' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
-                class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
-                <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm">
-                Espanhol
+            <button class="filter-btn" data-language="es">
+                <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm"> Espanhol
             </button>
         </div>
 
@@ -40,7 +28,7 @@
     </div>
 
     <!-- 🔹 Grid de cursos -->
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div id="courses-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-500">
         @foreach ($courses as $course)
             @php
                 $formattedTitle = Str::slug($course->name, '+');
@@ -49,9 +37,8 @@
                     urlencode(ucwords(str_replace('+', ' ', $formattedTitle)));
             @endphp
 
-            <!-- ✅ Ajuste: x-show verifica a variável filter contra course->language -->
-            <div x-show="filter === 'all' || filter === '{{ $course->language }}'" x-transition.opacity.duration.300ms
-                class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
+            <div class="course-card bg-white rounded-2xl shadow hover:shadow-lg transition transform duration-300 opacity-100"
+                data-language="{{ $course->language }}">
 
                 <img src="{{ $thumb }}" alt="{{ $course->name }}" class="w-full h-40 object-cover">
 
@@ -59,14 +46,15 @@
                     <h4 class="font-semibold text-lg mb-2 text-[#2b2c43]">{{ $course->name }}</h4>
                     <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ $course->description }}</p>
 
-                    <div x-data="{ open: false }" class="mt-4">
-                        <button @click="open = !open"
-                            class="flex items-center justify-center w-full sm:w-auto gap-1 text-[#2b2c43] font-semibold text-sm hover:text-[#003f51] transition">
-                            <span x-show="!open">Ver módulos ↓</span>
-                            <span x-show="open">Ocultar módulos ↑</span>
+                    <div class="mt-4">
+                        <!-- Botão ver módulos -->
+                        <button
+                            class="toggle-modules-btn flex items-center justify-center w-full sm:w-auto gap-1 text-[#2b2c43] font-semibold text-sm hover:text-[#003f51] transition">
+                            Ver módulos ↓
                         </button>
 
-                        <div x-show="open" x-collapse class="mt-4 space-y-3">
+                        <!-- Lista de módulos -->
+                        <div class="modules-list mt-4 space-y-3 hidden">
                             @forelse ($course->classes as $class)
                                 <div
                                     class="bg-[#f5f7fa] rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden">
@@ -116,3 +104,69 @@
         @endforeach
     </div>
 </section>
+
+<script>
+    // 🔹 Filtro com animação
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const courseCards = document.querySelectorAll('.course-card');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const language = button.dataset.language;
+
+            courseCards.forEach(card => {
+                if (language === 'all' || card.dataset.language === language) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                    card.style.pointerEvents = 'auto';
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    card.style.pointerEvents = 'none';
+                }
+            });
+
+            // Botão ativo
+            filterButtons.forEach(btn => btn.classList.remove('bg-[#2b2c43]', 'text-white'));
+            button.classList.add('bg-[#2b2c43]', 'text-white');
+        });
+    });
+
+    // 🔹 Toggle módulos
+    const toggleButtons = document.querySelectorAll('.toggle-modules-btn');
+    toggleButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const modulesList = btn.nextElementSibling;
+            modulesList.classList.toggle('hidden');
+            btn.textContent = modulesList.classList.contains('hidden') ? 'Ver módulos ↓' :
+                'Ocultar módulos ↑';
+        });
+    });
+</script>
+
+<style>
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        background-color: #e5e7eb;
+        /* gray-200 */
+        color: #374151;
+        /* gray-700 */
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .filter-btn:hover {
+        background-color: #2b2c43;
+        color: white;
+    }
+
+    /* Transição suave dos cards */
+    .course-card {
+        transition: all 0.4s ease;
+    }
+</style>

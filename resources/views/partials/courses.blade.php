@@ -101,7 +101,7 @@
                                                     @auth
                                                         <a href="{{ route('lessons.show', $lesson->id) }}"
                                                             class="flex items-center gap-2 hover:text-sky-600 transition">
-                                                            @if ($lesson->watched ?? false)
+                                                            @if ($lesson->watched_by_student ?? false)
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                                     class="w-4 h-4 text-green-500 flex-shrink-0"
                                                                     fill="none" viewBox="0 0 24 24" stroke="currentColor"

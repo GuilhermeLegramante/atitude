@@ -98,9 +98,9 @@
                                         <ul class="border-t border-gray-100 bg-white px-4 py-2 space-y-1 text-xs">
                                             @foreach ($class->lessons as $lesson)
                                                 <li class="flex items-center gap-2">
-                                                    <a href="{{ route('lessons.show', $lesson->id) }}"
-                                                        class="flex items-center gap-2 hover:text-sky-600 transition">
-                                                        @auth
+                                                    @auth
+                                                        <a href="{{ route('lessons.show', $lesson->id) }}"
+                                                            class="flex items-center gap-2 hover:text-sky-600 transition">
                                                             @if ($lesson->watched ?? false)
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                                     class="w-4 h-4 text-green-500 flex-shrink-0"
@@ -110,11 +110,25 @@
                                                                         d="M5 13l4 4L19 7" />
                                                                 </svg>
                                                             @endif
-                                                        @endauth
-                                                        {{ $lesson->title }}
-                                                    </a>
+                                                            {{ $lesson->title }}
+                                                        </a>
+                                                    @else
+                                                        <div class="flex items-center gap-2 text-gray-500 cursor-not-allowed"
+                                                            title="Faça login para acessar">
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none"
+                                                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                            </svg>
+                                                            {{ $lesson->title }}
+                                                        </div>
+                                                    @endauth
                                                 </li>
                                             @endforeach
+
                                         </ul>
                                     @else
                                         <p

@@ -25,20 +25,25 @@
                 </div>
             </div>
         </div> --}}
-        <div class="bg-white rounded-2xl shadow border p-4 w-80">
-            <h4 class="text-sm font-semibold">Seu progresso</h4>
-            <div class="mt-3">
-                <div class="text-sm font-medium">Curso atual: Getting Started
+
+        @if ($currentCourse)
+            <div class="bg-white rounded-2xl shadow p-6">
+                <div class="flex justify-between mb-2 text-sm font-medium">
+                    <span>Curso Atual: {{ $currentCourse->name }}</span>
+                    <span>{{ $currentCourse->progress }}%</span>
                 </div>
-                <div class="text-xs text-slate-500 mt-1">XP: {{ $lesson->studentXp ?? 120 }}</div>
-                <div class="mt-3">
-                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                        <div style="width: {{ $lesson->progressPercent ?? 45 }}%"
-                            class="h-2 rounded-full bg-emerald-500"></div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-sky-500 h-3 rounded-full" style="width: {{ $currentCourse->progress }}%">
                     </div>
                 </div>
+                <div class="text-xs text-slate-500 mt-1">Pontos de XP: {{ $userPoints ?? 0 }}</div>
+                <div class="text-xs text-slate-500 mt-1">Posição no Ranking: {{ $position ?? 0 }}°</div>
+                <p class="mt-2 text-xs text-gray-500">
+                    Última aula assistida: {{ $lastLesson->title }}
+                </p>
             </div>
-        </div>
+        @endif
+
 
     </div>
 

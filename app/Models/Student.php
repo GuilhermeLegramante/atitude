@@ -49,6 +49,15 @@ class Student extends Model
         return $this->belongsTo(Guardian::class); // Relationship to the guardian
     }
 
+    public function lastWatchedLesson()
+    {
+        return $this->watchedLessons()
+            ->wherePivot('watched', true)
+            ->orderByDesc('lesson_student.updated_at')
+            ->with(['class.course']) // carrega a hierarquia
+            ->first();
+    }
+
     // public function assessments()
     // {
     //     return $this->hasManyThrough(Assessment::class, Lesson::class);

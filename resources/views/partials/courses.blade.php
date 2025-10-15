@@ -1,15 +1,41 @@
 <section id="meuscursos" class="max-w-7xl mx-auto px-4 py-12">
     <h3 class="text-2xl font-bold text-[#2b2c43] mb-6">Meus Cursos</h3>
 
+    <!-- 🔹 Filtro de idioma -->
+    <div x-data="{ filter: 'all' }" class="flex items-center gap-4 mb-8">
+        <button @click="filter = 'all'"
+            :class="filter === 'all' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
+            class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
+            🌐 Todos
+        </button>
+
+        <button @click="filter = 'en'"
+            :class="filter === 'en' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
+            class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
+            <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm">
+            Inglês
+        </button>
+
+        <button @click="filter = 'es'"
+            :class="filter === 'es' ? 'bg-[#2b2c43] text-white' : 'bg-gray-200 text-gray-700'"
+            class="flex items-center gap-2 px-4 py-2 rounded-lg transition font-semibold">
+            <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm">
+            Espanhol
+        </button>
+    </div>
+
+    <!-- 🔹 Grid de cursos -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($courses as $course)
             @php
-                $formattedTitle = Str::slug($course->name, '+'); // transforma "Inglês para Iniciantes" em "ingles+para+iniciantes"
+                $formattedTitle = Str::slug($course->name, '+');
                 $thumb =
                     'https://placehold.co/600x400/2b2c43/ffffff?text=' .
                     urlencode(ucwords(str_replace('+', ' ', $formattedTitle)));
             @endphp
-            <div class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
+
+            <div x-show="filter === 'all' || filter === '{{ $course->language }}'" x-transition
+                class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
 
                 <img src="{{ $thumb }}" alt="{{ $course->name }}" class="w-full h-40 object-cover">
 
@@ -31,8 +57,7 @@
                                     class="bg-[#f5f7fa] rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden">
                                     <div class="p-4 flex items-center justify-between">
                                         <p class="font-semibold text-sm text-[#2b2c43]">{{ $class->name }}</p>
-                                        <span class="text-xs text-gray-500">{{ $class->lessons->count() }}
-                                            aulas</span>
+                                        <span class="text-xs text-gray-500">{{ $class->lessons->count() }} aulas</span>
                                     </div>
 
                                     @if ($class->lessons->count())

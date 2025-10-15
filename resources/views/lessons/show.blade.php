@@ -170,10 +170,10 @@
                             <h4 class="text-sm font-medium">Progresso do curso</h4>
                             <div class="mt-2">
                                 <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                                    <div style="width: {{ $lesson->course->progress ?? 0 }}%"
+                                    <div style="width: {{ $lesson->class->course->progress ?? 0 }}%"
                                         class="h-2 rounded-full bg-gradient-to-r from-emerald-500 to-sky-500"></div>
                                 </div>
-                                <div class="text-xs text-slate-500 mt-2">{{ $lesson->course->progress ?? 0 }}% completo
+                                <div class="text-xs text-slate-500 mt-2">{{ $lesson->class->course->progress ?? 0 }}% completo
                                 </div>
                             </div>
                         </div>

@@ -14,7 +14,7 @@
 
           <!-- Links desktop -->
           <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
-              <a href="#" class="hover:text-[#c0ff01] transition-colors">Início</a>
+              <a href="{{ route('home') }}" class="hover:text-[#c0ff01] transition-colors">Início</a>
               <a href="{{ route('home') }}" class="hover:text-[#c0ff01] transition-colors">Meus Cursos</a>
               {{-- <a href="#" class="hover:text-[#c0ff01] transition-colors">Perfil</a> --}}
           </div>

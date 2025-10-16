@@ -39,7 +39,7 @@
                             class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium border border-sky-600 text-sky-700 hover:bg-sky-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-sky-400 transition-all"
                             onclick="openResultModal({{ $assessment->id }})">
                             <x-heroicon-o-eye class="w-4 h-4" />
-                            Minhas respostas
+                            Respostas
                         </button>
                     @endif
                 </div>

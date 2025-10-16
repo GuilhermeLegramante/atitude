@@ -40,7 +40,7 @@
                     class="mt-3 rounded-xl max-h-64 object-contain border border-gray-300 dark:border-gray-600">
             @endif
 
-            {{-- Resposta do aluno --}}
+            {{-- Resposta do usuário --}}
             <div class="mt-3">
                 @if ($answer)
                     <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">
@@ -48,32 +48,18 @@
                         {{ $answer->answer_text ?? ($answer->alternative->alternative_text ?? '—') }}
                     </p>
 
-                    {{-- Situação da correção --}}
-                    @if ($answer->checked)
-                        @if (!is_null($answer->is_correct))
-                            <p class="text-sm mt-1 flex items-center gap-2">
-                                @if ($answer->is_correct)
-                                    <x-heroicon-o-check class="w-5 h-5 text-green-500" />
-                                    <span class="text-green-600">Correta</span>
-                                @else
-                                    <x-heroicon-o-x-mark class="w-5 h-5 text-red-500" />
-                                    <span class="text-red-600">Incorreta</span>
-                                @endif
-                            </p>
-                        @else
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                <x-heroicon-o-clock class="w-5 h-5 inline text-yellow-500" />
-                                <span class="text-yellow-600">Corrigida, mas sem indicação de acerto.</span>
-                            </p>
-                        @endif
-                    @else
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
-                            <x-heroicon-o-clock class="w-5 h-5 text-yellow-500" />
-                            <span>Aguardando correção do professor...</span>
+                    @if (!is_null($answer->is_correct))
+                        <p class="text-sm mt-1 flex items-center gap-2">
+                            @if ($answer->is_correct)
+                                <x-heroicon-o-check class="w-5 h-5 text-green-500" />
+                                <span class="text-green-600">Correta</span>
+                            @else
+                                <x-heroicon-o-x-mark class="w-5 h-5 text-red-500" />
+                                <span class="text-red-600">Incorreta</span>
+                            @endif
                         </p>
                     @endif
 
-                    {{-- Observação do professor --}}
                     @if ($answer->note)
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
                             <strong>Observação:</strong> {{ $answer->note }}
@@ -84,7 +70,7 @@
                 @endif
             </div>
 
-            {{-- Gabarito (para questões discursivas ou referência geral) --}}
+            {{-- Gabarito (para questões discursivas ou como referência geral) --}}
             @if ($question->gabarito)
                 <div class="mt-3 border-t border-gray-200 dark:border-gray-700 pt-2">
                     <p class="text-sm text-gray-700 dark:text-gray-300">

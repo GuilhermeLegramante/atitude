@@ -54,3 +54,6 @@ Route::post('/lessons/{lesson}/toggle-watched', [LessonController::class, 'toggl
 
 Route::get('/assessments/{assessment}/modal', [AssessmentController::class, 'modal'])->name('assessments.modal');
 Route::post('/assessments/{assessment}/submit', [AssessmentController::class, 'submit'])->name('assessments.submit');
+
+Route::get('/assessments/{assessment}/answers', [AssessmentController::class, 'userAnswers']);
+

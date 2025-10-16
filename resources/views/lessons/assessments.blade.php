@@ -20,12 +20,32 @@
                     @endif
                 </div>
 
-                <button
-                    class="mt-2 sm:mt-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium bg-sky-600 text-white hover:bg-sky-700 focus:ring-2 focus:ring-sky-400 transition-all"
-                    onclick="openAssessmentModal({{ $assessment->id }})">
-                    <x-heroicon-o-play class="w-4 h-4" />
-                    Iniciar
-                </button>
+                @php
+                    $userAnswerExists = $assessment->questions->flatMap->answers
+                        ->where('user_id', auth()->id())
+                        ->isNotEmpty();
+                @endphp
+
+                <div class="flex gap-2 mt-2 sm:mt-0">
+                    <button
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium bg-sky-600 text-white hover:bg-sky-700 focus:ring-2 focus:ring-sky-400 transition-all"
+                        onclick="openAssessmentModal({{ $assessment->id }})">
+                        <x-heroicon-o-play class="w-4 h-4" />
+                        Iniciar
+                    </button>
+
+                    @if ($userAnswerExists)
+                        <button
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium border border-sky-600 text-sky-700 hover:bg-sky-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-sky-400 transition-all"
+                            onclick="openResultModal({{ $assessment->id }})">
+                            <x-heroicon-o-eye class="w-4 h-4" />
+                            Ver minhas respostas
+                        </button>
+                    @endif
+                </div>
+
+
+
             </div>
 
             {{-- Linha de destaque sutil ao hover --}}
@@ -43,3 +63,5 @@
 
 
 @include('partials.assessment-modal')
+
+@include('partials.assessment-result-modal')

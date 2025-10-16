@@ -10,7 +10,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
                     <h3
-                        class="font-semibold text-lg text-gray-800 dark:text-gray-100 group-hover:text-sky-600 transition-colors">
+                        class="font-semibold text-lg text-gray-800 dark:text-gray-100 group-hover:text-[#c0ff01] transition-colors">
                         {{ $assessment->name }}
                     </h3>
                     @if ($assessment->description)
@@ -21,15 +21,14 @@
                 </div>
 
                 <button
-                    class="mt-2 sm:mt-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium bg-sky-600 text-white hover:bg-sky-700 focus:ring-2 focus:ring-sky-400 transition-all"
-                    onclick="openAssessmentModal({{ $assessment->id }})">
+                    class="mt-2 sm:mt-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium bg-[#c0ff01] text-gray-900 hover:bg-[#b0e700] focus:ring-2 focus:ring-[#c0ff01] transition-all">
                     <x-heroicon-o-play class="w-4 h-4" />
                     Iniciar
                 </button>
             </div>
 
             {{-- Linha de destaque sutil ao hover --}}
-            <div class="absolute bottom-0 left-0 w-0 h-1 bg-sky-600 transition-all duration-300 group-hover:w-full">
+            <div class="absolute bottom-0 left-0 w-0 h-1 bg-[#c0ff01] transition-all duration-300 group-hover:w-full">
             </div>
         </div>
     @empty

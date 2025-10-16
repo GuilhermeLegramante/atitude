@@ -1,113 +1,45 @@
-  {{-- @if ($lesson->assessments->count())
-      <div class="mt-8">
-          <h3 class="text-lg font-semibold text-gray-800 mb-3">Atividades Avaliativas</h3>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              @foreach ($lesson->assessments as $assessment)
-                  <div x-data="{ open: false }"
-                      class="bg-white border rounded-xl shadow hover:shadow-md transition relative">
-
-                      <div class="p-4">
-                          <h4 class="font-semibold text-gray-800">{{ $assessment->name }}</h4>
-                          <p class="text-sm text-gray-500 mt-1 line-clamp-2">
-                              {{ $assessment->description }}
-                          </p>
-
-                          <button @click="open = true"
-                              class="mt-3 inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
-                              Abrir Avaliação
-                          </button>
-                      </div>
-
-                      <!-- Modal -->
-                      <div x-show="open" x-transition x-cloak
-                          class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-
-                          <div @click.away="open = false"
-                              class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 relative overflow-y-auto max-h-[90vh]">
-
-                              <!-- Botão de fechar -->
-                              <button @click="open = false"
-                                  class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-xl leading-none">
-                                  &times;
-                              </button>
-
-                              <h2 class="text-xl font-semibold mb-4 text-gray-800">
-                                  {{ $assessment->name }}
-                              </h2>
-
-                              <p class="text-gray-600 mb-4">{{ $assessment->description }}</p>
-
-                              <!-- Conteúdo da avaliação -->
-                              @if ($assessment->questions->count())
-                                  <div class="space-y-6">
-                                      @foreach ($assessment->questions as $index => $question)
-                                          <div class="border-b pb-4">
-                                              <h3 class="font-medium text-gray-800">
-                                                  {{ $index + 1 }}. {{ $question->question_text }}
-                                              </h3>
-
-                                              @if ($question->alternatives->count())
-                                                  <ul class="mt-2 space-y-1">
-                                                      @foreach ($question->alternatives as $alt)
-                                                          <li class="flex items-center">
-                                                              <input type="radio" name="question_{{ $question->id }}"
-                                                                  id="alt_{{ $alt->id }}"
-                                                                  class="text-emerald-600 focus:ring-emerald-500">
-                                                              <label for="alt_{{ $alt->id }}"
-                                                                  class="ml-2 text-sm text-gray-700">
-                                                                  {{ $alt->alternative_text }}
-                                                              </label>
-                                                          </li>
-                                                      @endforeach
-                                                  </ul>
-                                              @endif
-                                          </div>
-                                      @endforeach
-                                  </div>
-                              @else
-                                  <p class="text-gray-500 text-sm">Nenhuma questão disponível para esta
-                                      avaliação.</p>
-                              @endif
-
-                              <div class="mt-6 flex justify-end">
-                                  <button @click="open = false"
-                                      class="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-50">
-                                      Fechar
-                                  </button>
-                                  <button
-                                      class="ml-2 px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">
-                                      Enviar Respostas
-                                  </button>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              @endforeach
-          </div>
-      </div>
-  @endif --}}
-<section class="mt-6">
-    <h2 class="text-xl font-bold mb-3">Avaliações</h2>
+<section class="mt-10">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+        <x-heroicon-o-academic-cap class="w-6 h-6 text-sky-600" />
+        Avaliações da Aula
+    </h2>
 
     @forelse($lesson->assessments as $assessment)
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3 flex justify-between items-center">
-            <div>
-                <h3 class="font-semibold text-lg">{{ $assessment->name }}</h3>
-                <p class="text-gray-600 dark:text-gray-300 text-sm">{{ $assessment->description }}</p>
+        <div
+            class="group relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 mb-4 p-5">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
+                    <h3
+                        class="font-semibold text-lg text-gray-800 dark:text-gray-100 group-hover:text-sky-600 transition-colors">
+                        {{ $assessment->name }}
+                    </h3>
+                    @if ($assessment->description)
+                        <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm leading-relaxed">
+                            {{ $assessment->description }}
+                        </p>
+                    @endif
+                </div>
+
+                <button
+                    class="mt-2 sm:mt-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium bg-sky-600 text-white hover:bg-sky-700 focus:ring-2 focus:ring-sky-400 transition-all"
+                    onclick="openAssessmentModal({{ $assessment->id }})">
+                    <x-heroicon-o-play class="w-4 h-4" />
+                    Iniciar
+                </button>
             </div>
 
-            <button
-                class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition"
-                data-assessment-id="{{ $assessment->id }}"
-                onclick="openAssessmentModal({{ $assessment->id }})"
-            >
-                Fazer Avaliação
-            </button>
+            {{-- Linha de destaque sutil ao hover --}}
+            <div class="absolute bottom-0 left-0 w-0 h-1 bg-sky-600 transition-all duration-300 group-hover:w-full">
+            </div>
         </div>
     @empty
-        <p class="text-gray-500">Nenhuma avaliação disponível para esta aula.</p>
+        <div
+            class="text-center py-10 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+            <x-heroicon-o-clipboard-document-list class="w-10 h-10 mx-auto text-gray-400 mb-3" />
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Nenhuma avaliação disponível para esta aula.</p>
+        </div>
     @endforelse
 </section>
+
 
 @include('partials.assessment-modal')

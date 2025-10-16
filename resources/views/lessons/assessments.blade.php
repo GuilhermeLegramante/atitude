@@ -67,10 +67,6 @@
                     @endif
                 </div>
             </div>
-
-
-
-
         </div>
 
         {{-- Linha de destaque sutil ao hover --}}

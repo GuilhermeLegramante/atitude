@@ -19,23 +19,27 @@
                 {{ $loop->iteration }}. {{ $question->question_text }}
             </h3>
 
+            {{-- Áudio --}}
             @if ($question->audio_path)
                 <audio controls class="mt-2 w-full">
                     <source src="{{ asset('storage/' . $question->audio_path) }}" type="audio/mpeg">
                 </audio>
             @endif
 
+            {{-- Imagem --}}
             @if ($question->image_path)
                 <img src="{{ asset('storage/' . $question->image_path) }}"
                     class="mt-3 rounded-xl max-h-64 object-contain border border-gray-300 dark:border-gray-600">
             @endif
 
+            {{-- Resposta do aluno --}}
             @if ($answer)
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">
                     <strong>Sua resposta:</strong>
                     {{ $answer->answer_text ?? ($answer->alternative->alternative_text ?? '—') }}
                 </p>
 
+                {{-- Status da correção --}}
                 @if ($answer->checked)
                     @if (!is_null($answer->is_correct))
                         <p class="text-sm mt-1 flex items-center gap-2">
@@ -58,10 +62,20 @@
                         Aguardando correção do professor...
                     </p>
                 @endif
+
+                {{-- Comentário do professor --}}
+                @if ($answer->note)
+                    <div class="mt-2 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg border-l-4 border-[#c0ff01]">
+                        <p class="text-sm text-gray-700 dark:text-gray-200">
+                            <strong>Comentário do professor:</strong> {{ $answer->note }}
+                        </p>
+                    </div>
+                @endif
             @else
                 <p class="text-gray-500 dark:text-gray-400">Você ainda não respondeu esta questão.</p>
             @endif
 
+            {{-- Gabarito --}}
             @if ($question->gabarito)
                 <div class="mt-3 border-t border-gray-200 dark:border-gray-700 pt-2">
                     <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Gabarito:</strong>

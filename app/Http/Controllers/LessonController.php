@@ -48,6 +48,7 @@ class LessonController extends Controller
             ->where('experience_points', '>', $userPoints)
             ->count() + 1;
 
+        dd($lesson->assessments->count());
 
         return view('lessons.show', compact('lesson', 'lastLesson', 'currentCourse', 'userPoints', 'position'));
     }

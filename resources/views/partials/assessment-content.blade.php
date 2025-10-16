@@ -9,7 +9,7 @@
 
     {{-- Mídias associadas --}}
     @if ($assessment->image_path || $assessment->audio_path)
-        <div class="mt-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div class="mt-3 mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {{-- Imagem --}}
             @if ($assessment->image_path)
                 <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">

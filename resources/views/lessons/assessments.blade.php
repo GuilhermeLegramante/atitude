@@ -20,32 +20,6 @@
                             {{ $assessment->description }}
                         </p>
                     @endif
-
-                    {{-- Mídias associadas --}}
-                    @if ($assessment->image_path || $assessment->audio_path)
-                        <div class="mt-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                            {{-- Imagem --}}
-                            @if ($assessment->image_path)
-                                <div
-                                    class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
-                                    <img src="{{ Storage::url($assessment->image_path) }}" alt="Imagem da avaliação"
-                                        class="max-h-40 w-auto object-cover">
-                                </div>
-                            @endif
-
-                            {{-- Áudio --}}
-                            @if ($assessment->audio_path)
-                                <div
-                                    class="flex items-center gap-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 shadow-sm w-full sm:w-auto">
-                                    <x-heroicon-o-musical-note class="w-5 h-5 text-[#c0ff01]" />
-                                    <audio controls class="w-64">
-                                        <source src="{{ Storage::url($assessment->audio_path) }}" type="audio/mpeg">
-                                        Seu navegador não suporta o elemento de áudio.
-                                    </audio>
-                                </div>
-                            @endif
-                        </div>
-                    @endif
                 </div>
 
                 @php

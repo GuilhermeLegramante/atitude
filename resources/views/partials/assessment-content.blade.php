@@ -14,7 +14,7 @@
             @if ($assessment->image_path)
                 <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
                     <img src="{{ Storage::url($assessment->image_path) }}" alt="Imagem da avaliação"
-                        class="max-h-40 w-auto object-cover">
+                        class="max-h-60 w-auto object-cover">
                 </div>
             @endif
 

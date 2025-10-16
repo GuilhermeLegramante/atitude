@@ -1,4 +1,4 @@
-  @if ($lesson->assessments->count())
+  {{-- @if ($lesson->assessments->count())
       <div class="mt-8">
           <h3 class="text-lg font-semibold text-gray-800 mb-3">Atividades Avaliativas</h3>
 
@@ -86,4 +86,28 @@
               @endforeach
           </div>
       </div>
-  @endif
+  @endif --}}
+<section class="mt-6">
+    <h2 class="text-xl font-bold mb-3">Avaliações</h2>
+
+    @forelse($lesson->assessments as $assessment)
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3 flex justify-between items-center">
+            <div>
+                <h3 class="font-semibold text-lg">{{ $assessment->name }}</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">{{ $assessment->description }}</p>
+            </div>
+
+            <button
+                class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition"
+                data-assessment-id="{{ $assessment->id }}"
+                onclick="openAssessmentModal({{ $assessment->id }})"
+            >
+                Fazer Avaliação
+            </button>
+        </div>
+    @empty
+        <p class="text-gray-500">Nenhuma avaliação disponível para esta aula.</p>
+    @endforelse
+</section>
+
+@include('partials.assessment-modal')

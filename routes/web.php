@@ -50,3 +50,6 @@ Route::get('/aulas/{lesson}', [LessonController::class, 'show'])
 Route::post('/lessons/{lesson}/toggle-watched', [LessonController::class, 'toggleWatched'])
     ->middleware('auth')
     ->name('lessons.toggleWatched');
+
+Route::get('/assessments/{assessment}/modal', [AssessmentController::class, 'modal'])->name('assessments.modal');
+Route::post('/assessments/{assessment}/submit', [AssessmentController::class, 'submit'])->name('assessments.submit');

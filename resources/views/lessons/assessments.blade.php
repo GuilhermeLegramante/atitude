@@ -1,6 +1,6 @@
 <section class="mt-10">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
-        <x-heroicon-o-academic-cap class="w-6 h-6 text-sky-600" />
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <x-heroicon-o-academic-cap class="w-6 h-6 text-sky-700" />
         Avaliações da Aula
     </h2>
 

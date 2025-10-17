@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "63867559dcea87ff852c10acca8a75d5",
+    "content-hash": "13e197f227e86c258d79a603677bef75",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -690,6 +690,65 @@
                 }
             ],
             "time": "2024-05-06T09:10:03+00:00"
+        },
+        {
+            "name": "datlechin/laravel-google-translate",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/datlechin/laravel-google-translate.git",
+                "reference": "1cd31738ee52f85d94da219842be1333842a4fd2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/datlechin/laravel-google-translate/zipball/1cd31738ee52f85d94da219842be1333842a4fd2",
+                "reference": "1cd31738ee52f85d94da219842be1333842a4fd2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^10.0|^11.0",
+                "php": "^8.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "GoogleTranslate": "Datlechin\\GoogleTranslate\\Facades\\GoogleTranslate"
+                    },
+                    "providers": [
+                        "Datlechin\\GoogleTranslate\\GoogleTranslateServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Datlechin\\GoogleTranslate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ngo Quoc Dat",
+                    "email": "datlechin@gmail.com",
+                    "homepage": "https://ngoquocdat.dev"
+                }
+            ],
+            "description": "Free Google Translate API for Laravel application.",
+            "homepage": "https://github.com/datlechin/laravel-google-translate",
+            "keywords": [
+                "Google Translate API",
+                "google translate",
+                "laravel google translate",
+                "translate"
+            ],
+            "support": {
+                "issues": "https://github.com/datlechin/laravel-google-translate/issues",
+                "source": "https://github.com/datlechin/laravel-google-translate/tree/v0.2.0"
+            },
+            "time": "2024-09-08T09:24:31+00:00"
         },
         {
             "name": "dflydev/dot-access-data",

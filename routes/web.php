@@ -1,14 +1,21 @@
 <?php
 
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\TextController;
 use App\Mail\FirstEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use App\Models\Payment;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Http;
+
+use Datlechin\GoogleTranslate\Facades\GoogleTranslate;
+use App\Http\Controllers\TranslatorController;
+
 
 Livewire::setScriptRoute(function ($handle) {
     return Route::get('/atitude/public/livewire/livewire.js', $handle);
@@ -57,3 +64,27 @@ Route::post('/assessments/{assessment}/submit', [AssessmentController::class, 's
 
 Route::get('/assessments/{assessment}/answers', [AssessmentController::class, 'userAnswers']);
 
+// Route::get('/tradutor', function () {
+//     $result = GoogleTranslate::source('pt-br')
+//         ->target('es')
+//         ->translate('esta é minha casa');
+
+//     $result->getTranslatedText();
+
+//     $result->getAlternativeTranslations();
+
+//     $result->getSourceText();
+//     $result->getSourceLanguage();
+// });
+
+Route::get('/tradutor', [TranslatorController::class, 'index'])->name('translator.index');
+Route::post('/tradutor', [TranslatorController::class, 'translate'])->name('translator.translate');
+Route::post('/translator/ajax-translate', [TranslatorController::class, 'ajaxTranslate'])->name('translator.ajaxTranslate');
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/texts', [TextController::class, 'index'])->name('texts.index');
+    Route::get('/texts/{text}', [TextController::class, 'show'])->name('texts.show');
+    Route::post('/dictionary/save', [TextController::class, 'saveWord'])->name('dictionary.save');
+    Route::get('/meu-dicionario', [DictionaryController::class, 'index'])->name('dictionary.index');
+});

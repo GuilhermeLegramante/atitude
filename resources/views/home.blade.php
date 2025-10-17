@@ -5,23 +5,58 @@
 
     @include('partials.courses')
 
-    <!-- 🔥 Seção: Recomendados -->
-    <section class="bg-gray-100 py-12">
+    <!-- 🔥 Seção: Ferramentas Disponíveis -->
+    <section class="bg-[#1e2030] py-12">
         <div class="max-w-7xl mx-auto px-4">
-            <h3 class="text-2xl font-bold text-[#2b2c43] mb-6">Recomendados para você</h3>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach ([['title' => 'Listening Prático', 'thumb' => 'https://placehold.co/600x400/003f51/ffffff?text=Listening+Prático'], ['title' => 'Pronúncia Avançada', 'thumb' => 'https://placehold.co/600x400/2b2c43/ffffff?text=Pronúncia+Avançada'], ['title' => 'Expressões Idiomáticas', 'thumb' => 'https://placehold.co/600x400/004d60/ffffff?text=Expressões+Inglês'], ['title' => 'Simulados TOEFL', 'thumb' => 'https://placehold.co/600x400/035f6b/ffffff?text=Simulados+TOEFL']] as $rec)
-                    <div class="bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden transition">
-                        <img src="{{ $rec['thumb'] }}" class="w-full h-36 object-cover">
-                        <div class="p-4">
-                            <h4 class="font-semibold mb-2 text-[#2b2c43]">{{ $rec['title'] }}</h4>
-                            <a href="#" class="text-sky-600 font-medium text-sm hover:underline">Assistir
-                                agora</a>
-                        </div>
+            <h3 class="text-2xl font-bold text-[#c0ff01] mb-6">Ferramentas Disponíveis</h3>
+            <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Card Tradutor -->
+                <div
+                    class="bg-[#24253b]/95 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden">
+                    <div class="p-6 flex flex-col items-center text-center">
+                        <div class="text-5xl mb-4">🌍</div>
+                        <h4 class="font-bold text-lg mb-2 text-white">Tradutor Inteligente</h4>
+                        <p class="text-gray-300 mb-4">Traduza palavras e textos entre Português, Inglês e Espanhol de forma
+                            rápida e prática.</p>
+                        <a href="{{ route('translator.index') }}"
+                            class="bg-[#c0ff01] text-[#111827] font-semibold px-4 py-2 rounded-md hover:bg-[#aaff00] transition">
+                            Acessar Tradutor
+                        </a>
                     </div>
-                @endforeach
+                </div>
+
+                <!-- Card Textos -->
+                <div
+                    class="bg-[#24253b]/95 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden">
+                    <div class="p-6 flex flex-col items-center text-center">
+                        <div class="text-5xl mb-4">📄</div>
+                        <h4 class="font-bold text-lg mb-2 text-white">Textos</h4>
+                        <p class="text-gray-300 mb-4">Acesse textos em Inglês e Espanhol, leia, aprenda vocabulário e
+                            pratique suas habilidades de leitura.</p>
+                        <a href="{{ route('texts.index') }}"
+                            class="bg-[#c0ff01] text-[#111827] font-semibold px-4 py-2 rounded-md hover:bg-[#aaff00] transition">
+                            Ver Textos
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card Meu Dicionário -->
+                <div
+                    class="bg-[#24253b]/95 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden">
+                    <div class="p-6 flex flex-col items-center text-center">
+                        <div class="text-5xl mb-4">📖</div>
+                        <h4 class="font-bold text-lg mb-2 text-white">Meu Dicionário</h4>
+                        <p class="text-gray-300 mb-4">Confira todas as palavras que você salvou, revise traduções e
+                            acompanhe seu progresso de aprendizado.</p>
+                        <a href="{{ route('dictionary.index') }}"
+                            class="bg-[#c0ff01] text-[#111827] font-semibold px-4 py-2 rounded-md hover:bg-[#aaff00] transition">
+                            Ver Dicionário
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
-
 @endsection

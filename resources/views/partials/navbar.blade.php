@@ -16,7 +16,11 @@
           <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
               <a href="{{ route('home') }}" class="hover:text-[#c0ff01] transition-colors">Início</a>
               <a href="{{ route('home') }}" class="hover:text-[#c0ff01] transition-colors">Meus Cursos</a>
-              {{-- <a href="#" class="hover:text-[#c0ff01] transition-colors">Perfil</a> --}}
+              <a href="{{ route('translator.index') }}" class="hover:text-[#c0ff01] transition-colors">Tradutor</a>
+              <a href="{{ route('texts.index') }}" class="hover:text-[#c0ff01] transition-colors">Textos</a>
+              <a href="{{ route('dictionary.index') }}" class="hover:text-[#c0ff01] transition-colors">Meu
+                  Dicionário</a>
+
           </div>
 
           <!-- Ações / botão mobile -->
@@ -93,7 +97,19 @@
 
               <nav class="flex flex-col space-y-3">
                   <a href="#" class="px-3 py-2 rounded-md hover:bg-white/5 transition">Início</a>
-                  <a href="{{ route('home') }}" class="px-3 py-2 rounded-md hover:bg-white/5 transition">Meus Cursos</a>
+                  <a href="{{ route('home') }}" class="px-3 py-2 rounded-md hover:bg-white/5 transition">Meus
+                      Cursos</a>
+                  <a href="{{ route('translator.index') }}"
+                      class="px-3 py-2 rounded-md hover:bg-white/5 transition">Tradutor</a>
+
+                  <a href="{{ route('texts.index') }}"
+                      class="px-3 py-2 rounded-md hover:bg-white/5 transition">Textos</a>
+                      
+                  <a href="{{ route('dictionary.index') }}"
+                      class="px-3 py-2 rounded-md hover:bg-white/5 transition">Meu Dicionário</a>
+
+
+
                   {{-- <a href="#" class="px-3 py-2 rounded-md hover:bg-white/5 transition">Perfil</a> --}}
                   {{-- <a href="#" class="px-3 py-2 rounded-md hover:bg-white/5 transition">Favoritos</a>
                     <a href="#" class="px-3 py-2 rounded-md hover:bg-white/5 transition">Configurações</a> --}}

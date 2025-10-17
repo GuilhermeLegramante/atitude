@@ -83,8 +83,8 @@ Route::post('/translator/ajax-translate', [TranslatorController::class, 'ajaxTra
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/texts', [TextController::class, 'index'])->name('texts.index');
-    Route::get('/texts/{text}', [TextController::class, 'show'])->name('texts.show');
+    Route::get('/textos', [TextController::class, 'index'])->name('texts.index');
+    Route::get('/textos/{text}', [TextController::class, 'show'])->name('texts.show');
     Route::post('/dictionary/save', [TextController::class, 'saveWord'])->name('dictionary.save');
     Route::get('/meu-dicionario', [DictionaryController::class, 'index'])->name('dictionary.index');
 });

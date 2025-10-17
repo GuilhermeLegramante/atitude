@@ -15,10 +15,11 @@ class UserDictionaryResource extends Resource
 {
     protected static ?string $model = UserDictionary::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
     protected static ?string $navigationLabel = 'Meu Dicionário';
     protected static ?string $pluralLabel = 'Palavras';
     protected static ?string $modelLabel = 'Palavra';
+    protected static ?string $navigationGroup = 'Ensino';
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -60,8 +61,8 @@ class UserDictionaryResource extends Resource
     {
         return [
             'index' => Pages\ListUserDictionaries::route('/'),
-            'create' => Pages\CreateUserDictionary::route('/create'),
-            'edit' => Pages\EditUserDictionary::route('/{record}/edit'),
+            'create' => Pages\CreateUserDictionary::route('/criar'),
+            'edit' => Pages\EditUserDictionary::route('/{record}/editar'),
         ];
     }
 

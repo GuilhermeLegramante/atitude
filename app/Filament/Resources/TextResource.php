@@ -13,7 +13,7 @@ class TextResource extends Resource
 {
     protected static ?string $model = Text::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationLabel = 'Textos';
 
@@ -30,9 +30,14 @@ class TextResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->required(),
-                Forms\Components\Textarea::make('content')->required()->rows(10),
+                Forms\Components\TextInput::make('title')
+                    ->columnSpanFull()
+                    ->label('Título')->required(),
+                Forms\Components\Textarea::make('content')
+                    ->columnSpanFull()
+                    ->label('Texto')->required()->rows(20),
                 Forms\Components\Select::make('language')
+                    ->label('Idioma')
                     ->options(['en' => 'Inglês', 'es' => 'Espanhol'])
                     ->required(),
             ]);
@@ -42,7 +47,8 @@ class TextResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Título')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('language')
                     ->label('Idioma')
                     ->formatStateUsing(function ($state) {
@@ -61,8 +67,8 @@ class TextResource extends Resource
     {
         return [
             'index' => Pages\ListTexts::route('/'),
-            'create' => Pages\CreateText::route('/create'),
-            'edit' => Pages\EditText::route('/{record}/edit'),
+            'create' => Pages\CreateText::route('/criar'),
+            'edit' => Pages\EditText::route('/{record}/editar'),
         ];
     }
 }

@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('content')
-    <div class="max-w-4xl mx-auto mt-10 p-6 bg-[#1e2030]/90 backdrop-blur-lg rounded-2xl shadow-lg text-white">
+    <div class="max-w-4xl mx-auto mt-10 mb-5 p-6 bg-[#1e2030]/90 backdrop-blur-lg rounded-2xl shadow-lg text-white">
         <h1 class="text-2xl font-semibold mb-6 text-center text-[#c0ff01]">🌍 Tradutor Inteligente</h1>
 
         @if ($errors->any())

@@ -73,7 +73,7 @@
      <div
          class="mb-2 px-3 py-1 bg-blue-600 text-white text-sm font-semibold 
                 rounded-full shadow-lg animate-[floatText_2.5s_ease-in-out_infinite]">
-         📚 Aula Ao Vivo – Sábado
+         📚 Aulas de Espanhol AO VIVO aos Sábados
      </div>
 
      <!-- Botão circular -->

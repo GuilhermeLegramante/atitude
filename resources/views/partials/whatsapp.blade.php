@@ -10,37 +10,85 @@
      </svg>
  </a> --}}
 
- <!-- ANIMAÇÃO Glow Moderna -->
  <style>
-     @keyframes pulseShadow {
+     /* Efeito de pulos + leve rotação */
+     @keyframes jumpRotate {
          0% {
-             box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+             transform: translateY(0) rotate(0);
+         }
+
+         25% {
+             transform: translateY(-8px) rotate(-3deg);
          }
 
          50% {
-             box-shadow: 0 0 20px rgba(59, 130, 246, 0.9);
+             transform: translateY(0) rotate(3deg);
+         }
+
+         75% {
+             transform: translateY(-5px) rotate(-2deg);
          }
 
          100% {
-             box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+             transform: translateY(0) rotate(0);
+         }
+     }
+
+     /* Brilho pulsante */
+     @keyframes glowPulse {
+         0% {
+             box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+         }
+
+         50% {
+             box-shadow: 0 0 25px rgba(37, 99, 235, 1);
+         }
+
+         100% {
+             box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+         }
+     }
+
+     /* Balãozinho flutuando acima */
+     @keyframes floatText {
+         0% {
+             transform: translateY(-3px);
+         }
+
+         50% {
+             transform: translateY(3px);
+         }
+
+         100% {
+             transform: translateY(-3px);
          }
      }
  </style>
 
 
- <!-- 🎥 Botão Flutuante Aula Ao Vivo (Zoom) -->
- <a href="SEU_LINK_DO_ZOOM_AQUI" target="_blank" rel="noopener"
-     class="fixed bottom-24 right-5 z-50 flex items-center justify-center 
-          bg-blue-600 hover:bg-blue-700 text-white rounded-full 
-          transition-transform duration-300 hover:scale-110 w-14 h-14 
-          shadow-[0_0_15px_rgba(59,130,246,0.7)] animate-[pulseShadow_2s_infinite]
-          backdrop-blur-lg">
+ <!-- ⭐ Botão SUPER CHAMATIVO aulas ao vivo -->
+ <div class="fixed bottom-36 right-5 z-50 flex flex-col items-end">
 
-     <!-- Ícone Vídeo -->
-     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-7 h-7">
-         <path d="M17 10.5V7a2 2 0 0 0-2-2H5A2 2 0 0 0 3 7v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3.5l4 4v-11l-4 4z" />
-     </svg>
- </a>
+     <!-- Balão de texto -->
+     <div
+         class="mb-2 px-3 py-1 bg-blue-600 text-white text-sm font-semibold 
+                rounded-full shadow-lg animate-[floatText_2.5s_ease-in-out_infinite]">
+         📚 Aula Ao Vivo – Sábado
+     </div>
+
+     <!-- Botão circular -->
+     <a href="SEU_LINK_DO_ZOOM_AQUI" target="_blank" rel="noopener"
+         class="flex items-center justify-center w-16 h-16 rounded-full text-white
+              bg-blue-600 hover:bg-blue-700 transition-all
+              animate-[jumpRotate_1.4s_ease-in-out_infinite]
+              animate-[glowPulse_2s_infinite]">
+
+         <!-- Ícone Vídeo -->
+         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-9 h-9">
+             <path d="M17 10.5V7a2 2 0 0 0-2-2H5A2 2 0 0 0 3 7v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3.5l4 4v-11l-4 4z" />
+         </svg>
+     </a>
+ </div>
 
 
  <!-- 💬 Botão Flutuante WhatsApp -->

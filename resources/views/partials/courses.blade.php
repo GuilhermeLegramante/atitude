@@ -9,7 +9,8 @@
         @else
             <div class="text-sm text-gray-600">
                 👋 Olá, visitante! <a href="{{ route('login') }}" class="text-sky-600 font-semibold hover:underline">
-                    Faça login</a> para acompanhar seu progresso ou cadastre-se para se tornar nosso aluno.
+                    Faça login</a> para acompanhar seu progresso ou <a href="{{ route('login') }}" class="text-sky-600 font-semibold hover:underline">
+                    Cadastre-se</a> para se tornar nosso aluno.
             </div>
         @endauth
     </div>

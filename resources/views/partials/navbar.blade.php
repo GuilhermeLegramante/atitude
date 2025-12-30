@@ -46,7 +46,7 @@
                           class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">
                           Entrar
                       </a>
-                      <a href="{{ route('filament.admin.pages.dashboard') }}"
+                      <a href="{{ route('register') }}"
                           class="text-sm px-4 py-2 rounded-md bg-[#c0ff01] text-[#111827] font-semibold hover:bg-[#aaff00] transition">
                           Cadastre-se
                       </a>
@@ -133,9 +133,12 @@
                           class="block w-full text-center bg-[#c0ff01] text-[#111827] font-semibold rounded-md px-4 py-2">
                           Entrar
                       </a>
+                      <a href="{{ route('register') }}"
+                          class="mt-2 inline-block bg-[#c0ff01] text-[#111827] font-semibold rounded-md px-4 py-2">
+                          Cadastre-se
+                      </a>
                   @endauth
               </div>
-
           </div>
       </div>
   </nav>

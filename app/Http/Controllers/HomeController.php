@@ -50,4 +50,9 @@ class HomeController extends Controller
             'position'
         ));
     }
+
+    public function register()
+    {
+        return view('register');
+    }
 }

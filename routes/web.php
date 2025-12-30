@@ -40,6 +40,9 @@ Route::get('/', function () {
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
+Route::get('/cadastro', [HomeController::class, 'register'])
+    ->name('register');
+
 Route::get('/payments/{payment}/receipt', function (Payment $payment) {
     $pdf = Pdf::loadView('payments.receipt', compact('payment'));
 

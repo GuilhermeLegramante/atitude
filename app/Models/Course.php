@@ -14,7 +14,8 @@ class Course extends Model
         'name',
         'description',
         'note',
-        'language'
+        'language',
+        'image_path',
     ];
 
     public function classes()

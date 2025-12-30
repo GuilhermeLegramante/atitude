@@ -61,6 +61,7 @@ class LessonForm
                     ->rows(3)
                     // ->hiddenOn('view')
                     ->columnSpanFull(),
+
                 FileUpload::make('image_path')
                     ->label('Thumbnail da Aula')
                     ->disk('public')
@@ -69,12 +70,14 @@ class LessonForm
                     ->image()
                     ->maxSize(2048) // 2MB
                     ->nullable(),
+
                 TextInput::make('video_link')
                     ->label('Link do vídeo')
                     ->columnSpanFull()
                     ->required()
                     ->maxLength(255)
                     ->visibleOn('create'),
+
                 TextInput::make('video_link')
                     ->label('Link do vídeo')
                     ->columnSpanFull()
@@ -87,6 +90,7 @@ class LessonForm
                     ->required()
                     ->maxLength(255)
                     ->hiddenOn('create'),
+                    
                 // FormFields::note(),
                 RichEditor::make('note')
                     ->label('Observação')

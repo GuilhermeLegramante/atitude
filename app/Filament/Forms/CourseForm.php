@@ -3,6 +3,7 @@
 namespace App\Filament\Forms;
 
 use App\Models\User;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -14,7 +15,17 @@ class CourseForm
     {
         return [
             FormFields::name(),
+
             FormFields::description(required: false),
+
+            FileUpload::make('image_path')
+                ->label('Thumbnail do Curso')
+                ->disk('public')
+                ->directory('courses')
+                ->image()
+                ->maxSize(2048) // 2MB
+                ->nullable(),
+
             Select::make('user_id')
                 ->label('Professor')
                 ->options(function () {
@@ -29,6 +40,7 @@ class CourseForm
                 ->required()
                 ->relationship('user', 'name')
                 ->createOptionForm(UserForm::form()),
+
             Select::make('language')
                 ->label('Idioma')
                 ->options([
@@ -37,6 +49,7 @@ class CourseForm
                 ])
                 ->default('en')
                 ->required(),
+
             FormFields::note(),
         ];
     }

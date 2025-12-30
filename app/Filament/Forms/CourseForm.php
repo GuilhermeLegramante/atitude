@@ -23,6 +23,8 @@ class CourseForm
                 ->disk('public')
                 ->directory('courses')
                 ->image()
+                ->openable()
+                ->downloadable()
                 ->maxSize(2048) // 2MB
                 ->nullable(),
 

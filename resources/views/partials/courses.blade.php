@@ -9,7 +9,8 @@
         @else
             <div class="text-sm text-gray-600">
                 👋 Olá, visitante! <a href="{{ route('login') }}" class="text-sky-600 font-semibold hover:underline">
-                    Faça login</a> para acompanhar seu progresso ou <a href="{{ route('login') }}" class="text-sky-600 font-semibold hover:underline">
+                    Faça login</a> para acompanhar seu progresso ou <a href="{{ route('login') }}"
+                    class="text-sky-600 font-semibold hover:underline">
                     Cadastre-se</a> para se tornar nosso aluno.
             </div>
         @endauth
@@ -62,8 +63,12 @@
             <div class="course-card bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
                 data-language="{{ $course->language }}">
 
-                <img src="{{ $thumb }}" alt="{{ $course->name }}"
+                {{-- <img src="{{ $thumb }}" alt="{{ $course->name }}"
+                    class="w-full h-40 object-cover rounded-t-2xl"> THUMB ANTIGA SOMENTE COM O NOME --}}
+
+                <img src="{{ asset('storage/' . $course->image_path) }}" alt="{{ $course->name }}"
                     class="w-full h-40 object-cover rounded-t-2xl">
+
 
                 <div class="p-5">
                     <h4 class="font-semibold text-lg mb-1 text-[#2b2c43] truncate">{{ $course->name }}</h4>

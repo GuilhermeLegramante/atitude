@@ -46,6 +46,10 @@
                           class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">
                           Entrar
                       </a>
+                      <a href="{{ route('filament.admin.auth.login') }}"
+                          class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">
+                          Cadastre-se
+                      </a>
                   @endauth
               </div>
 
@@ -104,7 +108,7 @@
 
                   <a href="{{ route('texts.index') }}"
                       class="px-3 py-2 rounded-md hover:bg-white/5 transition">Textos</a>
-                      
+
                   <a href="{{ route('dictionary.index') }}"
                       class="px-3 py-2 rounded-md hover:bg-white/5 transition">Meu Dicionário</a>
 

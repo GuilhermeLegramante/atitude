@@ -46,8 +46,8 @@
                           class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">
                           Entrar
                       </a>
-                      <a href="{{ route('filament.admin.auth.login') }}"
-                          class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">
+                      <a href="{{ route('filament.admin.pages.dashboard') }}"
+                          class="text-sm px-4 py-2 rounded-md bg-[#c0ff01] text-[#111827] font-semibold hover:bg-[#aaff00] transition">
                           Cadastre-se
                       </a>
                   @endauth

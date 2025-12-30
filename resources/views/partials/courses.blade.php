@@ -66,7 +66,7 @@
                 {{-- <img src="{{ $thumb }}" alt="{{ $course->name }}"
                     class="w-full h-40 object-cover rounded-t-2xl"> THUMB ANTIGA SOMENTE COM O NOME --}}
 
-                <img src="{{ $course->image_path && Storage::exists($course->image_path) ? Storage::url($course->image_path) : $thumb }}"
+                <img src="{{ $course->image_path ? Storage::url($course->image_path) : $thumb }}"
                     alt="{{ $course->name }}" class="w-full h-40 object-cover rounded-t-2xl">
 
                 <div class="p-5">

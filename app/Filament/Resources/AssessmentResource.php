@@ -83,22 +83,22 @@ class AssessmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                // Pega o usuário logado
-                $user = auth()->user();
+            // ->modifyQueryUsing(function (Builder $query) {
+            //     // Pega o usuário logado
+            //     $user = auth()->user();
 
-                // Pega o estudante vinculado ao usuário logado
-                $student = $user->student;
+            //     // Pega o estudante vinculado ao usuário logado
+            //     $student = $user->student;
 
-                if ($student) {
-                    $query->whereHas('lesson.class.students', function ($q) use ($student) {
-                        $q->where('students.id', $student->id);
-                    });
-                }
+            //     if ($student) {
+            //         $query->whereHas('lesson.class.students', function ($q) use ($student) {
+            //             $q->where('students.id', $student->id);
+            //         });
+            //     }
 
-                // Ordena pelo name do mais antigo para o mais novo
-                return $query->orderBy('name', 'asc');
-            })
+            //     // Ordena pelo name do mais antigo para o mais novo
+            //     return $query->orderBy('name', 'asc');
+            // })
             ->columns([
                 TextColumn::make('name')
                     ->label('Título')

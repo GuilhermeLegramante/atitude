@@ -11,6 +11,8 @@ class LiveClassSettings extends Page implements Forms\Contracts\HasForms
 {
     use Forms\Concerns\InteractsWithForms;
 
+    protected static string $view = 'pages.live-class-settings';
+
     protected static ?string $navigationIcon = 'heroicon-o-video-camera';
     protected static ?string $navigationLabel = 'Aulas ao Vivo';
     protected static ?string $navigationGroup = 'Configurações';

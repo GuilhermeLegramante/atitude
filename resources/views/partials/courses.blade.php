@@ -41,7 +41,8 @@
                     </div>
                 </div>
                 <div class="text-xs text-gray-500 mt-2">
-                    XP: <strong>{{ $userPoints ?? 0 }}</strong> • Ranking: <strong>{{ $position ?? 0 }}°</strong>
+                    XP: <strong>{{ $userPoints ?? 0 }}</strong> 
+                    {{-- • Ranking: <strong>{{ $position ?? 0 }}°</strong> --}}
                 </div>
                 @if ($lastLesson)
                     <p class="text-xs text-gray-500 mt-1 italic">Última aula: {{ $lastLesson->title }}</p>

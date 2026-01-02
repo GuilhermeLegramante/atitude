@@ -67,19 +67,6 @@ Route::post('/assessments/{assessment}/submit', [AssessmentController::class, 's
 
 Route::get('/assessments/{assessment}/answers', [AssessmentController::class, 'userAnswers']);
 
-// Route::get('/tradutor', function () {
-//     $result = GoogleTranslate::source('pt-br')
-//         ->target('es')
-//         ->translate('esta é minha casa');
-
-//     $result->getTranslatedText();
-
-//     $result->getAlternativeTranslations();
-
-//     $result->getSourceText();
-//     $result->getSourceLanguage();
-// });
-
 Route::get('/tradutor', [TranslatorController::class, 'index'])->name('translator.index');
 Route::post('/tradutor', [TranslatorController::class, 'translate'])->name('translator.translate');
 Route::post('/translator/ajax-translate', [TranslatorController::class, 'ajaxTranslate'])->name('translator.ajaxTranslate');
@@ -91,3 +78,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dictionary/save', [TextController::class, 'saveWord'])->name('dictionary.save');
     Route::get('/meu-dicionario', [DictionaryController::class, 'index'])->name('dictionary.index');
 });
+
+Route::get('/aula-ao-vivo', function () {
+    abort_unless(auth()->check(), 403);
+    return redirect('SEU_LINK_DO_ZOOM_AQUI');
+});
+

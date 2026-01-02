@@ -83,6 +83,8 @@
                     </div>
                 </div>
 
+                @include('lessons.assessments')
+
                 <!-- TABS: Resources / Transcript / Q&A -->
                 <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
@@ -216,7 +218,6 @@
                     </aside>
                 </div>
 
-                @include('lessons.assessments')
 
                 
 

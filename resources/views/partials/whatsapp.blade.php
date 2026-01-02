@@ -67,7 +67,7 @@
 
 
  <!-- ⭐ Botão SUPER CHAMATIVO aulas ao vivo -->
- <div class="fixed bottom-36 right-5 z-50 flex flex-col items-end">
+ <div class="fixed bottom-36 right-5 z-50 hidden md:flex flex flex-col items-end">
 
      <!-- Balão de texto -->
      <div

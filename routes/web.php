@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Http;
 
 use Datlechin\GoogleTranslate\Facades\GoogleTranslate;
 use App\Http\Controllers\TranslatorController;
+use App\Models\Setting;
 
 
 Livewire::setScriptRoute(function ($handle) {
@@ -79,7 +80,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/meu-dicionario', [DictionaryController::class, 'index'])->name('dictionary.index');
 });
 
-use App\Models\Setting;
 
 Route::get('/aula-ao-vivo', function () {
     abort_unless(auth()->check(), 403);

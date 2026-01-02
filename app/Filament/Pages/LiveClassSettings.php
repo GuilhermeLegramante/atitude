@@ -34,7 +34,7 @@ class LiveClassSettings extends Page implements Forms\Contracts\HasForms
                 ->label('Link da Aula ao Vivo (Zoom)')
                 ->url()
                 ->required()
-                ->helperText('Ex: https://zoom.us/j/asdasd'),
+                ->helperText('Ex: https://zoom.us/j/966586244'),
         ];
     }
 

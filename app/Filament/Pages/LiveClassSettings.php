@@ -4,7 +4,7 @@ namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
 use Filament\Forms;
-use App\Models\Setting;
+use App\Models\Settings;
 use Filament\Notifications\Notification;
 
 class LiveClassSettings extends Page implements Forms\Contracts\HasForms
@@ -21,7 +21,7 @@ class LiveClassSettings extends Page implements Forms\Contracts\HasForms
     public function mount(): void
     {
         $this->form->fill([
-            'zoom_link' => Setting::get('zoom_link'),
+            'zoom_link' => Settings::get('zoom_link'),
         ]);
     }
 
@@ -47,7 +47,7 @@ class LiveClassSettings extends Page implements Forms\Contracts\HasForms
             \Filament\Actions\Action::make('save')
                 ->label('Salvar')
                 ->action(function () {
-                    Setting::set('zoom_link', $this->zoom_link);
+                    Settings::set('zoom_link', $this->zoom_link);
 
                     Notification::make()
                         ->title('Configurações salvas com sucesso')

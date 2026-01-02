@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Http;
 
 use Datlechin\GoogleTranslate\Facades\GoogleTranslate;
 use App\Http\Controllers\TranslatorController;
-use App\Models\Setting;
+use App\Models\Settings;
 
 
 Livewire::setScriptRoute(function ($handle) {
@@ -84,7 +84,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/aula-ao-vivo', function () {
     abort_unless(auth()->check(), 403);
 
-    $link = Setting::get('zoom_link');
+    $link = Settings::get('zoom_link');
 
     abort_if(!$link, 404);
 

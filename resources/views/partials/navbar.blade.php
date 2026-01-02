@@ -3,6 +3,7 @@
       $isSaturday = Carbon::now()->isSaturday();
   @endphp
 
+
   <!-- Navbar fixa com menu mobile funcional -->
   <nav x-data="{ open: false, scrolled: false, openAulas: false }" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 8);
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape') open = false });"

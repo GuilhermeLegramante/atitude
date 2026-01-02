@@ -79,8 +79,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/meu-dicionario', [DictionaryController::class, 'index'])->name('dictionary.index');
 });
 
+use App\Models\Setting;
+
 Route::get('/aula-ao-vivo', function () {
     abort_unless(auth()->check(), 403);
-    return redirect('SEU_LINK_DO_ZOOM_AQUI');
+
+    $link = Setting::get('zoom_link');
+
+    abort_if(!$link, 404);
+
+    return redirect($link);
 });
+
 

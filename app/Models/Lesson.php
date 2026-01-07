@@ -47,6 +47,10 @@ class Lesson extends Model
         static::addGlobalScope('ordered', function (Builder $builder) {
             $builder->orderBy('order');
         });
+
+        static::deleting(function ($lesson) {
+            $lesson->students()->detach();
+        });
     }
 
     public function getNextLessonAttribute()

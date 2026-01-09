@@ -5,16 +5,43 @@
         <!-- Título do texto -->
         <h1 class="text-2xl font-semibold mb-6 text-[#c0ff01]">{{ $text->title }}</h1>
 
-        <!-- Conteúdo do texto -->
-        <div class="text-lg leading-relaxed max-h-[70vh] overflow-y-auto p-2">
-            @foreach (explode(' ', $text->content) as $word)
-                <span class="cursor-pointer hover:text-[#c0ff01] transition word" data-word="{{ $word }}">
-                    {{ $word }}
-                </span>
-                <span> </span>
-            @endforeach
+        <button id="toggleTranslation"
+            class="mb-4 bg-[#c0ff01] text-[#111827] px-4 py-2 rounded-md font-semibold shadow hover:bg-[#aaff00] transition">
+            Mostrar tradução
+        </button>
+
+        <div
+            class="mt-4 p-4 rounded-xl bg-yellow-500/10 border border-yellow-400/30 text-yellow-200 text-sm leading-relaxed">
+            <strong>🔍 Sobre as traduções</strong><br>
+            Ao clicar em uma palavra, a tradução é feita por inteligência artificial, palavra por palavra.
+            Isso pode não considerar todo o contexto da frase.
+            Para um melhor entendimento, veja a <strong>tradução do texto completo</strong>.
         </div>
+
+        <!-- Conteúdo do texto -->
+        <div id="textContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Texto original -->
+            <div class="text-lg leading-relaxed max-h-[70vh] overflow-y-auto p-2 border border-white/10 rounded-lg">
+                @foreach (explode(' ', $text->content) as $word)
+                    <span class="cursor-pointer hover:text-[#c0ff01] transition word" data-word="{{ $word }}">
+                        {{ $word }}
+                    </span>
+                    <span> </span>
+                @endforeach
+            </div>
+
+            <!-- Tradução do texto -->
+            <div id="translatedText"
+                class="text-lg leading-relaxed max-h-[70vh] overflow-y-auto p-2 border border-white/10 rounded-lg hidden text-gray-300">
+                {!! nl2br(e($text->translated_content)) !!}
+            </div>
+
+        </div>
+
     </div>
+
+    <br>
 
     <!-- Modal para tradução -->
     <div id="wordModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center">
@@ -46,6 +73,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('toggleTranslation');
+            const translatedText = document.getElementById('translatedText');
+
+            toggleBtn.addEventListener('click', () => {
+                translatedText.classList.toggle('hidden');
+
+                toggleBtn.innerText = translatedText.classList.contains('hidden') ?
+                    'Mostrar tradução' :
+                    'Ocultar tradução';
+            });
+
             let currentWord = '';
 
             const modal = document.getElementById('wordModal');

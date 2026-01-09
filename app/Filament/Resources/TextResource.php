@@ -36,6 +36,9 @@ class TextResource extends Resource
                 Forms\Components\Textarea::make('content')
                     ->columnSpanFull()
                     ->label('Texto')->required()->rows(20),
+                Forms\Components\Textarea::make('translated_content')
+                    ->columnSpanFull()
+                    ->label('Tradução')->required()->rows(20),
                 Forms\Components\Select::make('language')
                     ->label('Idioma')
                     ->options(['en' => 'Inglês', 'es' => 'Espanhol'])

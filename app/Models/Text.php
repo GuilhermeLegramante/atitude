@@ -9,7 +9,7 @@ class Text extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content', 'language', 'user_id'];
+    protected $fillable = ['title', 'content', 'translated_content', 'language', 'user_id'];
 
     public function author()
     {

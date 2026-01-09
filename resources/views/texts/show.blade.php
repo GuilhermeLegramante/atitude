@@ -19,7 +19,7 @@
         </div>
 
         <!-- Conteúdo do texto -->
-        <div id="textContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="textContainer" class="grid grid-cols-1 md:grid-cols-[1fr_0fr] gap-6 transition-all">
 
             <!-- Texto original -->
             <div class="text-lg leading-relaxed max-h-[70vh] overflow-y-auto p-2 border border-white/10 rounded-lg">
@@ -75,9 +75,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             const toggleBtn = document.getElementById('toggleTranslation');
             const translatedText = document.getElementById('translatedText');
+            const container = document.getElementById('textContainer');
 
             toggleBtn.addEventListener('click', () => {
+                const showing = !translatedText.classList.contains('hidden');
+
                 translatedText.classList.toggle('hidden');
+
+                container.classList.toggle('md:grid-cols-[2fr_1fr]');
+                container.classList.toggle('md:grid-cols-1');
 
                 toggleBtn.innerText = translatedText.classList.contains('hidden') ?
                     'Mostrar tradução' :

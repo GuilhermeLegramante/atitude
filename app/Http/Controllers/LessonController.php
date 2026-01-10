@@ -33,13 +33,17 @@ class LessonController extends Controller
 
         $student = auth()->user()->student;
 
-        $lastLesson = $student->lastWatchedLesson();
+        // $lastLesson = $student->lastWatchedLesson();
 
-        $currentCourse = $lastLesson?->class?->course;
+        // $currentCourse = $lastLesson?->class?->course;
+
+        $lastLesson = auth()->user()->student?->lastWatchedLesson();
+
+        $currentCourse = auth()->user()->student?->lastWatchedCourse();
 
         $xp = DB::table('experiences')
             ->where('user_id', Auth::id())
-            ->get()
+            // ->get()
             ->first();
 
         $userPoints = $xp->experience_points ?? 0;

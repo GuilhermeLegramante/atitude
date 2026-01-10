@@ -58,6 +58,11 @@ class Student extends Model
             ->first();
     }
 
+    public function lastWatchedCourse()
+    {
+        return $this->lastWatchedLesson()?->class?->course;
+    }
+
     // public function assessments()
     // {
     //     return $this->hasManyThrough(Assessment::class, Lesson::class);

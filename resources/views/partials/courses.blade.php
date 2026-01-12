@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="text-xs text-gray-500 mt-2">
-                    XP: <strong>{{ $userPoints ?? 0 }}</strong> 
+                    XP: <strong>{{ $userPoints ?? 0 }}</strong>
                     {{-- • Ranking: <strong>{{ $position ?? 0 }}°</strong> --}}
                 </div>
                 @if ($lastLesson)
@@ -155,11 +155,38 @@
                     </div>
 
                     <div class="mt-4 text-center">
-                        @auth
+                        {{-- @auth
                             <a href="{{ route('lessons.show', $course->id) }}"
                                 class="inline-block bg-[#2b2c43] hover:bg-[#003f51] text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">
                                 Continuar
                             </a>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="inline-block bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">
+                                Acessar curso
+                            </a>
+                        @endauth --}}
+
+                        @auth
+                            @php
+                                // Se a última aula pertence a este curso
+                                $continueLesson =
+                                    $lastLesson && $lastLesson->class->course_id === $course->id
+                                        ? $lastLesson
+                                        : optional($course->classes->first())?->lessons->first();
+                            @endphp
+
+                            @if ($continueLesson)
+                                <a href="{{ route('lessons.show', $continueLesson->id) }}"
+                                    class="inline-block bg-[#2b2c43] hover:bg-[#003f51] text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">
+                                    Continuar
+                                </a>
+                            @else
+                                <button
+                                    class="inline-block bg-gray-300 text-gray-600 text-sm font-medium px-6 py-2 rounded-lg cursor-not-allowed">
+                                    Sem aulas
+                                </button>
+                            @endif
                         @else
                             <a href="{{ route('login') }}"
                                 class="inline-block bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">

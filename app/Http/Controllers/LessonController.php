@@ -11,13 +11,26 @@ class LessonController extends Controller
 {
     public function toggleWatched(Lesson $lesson)
     {
-        $user = auth()->user();
+        $student = auth()->user()->student;
 
-        $current = $user->student->watchedLessons()->where('lesson_id', $lesson->id)->first()?->pivot->watched ?? false;
+        $pivot = $student->watchedLessons()
+            ->where('lesson_id', $lesson->id)
+            ->first()?->pivot;
 
-        $user->student->watchedLessons()->syncWithoutDetaching([
-            $lesson->id => ['watched' => !$current]
-        ]);
+        if (!$pivot) {
+            // Primeira vez marcando a lição
+            $student->watchedLessons()->attach($lesson->id, [
+                'watched'    => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } else {
+            // Apenas alterna o status
+            $student->watchedLessons()->updateExistingPivot($lesson->id, [
+                'watched'    => ! $pivot->watched,
+                'updated_at' => now(),
+            ]);
+        }
 
         return back();
     }

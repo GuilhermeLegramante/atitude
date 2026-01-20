@@ -1,5 +1,5 @@
 <x-mail::message>
-# Prezado {{ $teacher }}
+# Prezado(a) {{ $teacher }}
 
 Resposta enviada pelo aluno {{ $student }}.
     

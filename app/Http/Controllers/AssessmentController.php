@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AnswerSent;
 use App\Models\Assessment;
 use App\Models\Answer;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AssessmentController extends Controller
 {
@@ -45,6 +48,25 @@ class AssessmentController extends Controller
                 $data
             );
         }
+
+        $emails = array_filter([
+            'guilhermelegramante@gmail.com',
+            'carolinatlorenzoni@gmail.com',
+        ]);
+
+        $student = Student::find($user->student->id ?? $user->student->name);
+        $teacher = $assessment->lesson->class->course->user->name ?? '';
+        $course = $assessment->lesson->class->course->name ?? '';
+        $class = $assessment->lesson->class->name ?? '';
+        $activity = $assessment->lesson->title ?? '';
+
+        Mail::to($emails)->send(new AnswerSent(
+            $teacher,
+            $student->name,
+            $course,
+            $class,
+            $activity
+        ));
 
         return response()->json(['success' => true]);
     }

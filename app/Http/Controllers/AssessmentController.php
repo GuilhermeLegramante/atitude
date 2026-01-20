@@ -49,10 +49,19 @@ class AssessmentController extends Controller
             );
         }
 
-        $emails = array_filter([
-            'guilhermelegramante@gmail.com',
-            'carolinatlorenzoni@gmail.com',
-        ]);
+        $emails = [
+            'guilhermelegramante@gmail.com', // sempre
+        ];
+
+        $language = $assessment->lesson->class->course->language ?? null;
+
+        if ($language === 'en') {
+            $emails[] = 'carolinatlorenzoni@gmail.com';
+        }
+
+        if ($language === 'es') {
+            $emails[] = 'eduardosilveirab@outlook.com';
+        }
 
         $student = Student::find($user->student->id ?? $user->student->name);
         $teacher = $assessment->lesson->class->course->user->name ?? '';

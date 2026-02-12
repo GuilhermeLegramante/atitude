@@ -65,7 +65,8 @@ class EditAnswer extends EditRecord
                             ->label('Arquivo enviado')
                             ->content(function () {
                                 $type = $this->record->question->questionType->type_name;
-                                $filePath = $this->record->pdf_path;
+                                
+                                $filePath = $this->record->pdf_path ?? $this->record->audio_path ?? $this->record->file_path;
 
                                 if (!$filePath) {
                                     return 'Nenhum arquivo enviado.';

@@ -100,12 +100,16 @@
     </form>
 </div>
 <script>
-    document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+    // Usar uma função nomeada ajuda no debug
+    function handleAssessmentSubmit(e) {
         e.preventDefault();
 
-        const form = e.target;
-        const formData = new FormData(form); // Captura arquivos e textos
+        const form = e.currentTarget; // Garante que pega o formulário
+        const formData = new FormData(form);
         const submitBtn = form.querySelector('button[type="submit"]');
+
+        // Impede cliques duplos se já estiver enviando
+        if (submitBtn.disabled) return;
 
         submitBtn.disabled = true;
         submitBtn.innerText = 'Enviando...';
@@ -118,17 +122,30 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
+            .then(async response => {
+                const data = await response.json();
                 if (data.success) {
                     alert('Avaliação enviada com sucesso!');
                     window.location.reload();
+                } else {
+                    alert('Erro: ' + (data.message || 'Falha no envio.'));
                 }
             })
-            .catch(error => alert('Erro ao enviar'))
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                alert('Erro de conexão ou servidor.');
+            })
             .finally(() => {
                 submitBtn.disabled = false;
                 submitBtn.innerText = 'Enviar Avaliação';
             });
+    }
+
+    // Inicialização segura
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('assessmentForm');
+        if (form) {
+            form.addEventListener('submit', handleAssessmentSubmit);
+        }
     });
 </script>

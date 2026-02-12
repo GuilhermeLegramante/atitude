@@ -32,7 +32,7 @@
         </div>
     @endif
 
-    <form id="assessmentForm" data-id="{{ $assessment->id }}" class="space-y-6">
+    <form id="assessmentForm" data-id="{{ $assessment->id }}" class="space-y-6" enctype="multipart/form-data">
         @foreach ($assessment->questions as $question)
             <div
                 class="border border-gray-100 dark:border-gray-700 rounded-xl p-5 bg-gray-50 dark:bg-gray-800 transition hover:shadow-sm">

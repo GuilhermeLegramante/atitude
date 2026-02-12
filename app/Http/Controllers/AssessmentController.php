@@ -25,7 +25,7 @@ class AssessmentController extends Controller
 
         // Validação corrigida para a estrutura de array
         $request->validate([
-            'answers.*.audio' => 'nullable|file|mimes:mp3,wav,mpeg|max:10240',
+            'answers.*.audio' => 'nullable|file|mimes:mp3,wav,mpeg,m4a,aac,x-m4a|max:20480',
             'answers.*.pdf' => 'nullable|file|mimes:pdf|max:20480',
         ]);
 

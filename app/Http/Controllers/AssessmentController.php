@@ -45,28 +45,27 @@ class AssessmentController extends Controller
                     break;
 
                 case 'Discursiva':
+                case 'Upload de Áudio':
+                case 'Upload de PDF':
 
-                    // Texto
-                    if (!empty($value['text'])) {
+                    // Texto (se houver)
+                    if (is_array($value) && !empty($value['text'])) {
                         $data['answer_text'] = $value['text'];
+                    } elseif (is_string($value)) {
+                        $data['answer_text'] = $value;
                     }
 
                     // Upload de Áudio
                     if ($request->hasFile("answers.$questionId.audio")) {
-                        $audioPath = $request->file("answers.$questionId.audio")
+                        $data['audio_path'] = $request->file("answers.$questionId.audio")
                             ->store('answers/audio', 'public');
-
-                        $data['audio_path'] = $audioPath;
                     }
 
                     // Upload de PDF
                     if ($request->hasFile("answers.$questionId.pdf")) {
-                        $pdfPath = $request->file("answers.$questionId.pdf")
+                        $data['pdf_path'] = $request->file("answers.$questionId.pdf")
                             ->store('answers/pdf', 'public');
-
-                        $data['pdf_path'] = $pdfPath;
                     }
-
                     break;
 
                 default:

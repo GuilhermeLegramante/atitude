@@ -65,7 +65,7 @@
                             Enviar Áudio
                         </label>
 
-                        <input type="file" name="answers[{{ $question->id }}][audio]" accept="audio/*"
+                        <input type="file" name="answers[{{ $question->id }}][audio]" accept=".mp3,.wav,.m4a,.aac,audio/*"
                             class="w-full text-sm text-gray-600 dark:text-gray-300
             file:mr-4 file:py-2 file:px-4
             file:rounded-lg file:border-0

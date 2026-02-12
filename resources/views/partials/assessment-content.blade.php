@@ -53,9 +53,10 @@
                         @endforeach
                     </div>
                 @elseif ($question->questionType->type_name === 'Discursiva')
-                    <textarea name="answers[{{ $question->id }}]"
+                    <textarea name="answers[{{ $question->id }}][text]"
                         class="w-full mt-2 border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c0ff01] transition"
-                        rows="4" placeholder="Digite sua resposta..."></textarea>
+                        rows="4" placeholder="Digite sua resposta...">
+                    </textarea>
                 @elseif ($question->questionType->type_name === 'Upload de Áudio')
                     <div class="mt-3">
                         <label
@@ -64,7 +65,7 @@
                             Enviar Áudio
                         </label>
 
-                        <input type="file" name="answers[{{ $question->id }}]" accept="audio/*"
+                        <input type="file" name="answers[{{ $question->id }}][audio]" accept="audio/*"
                             class="w-full text-sm text-gray-600 dark:text-gray-300
             file:mr-4 file:py-2 file:px-4
             file:rounded-lg file:border-0
@@ -80,7 +81,7 @@
                             Enviar PDF
                         </label>
 
-                        <input type="file" name="answers[{{ $question->id }}]" accept="application/pdf"
+                        <input type="file" name="answers[{{ $question->id }}][pdf]" accept="application/pdf"
                             class="w-full text-sm text-gray-600 dark:text-gray-300
             file:mr-4 file:py-2 file:px-4
             file:rounded-lg file:border-0
@@ -98,3 +99,36 @@
         </button>
     </form>
 </div>
+<script>
+    document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form); // Captura arquivos e textos
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Enviando...';
+
+        fetch("{{ route('assessments.submit', $assessment->id) }}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Avaliação enviada com sucesso!');
+                    window.location.reload();
+                }
+            })
+            .catch(error => alert('Erro ao enviar'))
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Enviar Avaliação';
+            });
+    });
+</script>

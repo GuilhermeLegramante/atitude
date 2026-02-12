@@ -23,13 +23,16 @@ class AssessmentController extends Controller
     {
         $user = Auth::user();
 
+        // Validação corrigida para a estrutura de array
         $request->validate([
             'answers.*.audio' => 'nullable|file|mimes:mp3,wav,mpeg|max:10240',
             'answers.*.pdf' => 'nullable|file|mimes:pdf|max:20480',
         ]);
 
-        foreach ($request->input('answers', []) as $questionId => $value) {
+        // Mescla todos os inputs (textos e arquivos) para garantir que o questionId exista no loop
+        $allAnswers = array_replace_recursive($request->input('answers', []), $request->allFiles()['answers'] ?? []);
 
+        foreach ($allAnswers as $questionId => $value) {
             $question = $assessment->questions->find($questionId);
             if (!$question) continue;
 
@@ -39,44 +42,33 @@ class AssessmentController extends Controller
             ];
 
             switch ($question->questionType->type_name) {
-
                 case 'Objetiva':
+                    // Se for objetiva, o valor é o ID da alternativa diretamente
                     $data['alternative_id'] = $value;
                     break;
 
                 case 'Discursiva':
                 case 'Upload de Áudio':
                 case 'Upload de PDF':
-
-                    // Texto (se houver)
+                    // Texto
                     if (is_array($value) && !empty($value['text'])) {
                         $data['answer_text'] = $value['text'];
-                    } elseif (is_string($value)) {
-                        $data['answer_text'] = $value;
                     }
 
-                    // Upload de Áudio
+                    // Áudio
                     if ($request->hasFile("answers.$questionId.audio")) {
-                        $data['audio_path'] = $request->file("answers.$questionId.audio")
-                            ->store('answers/audio', 'public');
+                        $data['audio_path'] = $request->file("answers.$questionId.audio")->store('answers/audio', 'public');
                     }
 
-                    // Upload de PDF
+                    // PDF
                     if ($request->hasFile("answers.$questionId.pdf")) {
-                        $data['pdf_path'] = $request->file("answers.$questionId.pdf")
-                            ->store('answers/pdf', 'public');
+                        $data['pdf_path'] = $request->file("answers.$questionId.pdf")->store('answers/pdf', 'public');
                     }
                     break;
-
-                default:
-                    continue 2;
             }
 
             Answer::updateOrCreate(
-                [
-                    'question_id' => $questionId,
-                    'user_id' => $user->id
-                ],
+                ['question_id' => $questionId, 'user_id' => $user->id],
                 $data
             );
         }

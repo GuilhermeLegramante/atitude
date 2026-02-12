@@ -15,6 +15,8 @@ class Answer extends Model
         'answer_text',
         'alternative_id',
         'file_path',
+        'audio_path',
+        'pdf_path',
         'note',
         'checked',
         'is_correct',

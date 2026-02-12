@@ -56,6 +56,38 @@
                     <textarea name="answers[{{ $question->id }}]"
                         class="w-full mt-2 border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c0ff01] transition"
                         rows="4" placeholder="Digite sua resposta..."></textarea>
+                @elseif ($question->questionType->type_name === 'Upload de Áudio')
+                    <div class="mt-3">
+                        <label
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                            <x-heroicon-o-microphone class="w-5 h-5 text-[#c0ff01]" />
+                            Enviar Áudio
+                        </label>
+
+                        <input type="file" name="answers[{{ $question->id }}]" accept="audio/*"
+                            class="w-full text-sm text-gray-600 dark:text-gray-300
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-lg file:border-0
+            file:text-sm file:font-semibold
+            file:bg-[#c0ff01] file:text-gray-900
+            hover:file:bg-[#b0e700] transition">
+                    </div>
+                @elseif ($question->questionType->type_name === 'Upload de PDF')
+                    <div class="mt-3">
+                        <label
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                            <x-heroicon-o-document-text class="w-5 h-5 text-[#c0ff01]" />
+                            Enviar PDF
+                        </label>
+
+                        <input type="file" name="answers[{{ $question->id }}]" accept="application/pdf"
+                            class="w-full text-sm text-gray-600 dark:text-gray-300
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-lg file:border-0
+            file:text-sm file:font-semibold
+            file:bg-[#c0ff01] file:text-gray-900
+            hover:file:bg-[#b0e700] transition">
+                    </div>
                 @endif
             </div>
         @endforeach

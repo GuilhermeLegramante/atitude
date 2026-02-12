@@ -23,7 +23,13 @@ class AssessmentController extends Controller
     {
         $user = Auth::user();
 
+        $request->validate([
+            'answers.*.audio' => 'nullable|file|mimes:mp3,wav,mpeg|max:10240',
+            'answers.*.pdf' => 'nullable|file|mimes:pdf|max:20480',
+        ]);
+
         foreach ($request->input('answers', []) as $questionId => $value) {
+
             $question = $assessment->questions->find($questionId);
             if (!$question) continue;
 
@@ -33,24 +39,51 @@ class AssessmentController extends Controller
             ];
 
             switch ($question->questionType->type_name) {
+
                 case 'Objetiva':
                     $data['alternative_id'] = $value;
                     break;
+
                 case 'Discursiva':
-                    $data['answer_text'] = $value;
+
+                    // Texto
+                    if (!empty($value['text'])) {
+                        $data['answer_text'] = $value['text'];
+                    }
+
+                    // Upload de Áudio
+                    if ($request->hasFile("answers.$questionId.audio")) {
+                        $audioPath = $request->file("answers.$questionId.audio")
+                            ->store('answers/audio', 'public');
+
+                        $data['audio_path'] = $audioPath;
+                    }
+
+                    // Upload de PDF
+                    if ($request->hasFile("answers.$questionId.pdf")) {
+                        $pdfPath = $request->file("answers.$questionId.pdf")
+                            ->store('answers/pdf', 'public');
+
+                        $data['pdf_path'] = $pdfPath;
+                    }
+
                     break;
+
                 default:
                     continue 2;
             }
 
             Answer::updateOrCreate(
-                ['question_id' => $questionId, 'user_id' => $user->id],
+                [
+                    'question_id' => $questionId,
+                    'user_id' => $user->id
+                ],
                 $data
             );
         }
 
         $emails = [
-            'guilhermelegramante@gmail.com', // sempre
+            'guilhermelegramante@gmail.com',
         ];
 
         $language = $assessment->lesson->class->course->language ?? null;
@@ -63,7 +96,8 @@ class AssessmentController extends Controller
             $emails[] = 'eduardosilveirab@outlook.com';
         }
 
-        $student = Student::find($user->student->id ?? $user->student->name);
+        $student = Student::find($user->student->id ?? null);
+
         $teacher = $assessment->lesson->class->course->user->name ?? '';
         $course = $assessment->lesson->class->course->name ?? '';
         $class = $assessment->lesson->class->name ?? '';
@@ -71,7 +105,7 @@ class AssessmentController extends Controller
 
         Mail::to($emails)->send(new AnswerSent(
             $teacher,
-            $student->name,
+            $student?->name,
             $course,
             $class,
             $activity

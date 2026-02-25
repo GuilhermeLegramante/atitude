@@ -67,6 +67,7 @@ class LiveClassResource extends Resource
 
                 Forms\Components\Toggle::make('active')
                     ->label('Ativo')
+                    ->inline()
                     ->default(true),
             ]);
     }

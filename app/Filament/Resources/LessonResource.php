@@ -64,18 +64,18 @@ class LessonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function ($query) {
-                $user = auth()->user();
-                $student = $user->student;
+            // ->modifyQueryUsing(function ($query) {
+            //     $user = auth()->user();
+            //     $student = $user->student;
 
-                if ($student) {
-                    $query = $query->whereHas('class.students', function ($q) use ($student) {
-                        $q->where('students.id', $student->id);
-                    });
-                }
+            //     if ($student) {
+            //         $query = $query->whereHas('class.students', function ($q) use ($student) {
+            //             $q->where('students.id', $student->id);
+            //         });
+            //     }
 
-                return $query->orderBy('order');
-            })
+            //     return $query->orderBy('order');
+            // })
             ->persistFiltersInSession()
             ->defaultSort('order', 'asc')
 

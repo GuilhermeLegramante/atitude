@@ -180,7 +180,7 @@ class AssessmentResource extends Resource
         //     })
         //     ->count();
 
-        return ClassModel::all()->count();
+        return Assessment::all()->count();
 
         // Retorna o número de avaliações, ou null se não houver avaliações
         // return $assessmentCount > 0 ? (string) $assessmentCount : null;

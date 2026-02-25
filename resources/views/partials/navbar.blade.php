@@ -50,7 +50,7 @@ window.addEventListener('keydown', (e) => { if (e.key === 'Escape') open = false
 
             <div class="flex items-center gap-10 text-sm font-medium tracking-wide">
 
-                @php $route = request()->routeName(); @endphp
+                @php $route = 'request()->routeName()'; @endphp
 
                 @foreach ([['label' => 'Início', 'route' => 'home'], ['label' => 'Meus Cursos', 'route' => 'home'], ['label' => 'Tradutor', 'route' => 'translator.index'], ['label' => 'Textos', 'route' => 'texts.index'], ['label' => 'Meu Dicionário', 'route' => 'dictionary.index']] as $item)
                     <a href="{{ route($item['route']) }}"

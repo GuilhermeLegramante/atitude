@@ -4,162 +4,279 @@
 
     $now = Carbon::now();
     $today = strtolower(str_replace('-feira', '', $now->locale('pt_BR')->dayName));
-    $currentTime = $now->format('H:i');
 
-    $liveClasses = LiveClass::where('active', true)
-        ->orderByRaw("
-            FIELD(weekday, 
-            'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado')
-        ")
-        ->orderBy('time')
-        ->get();
+    $liveClasses = LiveClass::where('active', true)->get();
 
-    function isLiveNow($class, $today, $currentTime) {
+    $hasLiveNow = $liveClasses->contains(function ($class) use ($now, $today) {
         $start = Carbon::parse($class->time);
-        $end = Carbon::parse($class->time)->addHour(); // duração 1h
-        return $class->weekday === $today
-            && Carbon::now()->between($start, $end);
-    }
+        $end = Carbon::parse($class->time)->addHour();
 
-    $hasLiveNow = $liveClasses->contains(function ($class) use ($today, $currentTime) {
-        return isLiveNow($class, $today, $currentTime);
+        return $class->weekday === $today && $now->between($start, $end);
     });
 @endphp
 
 
 <!-- Navbar -->
-<nav x-data="{ open: false, scrolled: false, openAulas: false }"
-     x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 8);
-     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') open = false });"
-     :class="scrolled ? 'shadow-lg bg-[#24253b]/95 backdrop-blur-md' : 'bg-[#2b2c43]'"
-     class="fixed top-0 left-0 w-full z-50 text-white transition-all duration-300 ease-in-out">
+<nav x-data="{
+    open: false,
+    scrolled: false
+}" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 8);
+$watch('open', value => {
+    document.body.classList.toggle('overflow-hidden', value);
+});"
+    :class="scrolled ? 'shadow-lg bg-[#24253b]/95 backdrop-blur-md' : 'bg-[#2b2c43]'"
+    class="fixed top-0 left-0 w-full z-50 text-white transition-all duration-300 ease-in-out">
 
-    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between px-8 py-3">
 
-        <!-- Logo -->
-        <div class="flex items-center space-x-3">
-            <a href="{{ route('home') }}" class="flex items-center">
+        <!-- LOGO -->
+        <div class="flex items-center shrink-0">
+            <a href="{{ route('home') }}" class="group">
                 <img src="{{ asset('img/atitude_logo_contorno.png') }}"
-                     class="w-36 md:w-40 transition-all duration-300" />
+                    class="w-40 transition duration-300 group-hover:scale-105" alt="Logo">
             </a>
         </div>
 
-        <!-- Desktop -->
-        <div class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide">
+        <!-- MENU CENTRAL -->
+        <div class="hidden md:flex flex-1 justify-center">
 
-            <a href="{{ route('home') }}" class="hover:text-[#c0ff01] transition-colors">Início</a>
-            <a href="{{ route('home') }}" class="hover:text-[#c0ff01] transition-colors">Meus Cursos</a>
-            <a href="{{ route('translator.index') }}" class="hover:text-[#c0ff01] transition-colors">Tradutor</a>
-            <a href="{{ route('texts.index') }}" class="hover:text-[#c0ff01] transition-colors">Textos</a>
-            <a href="{{ route('dictionary.index') }}" class="hover:text-[#c0ff01] transition-colors">
-                Meu Dicionário
-            </a>
+            <div class="flex items-center gap-10 text-sm font-medium tracking-wide">
 
-            @auth
-            <div class="relative" @click.away="openAulas = false">
 
-                <button @click="openAulas = !openAulas"
-                        class="flex items-center gap-2 hover:text-[#c0ff01] transition">
+                @foreach ([['label' => 'Início', 'route' => 'home'], ['label' => 'Meus Cursos', 'route' => 'home'], ['label' => 'Tradutor', 'route' => 'translator.index'], ['label' => 'Textos', 'route' => 'texts.index'], ['label' => 'Meu Dicionário', 'route' => 'dictionary.index']] as $item)
+                    <a href="{{ route($item['route']) }}"
+                        class="relative whitespace-nowrap transition duration-300
+{{ request()->routeIs($item['route']) ? 'text-[#c0ff01]' : 'hover:text-[#c0ff01]' }}">
 
-                    Aulas
+                        {{ $item['label'] }}
 
-                    @if($hasLiveNow)
-                        <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
-                            AO VIVO
+                        <!-- Linha animada -->
+                        <span
+                            class="absolute -bottom-2 left-0 h-[2px] bg-[#c0ff01]
+                        transition-all duration-300
+                        {{ request()->routeIs($item['route']) ? 'w-full' : 'w-0 group-hover:w-full' }}">
                         </span>
-                    @endif
+                    </a>
+                @endforeach
 
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
+                <!-- MEGA MENU AULAS -->
+                @auth
+                    <div class="relative group">
 
-                <!-- Dropdown -->
-                <div x-show="openAulas" x-transition
-                     class="absolute mt-3 w-72 bg-[#24253b] rounded-lg shadow-xl border border-white/10">
+                        <button
+                            class="flex items-center gap-2 whitespace-nowrap
+                               hover:text-[#c0ff01] transition duration-300">
 
-                    @forelse ($liveClasses as $class)
+                            Aulas
 
-                        @php
-                            $isLive = isLiveNow($class, $today, $currentTime);
-                        @endphp
+                            @if ($hasLiveNow)
+                                <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
+                                    AO VIVO
+                                </span>
+                            @endif
 
-                        <a href="{{ $class->link }}" target="_blank"
-                           class="flex items-center gap-3 px-4 py-3 transition
-                           {{ $isLive ? 'bg-red-600/20 border-l-4 border-red-500' : 'hover:bg-white/5' }}">
+                        </button>
 
-                            <div>
-                                <p class="font-semibold flex items-center gap-2">
+                        <!-- DROPDOWN MODERNO -->
+                        <div
+                            class="absolute left-1/2 -translate-x-1/2 mt-6
+                            w-[420px] p-6
+                            bg-[#1f2033]/95 backdrop-blur-xl
+                            border border-white/10
+                            rounded-2xl shadow-2xl
+                            opacity-0 invisible
+                            group-hover:opacity-100
+                            group-hover:visible
+                            transition-all duration-300">
 
-                                    @if($class->language === 'es')
-                                        <img src="https://flagcdn.com/w20/es.png" width="20">
-                                    @else
-                                        <img src="https://flagcdn.com/w20/us.png" width="20">
-                                    @endif
+                            <a href="{{ url('/aula-ao-vivo') }}" target="_blank"
+                                class="flex items-center gap-4 p-4 rounded-xl
+                              hover:bg-white/5 transition">
 
-                                    {{ $class->description ?? 'Aula ao Vivo' }}
+                                <img src="https://flagcdn.com/w40/es.png" class="rounded-md shadow-md">
 
-                                    @if($isLive)
-                                        <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
-                                            AO VIVO
-                                        </span>
-                                    @endif
-                                </p>
+                                <div>
+                                    <p class="font-semibold">
+                                        Aula de Espanhol Ao Vivo
+                                    </p>
+                                    <p class="text-xs text-white/60">
+                                        Sábados • 7h30
+                                    </p>
+                                </div>
 
-                                <p class="text-xs text-white/60">
-                                    {{ ucfirst($class->weekday) }} • 
-                                    {{ \Carbon\Carbon::parse($class->time)->format('H\hi') }}
-                                </p>
+                            </a>
+
+                            <div class="mt-4 pt-4 border-t border-white/10 text-xs text-white/50">
+                                Exclusivo para alunos matriculados
                             </div>
-                        </a>
 
-                    @empty
-                        <div class="px-4 py-4 text-sm text-white/50">
-                            Nenhuma aula cadastrada.
                         </div>
-                    @endforelse
 
-                    <div class="px-4 py-2 text-xs text-white/50 border-t border-white/10">
-                        Apenas para alunos
                     </div>
-                </div>
+                @endauth
+
             </div>
-            @endauth
+
         </div>
 
-        <!-- Auth Desktop -->
-        <div class="hidden md:flex items-center gap-3">
+        <!-- ÁREA DIREITA -->
+        <div class="hidden md:flex items-center gap-5 shrink-0">
+
             @auth
-                <span class="text-sm text-white/80">
+                <span class="text-sm text-white/80 whitespace-nowrap">
                     Olá, {{ Auth::user()->name }} 👋
                 </span>
 
                 <a href="{{ route('filament.admin.pages.dashboard') }}"
-                   class="text-sm px-4 py-2 rounded-md bg-[#c0ff01] text-[#111827]
-                   font-semibold hover:bg-[#aaff00] transition">
+                    class="whitespace-nowrap text-sm px-5 py-2.5 rounded-xl
+                      bg-[#c0ff01] text-[#111827] font-semibold
+                      hover:scale-105 hover:shadow-lg
+                      transition duration-300">
                     Área Administrativa
                 </a>
 
                 <form action="{{ route('filament.admin.auth.logout') }}" method="POST">
                     @csrf
                     <button type="submit"
-                            class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition text-white/80">
+                        class="whitespace-nowrap text-sm px-4 py-2
+                               rounded-xl hover:bg-white/5 transition">
                         Sair
                     </button>
                 </form>
             @else
                 <a href="{{ route('filament.admin.auth.login') }}"
-                   class="text-sm px-4 py-2 rounded-md hover:bg-white/5 transition">
+                    class="text-sm px-4 py-2 rounded-xl hover:bg-white/5 transition">
                     Entrar
                 </a>
+
                 <a href="{{ route('register') }}"
-                   class="text-sm px-4 py-2 rounded-md bg-[#c0ff01] text-[#111827]
-                   font-semibold hover:bg-[#aaff00] transition">
+                    class="text-sm px-5 py-2.5 rounded-xl
+                      bg-[#c0ff01] text-[#111827] font-semibold
+                      hover:scale-105 hover:shadow-lg
+                      transition duration-300">
                     Cadastre-se
                 </a>
             @endauth
+
         </div>
+
+        <!-- MOBILE BUTTON -->
+        <div class="md:hidden">
+            <button @click="open = !open" class="p-2 rounded-md hover:bg-white/5">
+                <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg x-show="open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- OVERLAY -->
+    <div x-show="open" x-transition.opacity @click="open = false"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden">
+    </div>
+
+    <!-- SIDEBAR MOBILE -->
+    <div x-show="open" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="translate-x-full"
+        class="fixed top-0 right-0 w-[300px] h-full
+            bg-[#1f2033] shadow-2xl z-50 md:hidden
+            flex flex-col">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+            <span class="font-semibold text-lg">Menu</span>
+
+            <button @click="open = false" class="p-2 rounded-md hover:bg-white/5">
+                ✕
+            </button>
+        </div>
+
+        <!-- LINKS -->
+        <div class="flex-1 px-6 py-6 space-y-6 text-sm font-medium">
+
+            <a href="{{ route('home') }}" class="block hover:text-[#c0ff01] transition">
+                Início
+            </a>
+
+            <a href="{{ route('home') }}" class="block hover:text-[#c0ff01] transition">
+                Meus Cursos
+            </a>
+
+            <a href="{{ route('translator.index') }}" class="block hover:text-[#c0ff01] transition">
+                Tradutor
+            </a>
+
+            <a href="{{ route('texts.index') }}" class="block hover:text-[#c0ff01] transition">
+                Textos
+            </a>
+
+            <a href="{{ route('dictionary.index') }}" class="block hover:text-[#c0ff01] transition">
+                Meu Dicionário
+            </a>
+
+            @auth
+                <div class="pt-4 border-t border-white/10">
+
+                    <a href="{{ url('/aula-ao-vivo') }}" target="_blank"
+                        class="flex items-center justify-between hover:text-[#c0ff01] transition">
+
+                        <span>Aulas</span>
+
+                        @if ($hasLiveNow)
+                            <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
+                                AO VIVO
+                            </span>
+                        @endif
+
+                    </a>
+                </div>
+            @endauth
+
+        </div>
+
+        <!-- FOOTER AUTH -->
+        <div class="px-6 py-6 border-t border-white/10 space-y-4">
+
+            @auth
+                <p class="text-white/60 text-sm">
+                    Olá, {{ Auth::user()->name }}
+                </p>
+
+                <a href="{{ route('filament.admin.pages.dashboard') }}"
+                    class="block w-full text-center py-2 rounded-xl
+                      bg-[#c0ff01] text-[#111827] font-semibold">
+                    Área Administrativa
+                </a>
+
+                <form action="{{ route('filament.admin.auth.logout') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="w-full text-center py-2 rounded-xl
+                               border border-white/10">
+                        Sair
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('filament.admin.auth.login') }}"
+                    class="block text-center py-2 border border-white/10 rounded-xl">
+                    Entrar
+                </a>
+
+                <a href="{{ route('register') }}"
+                    class="block text-center py-2 rounded-xl
+                      bg-[#c0ff01] text-[#111827] font-semibold">
+                    Cadastre-se
+                </a>
+            @endauth
+
+        </div>
+
     </div>
 </nav>
 

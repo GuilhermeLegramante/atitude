@@ -22,6 +22,12 @@ class LiveClassResource extends Resource
     protected static ?string $navigationGroup = 'Configurações';
     protected static ?string $title = 'Configurações das Aulas ao Vivo';
 
+    protected static ?string $modelLabel = 'aula ao vivo';
+
+    protected static ?string $pluralModelLabel = 'aulas ao vivo';
+
+    protected static ?string $slug = 'aulas-ao-vivo';
+
     public static function form(Form $form): Form
     {
         return $form

@@ -19,6 +19,8 @@ class AudioGeneratorPage extends Page implements HasForms
 
     protected static ?string $slug = 'converter-texto-em-audio';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function getNavigationGroup(): ?string
     {
         return 'Ferramentas';

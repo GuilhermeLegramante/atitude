@@ -5,8 +5,13 @@
     $now = Carbon::now();
     $today = strtolower(str_replace('-feira', '', $now->locale('pt_BR')->dayName));
 
+    $student = auth()->user()?->student;
+
     $liveClasses = LiveClass::where('active', true)
-        ->ordered() // 👈 AQUI
+        ->when($student && $student->language !== 'both', function ($query) use ($student) {
+            $query->where('language', $student->language);
+        })
+        ->ordered()
         ->get();
 
     $hasLiveNow = $liveClasses->contains(function ($class) use ($now, $today) {

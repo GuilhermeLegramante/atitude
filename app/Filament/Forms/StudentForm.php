@@ -19,7 +19,18 @@ class StudentForm
     public static function form(bool $hasSection = true): array
     {
         $formData = [
+
             FormFields::name(),
+            Select::make('language')
+                ->label('Idioma')
+                ->options([
+                    'en' => 'Inglês',
+                    'es' => 'Espanhol',
+                    'both' => 'Ambos',
+                ])
+                ->required()
+                ->default('both')
+                ->native(false),
             FileUpload::make('photo')
                 ->label('Foto')
                 ->avatar()
@@ -81,7 +92,7 @@ class StudentForm
             FormFields::note(),
         ];
 
-        if($hasSection) {
+        if ($hasSection) {
             return [
                 Section::make('Dados do Aluno')
                     ->description(

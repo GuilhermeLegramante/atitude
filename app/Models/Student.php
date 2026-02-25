@@ -9,6 +9,10 @@ class Student extends Model
 {
     use HasFactory;
 
+    const LANG_EN = 'en';
+    const LANG_ES = 'es';
+    const LANG_BOTH = 'both';
+
     protected $fillable = [
         'user_id',
         'guardian_id',
@@ -22,6 +26,8 @@ class Student extends Model
         'email',
         'phone',
         'note',
+        'language',
+
     ];
 
     public function user()

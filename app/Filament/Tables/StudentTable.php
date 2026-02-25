@@ -2,7 +2,9 @@
 
 namespace App\Filament\Tables;
 
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 
 class StudentTable
@@ -10,11 +12,18 @@ class StudentTable
     public static function table(): array
     {
         return [
-            ImageColumn::make('photo')
-                ->size(50)
-                ->circular()
-                ->label('Foto')
-                ->alignCenter(),
+            SelectColumn::make('language')
+                ->label('Idioma')
+                ->options([
+                    'en' => 'Inglês',
+                    'es' => 'Espanhol',
+                    'both' => 'Ambos',
+                ]),
+            // ImageColumn::make('photo')
+            //     ->size(50)
+            //     ->circular()
+            //     ->label('Foto')
+            //     ->alignCenter(),
             TextColumn::make('name')
                 ->label('Nome')
                 ->searchable(),

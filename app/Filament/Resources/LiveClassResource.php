@@ -59,6 +59,7 @@ class LiveClassResource extends Resource
                 Forms\Components\TextInput::make('link')
                     ->label('Link da Aula')
                     ->url()
+                    ->required()
                     ->helperText('Ex: https://zoom.us/j/966586244'),
 
                 Forms\Components\TextInput::make('description')

@@ -29,15 +29,15 @@ class StudentTable
                 ->searchable(),
             TextColumn::make('cpf')
                 ->label('CPF')
-                ->toggleable(isToggledHiddenByDefault: false)
+                ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
             TextColumn::make('rg')
                 ->label('RG')
-                ->toggleable(isToggledHiddenByDefault: false)
+                ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
             TextColumn::make('birth_date')
                 ->label('Data de Nascimento')
-                ->toggleable(isToggledHiddenByDefault: false)
+                ->toggleable(isToggledHiddenByDefault: true)
                 ->date()
                 ->sortable(),
             TextColumn::make('phone')
@@ -45,7 +45,7 @@ class StudentTable
                 ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
             TextColumn::make('gender')
-                ->toggleable(isToggledHiddenByDefault: false)
+                ->toggleable(isToggledHiddenByDefault: true)
                 ->label('Gênero')
                 ->searchable(),
             TextColumn::make('email')

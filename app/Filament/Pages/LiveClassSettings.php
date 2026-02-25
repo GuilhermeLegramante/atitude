@@ -18,6 +18,8 @@ class LiveClassSettings extends Page implements Forms\Contracts\HasForms
     protected static ?string $navigationGroup = 'Configurações';
     protected static ?string $title = 'Configurações das Aulas ao Vivo';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public ?string $zoom_link = null;
 
     public function mount(): void

@@ -17,7 +17,10 @@ class LiveClassResource extends Resource
 {
     protected static ?string $model = LiveClass::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-video-camera';
+    protected static ?string $navigationLabel = 'Aulas ao Vivo';
+    protected static ?string $navigationGroup = 'Configurações';
+    protected static ?string $title = 'Configurações das Aulas ao Vivo';
 
     public static function form(Form $form): Form
     {

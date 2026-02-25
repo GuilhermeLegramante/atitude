@@ -104,7 +104,7 @@ class AssessmentResource extends Resource
             ])
             // define o agrupamento padrão (pode receber string ou Group::make(...))
             ->defaultGroup('lesson.class.course.name')
-            ->defaultSort('assessment.id', 'desc')
+            // ->defaultSort('assessment.id', 'desc')
             ->filters([
                 //
             ])

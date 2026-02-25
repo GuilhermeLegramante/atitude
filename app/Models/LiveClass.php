@@ -17,4 +17,12 @@ class LiveClass extends Model
         'description',
         'active',
     ];
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderByRaw("
+        FIELD(weekday, 
+        'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado')
+    ")->orderBy('time');
+    }
 }

@@ -5,7 +5,9 @@
     $now = Carbon::now();
     $today = strtolower(str_replace('-feira', '', $now->locale('pt_BR')->dayName));
 
-    $liveClasses = LiveClass::where('active', true)->get();
+    $liveClasses = LiveClass::where('active', true)
+        ->ordered() // 👈 AQUI
+        ->get();
 
     $hasLiveNow = $liveClasses->contains(function ($class) use ($now, $today) {
         $start = Carbon::parse($class->time);
@@ -89,22 +91,50 @@ $watch('open', value => {
                             group-hover:visible
                             transition-all duration-300">
 
-                            <a href="{{ url('/aula-ao-vivo') }}" target="_blank"
-                                class="flex items-center gap-4 p-4 rounded-xl
-                              hover:bg-white/5 transition">
+                            @forelse($liveClasses as $class)
+                                @php
+                                    $start = \Carbon\Carbon::parse($class->time);
+                                    $end = \Carbon\Carbon::parse($class->time)->addHour();
+                                    $isLive = $class->weekday === $today && $now->between($start, $end);
+                                @endphp
 
-                                <img src="https://flagcdn.com/w40/es.png" class="rounded-md shadow-md">
+                                <a href="{{ $class->link }}" target="_blank"
+                                    class="flex items-center gap-4 p-4 rounded-xl
+              transition
+              {{ $isLive ? 'bg-red-600/20 border border-red-500/40' : 'hover:bg-white/5' }}">
 
-                                <div>
-                                    <p class="font-semibold">
-                                        Aula de Espanhol Ao Vivo
-                                    </p>
-                                    <p class="text-xs text-white/60">
-                                        Sábados • 7h30
-                                    </p>
+                                    <!-- BANDEIRA DINÂMICA -->
+                                    <img src="{{ $class->language === 'es' ? 'https://flagcdn.com/w40/es.png' : 'https://flagcdn.com/w40/us.png' }}"
+                                        class="rounded-md shadow-md">
+
+                                    <div class="flex-1">
+
+                                        <p class="font-semibold flex items-center gap-2">
+
+                                            {{ $class->description ?? 'Aula ao Vivo' }}
+
+                                            @if ($isLive)
+                                                <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
+                                                    AO VIVO
+                                                </span>
+                                            @endif
+
+                                        </p>
+
+                                        <p class="text-xs text-white/60">
+                                            {{ ucfirst($class->weekday) }} •
+                                            {{ $start->format('H\hi') }}
+                                        </p>
+
+                                    </div>
+
+                                </a>
+
+                            @empty
+                                <div class="text-sm text-white/50">
+                                    Nenhuma aula cadastrada.
                                 </div>
-
-                            </a>
+                            @endforelse
 
                             <div class="mt-4 pt-4 border-t border-white/10 text-xs text-white/50">
                                 Exclusivo para alunos matriculados
@@ -221,20 +251,56 @@ $watch('open', value => {
             </a>
 
             @auth
-                <div class="pt-4 border-t border-white/10">
+                <div class="pt-4 border-t border-white/10 space-y-4">
 
-                    <a href="{{ url('/aula-ao-vivo') }}" target="_blank"
-                        class="flex items-center justify-between hover:text-[#c0ff01] transition">
+                    <p class="text-sm text-white/60">
+                        Aulas ao Vivo
+                    </p>
 
-                        <span>Aulas</span>
+                    @forelse($liveClasses as $class)
+                        @php
+                            $start = \Carbon\Carbon::parse($class->time);
+                            $end = \Carbon\Carbon::parse($class->time)->addHour();
+                            $isLive = $class->weekday === $today && $now->between($start, $end);
+                        @endphp
 
-                        @if ($hasLiveNow)
-                            <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
-                                AO VIVO
-                            </span>
-                        @endif
+                        <a href="{{ $class->link }}" target="_blank"
+                            class="flex items-center justify-between p-3 rounded-xl transition
+               {{ $isLive ? 'bg-red-600/20 border border-red-500/40' : 'hover:bg-white/5' }}">
 
-                    </a>
+                            <div class="flex items-center gap-3">
+
+                                <!-- Bandeira -->
+                                <img src="{{ $class->language === 'es' ? 'https://flagcdn.com/w20/es.png' : 'https://flagcdn.com/w20/us.png' }}"
+                                    class="rounded shadow-md">
+
+                                <div>
+                                    <p class="text-sm font-semibold">
+                                        {{ $class->description ?? 'Aula ao Vivo' }}
+                                    </p>
+
+                                    <p class="text-xs text-white/60">
+                                        {{ ucfirst($class->weekday) }} •
+                                        {{ $start->format('H\hi') }}
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            @if ($isLive)
+                                <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
+                                    AO VIVO
+                                </span>
+                            @endif
+
+                        </a>
+
+                    @empty
+                        <p class="text-xs text-white/50">
+                            Nenhuma aula cadastrada.
+                        </p>
+                    @endforelse
+
                 </div>
             @endauth
 

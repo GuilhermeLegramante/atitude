@@ -19,6 +19,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -102,11 +103,13 @@ class AssessmentResource extends Resource
                     ->label('Curso')
                     ->collapsible(),
             ])
-            // define o agrupamento padrão (pode receber string ou Group::make(...))
-            // ->defaultGroup('lesson.class.course.name')
             ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                SelectFilter::make('course')
+                    ->label('Curso')
+                    ->relationship('lesson.class.course', 'name')
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

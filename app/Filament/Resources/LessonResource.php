@@ -7,6 +7,7 @@ use App\Filament\Resources\LessonResource\Pages;
 use App\Filament\Resources\LessonResource\RelationManagers;
 use App\Filament\Tables\LessonTable;
 use App\Filament\Tables\TableColumns;
+use App\Models\ClassModel;
 use App\Models\Lesson;
 use Filament\Forms;
 use Filament\Forms\Components\ViewField;
@@ -80,41 +81,51 @@ class LessonResource extends Resource
             ->defaultSort('order', 'asc')
 
             ->columns([
-                Stack::make([
-                    ViewColumn::make('lesson_card')
-                        ->label('')
-                        ->view('lesson-info-to-list')
-                        ->extraAttributes([
-                            'class' => 'w-full h-64', // altura maior e largura total
-                        ]),
-                    TextColumn::make('title')
-                        ->weight(FontWeight::Bold)
-                        ->searchable()
-                        ->sortable(),
-                    TextColumn::make('class.course.name')
-                        ->label('Curso')
-                        ->sortable(),
-                    TextColumn::make('class.name')
-                        ->label('Turma')
-                        ->sortable(),
-                    TextColumn::make('watched')
-                        ->label('Assistida')
-                        ->getStateUsing(function ($record) {
-                            $user = auth()->user();
-                            $student = $user->student;
+                TextColumn::make('title')
+                    ->weight(FontWeight::Bold)
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('class.course.name')
+                    ->label('Curso')
+                    ->sortable(),
+                TextColumn::make('class.name')
+                    ->label('Turma')
+                    ->sortable(),
+                // Stack::make([
+                // ViewColumn::make('lesson_card')
+                //     ->label('')
+                //     ->view('lesson-info-to-list')
+                //     ->extraAttributes([
+                //         'class' => 'w-full h-64', // altura maior e largura total
+                //     ]),
+                // TextColumn::make('title')
+                //     ->weight(FontWeight::Bold)
+                //     ->searchable()
+                //     ->sortable(),
+                // TextColumn::make('class.course.name')
+                //     ->label('Curso')
+                //     ->sortable(),
+                // TextColumn::make('class.name')
+                //     ->label('Turma')
+                //     ->sortable(),
+                // TextColumn::make('watched')
+                //     ->label('Assistida')
+                //     ->getStateUsing(function ($record) {
+                //         $user = auth()->user();
+                //         $student = $user->student;
 
-                            if (! $student) {
-                                return false;
-                            }
+                //         if (! $student) {
+                //             return false;
+                //         }
 
-                            $pivot = $record->students()->where('students.id', $student->id)->first();
+                //         $pivot = $record->students()->where('students.id', $student->id)->first();
 
-                            return $pivot?->pivot->watched ?? false;
-                        })
-                        ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
-                        ->color(fn($state) => $state ? 'success' : 'secondary')    // cor da badge/texto
-                        ->sortable(),
-                ])
+                //         return $pivot?->pivot->watched ?? false;
+                //     })
+                //     ->formatStateUsing(fn($state) => $state ? 'ASSISTIDA' : '') // substitui enum
+                //     ->color(fn($state) => $state ? 'success' : 'secondary')    // cor da badge/texto
+                //     ->sortable(),
+                // ])
 
             ])
             ->contentGrid(['md' => 2, 'xl' => 3])
@@ -123,15 +134,10 @@ class LessonResource extends Resource
                     ->label('Turma')
                     ->placeholder('Selecione uma turma')
                     ->options(function () {
-                        $user = auth()->user();
-                        $student = $user->student;
-
-                        if (! $student) {
-                            return [];
-                        }
-
-                        // Pega só as turmas do estudante logado
-                        return $student->classes()->pluck('name', 'id');
+                        return ClassModel::query()
+                            ->orderBy('name')
+                            ->pluck('name', 'id')
+                            ->toArray();
                     }),
             ])
             ->actions([

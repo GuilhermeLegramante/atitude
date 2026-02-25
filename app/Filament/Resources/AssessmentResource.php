@@ -99,6 +99,7 @@ class AssessmentResource extends Resource
             //     // Ordena pelo name do mais antigo para o mais novo
             //     return $query->orderBy('name', 'asc');
             // })
+            ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('name')
                     ->label('Título')

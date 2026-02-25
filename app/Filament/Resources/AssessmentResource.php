@@ -161,27 +161,29 @@ class AssessmentResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         // Obtém o usuário logado
-        $user = auth()->user();
+        // $user = auth()->user();
 
         // Obtém o estudante vinculado ao usuário logado
-        $student = $user->student;
+        // $student = $user->student;
 
-        if (!$student) {
-            return static::getModel()::count();
-        }
+        // if (!$student) {
+        //     return static::getModel()::count();
+        // }
 
         // Conta o número de avaliações associadas ao estudante
-        $assessmentCount = $student->classes()
-            ->with('lessons.assessments')  // Eager load para evitar N+1 queries
-            ->get()
-            ->flatMap(function ($classModel) {
-                return $classModel->lessons->flatMap(function ($lesson) {
-                    return $lesson->assessments;
-                });
-            })
-            ->count();
+        // $assessmentCount = $student->classes()
+        //     ->with('lessons.assessments')  // Eager load para evitar N+1 queries
+        //     ->get()
+        //     ->flatMap(function ($classModel) {
+        //         return $classModel->lessons->flatMap(function ($lesson) {
+        //             return $lesson->assessments;
+        //         });
+        //     })
+        //     ->count();
+
+        return ClassModel::all()->count();
 
         // Retorna o número de avaliações, ou null se não houver avaliações
-        return $assessmentCount > 0 ? (string) $assessmentCount : null;
+        // return $assessmentCount > 0 ? (string) $assessmentCount : null;
     }
 }

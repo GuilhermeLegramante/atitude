@@ -105,11 +105,18 @@ class AssessmentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                SelectFilter::make('course')
+                SelectFilter::make('course_id')
                     ->label('Curso')
-                    ->relationship('lesson.class.course', 'name')
-                    ->searchable()
-                    ->preload(),
+                    ->options(
+                        \App\Models\Course::orderBy('name')->pluck('name', 'id')
+                    )
+                    ->query(function ($query, $data) {
+                        if ($data['value']) {
+                            $query->whereHas('lesson.class.course', function ($q) use ($data) {
+                                $q->where('id', $data['value']);
+                            });
+                        }
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

@@ -83,22 +83,6 @@ class AssessmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            // ->modifyQueryUsing(function (Builder $query) {
-            //     // Pega o usuário logado
-            //     $user = auth()->user();
-
-            //     // Pega o estudante vinculado ao usuário logado
-            //     $student = $user->student;
-
-            //     if ($student) {
-            //         $query->whereHas('lesson.class.students', function ($q) use ($student) {
-            //             $q->where('students.id', $student->id);
-            //         });
-            //     }
-
-            //     // Ordena pelo name do mais antigo para o mais novo
-            //     return $query->orderBy('name', 'asc');
-            // })
             ->columns([
                 TextColumn::make('name')
                     ->label('Título')
@@ -120,6 +104,7 @@ class AssessmentResource extends Resource
             ])
             // define o agrupamento padrão (pode receber string ou Group::make(...))
             ->defaultGroup('lesson.class.course.name')
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
@@ -153,7 +138,7 @@ class AssessmentResource extends Resource
             'index' => Pages\ListAssessments::route('/'),
             'create' => Pages\CreateAssessment::route('/criar'),
             'edit' => Pages\EditAssessment::route('/{record}/editar'),
-            'view' => Pages\ViewAssessment::route('/{record}'),
+            // 'view' => Pages\ViewAssessment::route('/{record}'),
         ];
     }
 

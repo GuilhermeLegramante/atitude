@@ -80,15 +80,4 @@ class Student extends Model
     //     return $this->hasManyThrough(Assessment::class, Lesson::class);
     // }
 
-    protected static function booted()
-    {
-        static::deleting(function ($student) {
-
-            $student->watchedLessons()->delete();
-            $student->classes()->delete();
-            $student->payments()->delete();
-
-            // se tiver relacionamento aninhado, apague antes também
-        });
-    }
 }

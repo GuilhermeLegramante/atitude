@@ -85,6 +85,7 @@ class Student extends Model
         static::deleting(function ($student) {
 
             $student->watchedLessons()->delete();
+            $student->classes()->delete();
             $student->payments()->delete();
 
             // se tiver relacionamento aninhado, apague antes também

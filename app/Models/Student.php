@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Student extends Model
 {
@@ -55,6 +56,11 @@ class Student extends Model
         return $this->belongsTo(Guardian::class); // Relationship to the guardian
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     public function lastWatchedLesson()
     {
         return $this->watchedLessons()
@@ -73,4 +79,15 @@ class Student extends Model
     // {
     //     return $this->hasManyThrough(Assessment::class, Lesson::class);
     // }
+
+    protected static function booted()
+    {
+        static::deleting(function ($student) {
+
+            $student->watchedLessons()->delete();
+            $student->payments()->delete();
+
+            // se tiver relacionamento aninhado, apague antes também
+        });
+    }
 }

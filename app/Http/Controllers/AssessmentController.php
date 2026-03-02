@@ -134,9 +134,11 @@ class AssessmentController extends Controller
         return view('partials.user-answers', compact('questions', 'correctAnswers', 'totalQuestions', 'scorePercent'));
     }
 
-      public function teste(Assessment $assessment)
+    public function teste(Assessment $assessment)
     {
         $userId = auth()->id();
+
+        dd($userId);
 
         $questions = $assessment->questions()
             ->with([
@@ -161,7 +163,7 @@ class AssessmentController extends Controller
             }
         }
 
-        dd($questions); 
+        dd($questions);
 
         $scorePercent = $totalQuestions > 0 ? round(($correctAnswers / $totalQuestions) * 100) : 0;
 

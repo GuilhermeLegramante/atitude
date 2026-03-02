@@ -91,5 +91,5 @@ Route::get('/aula-ao-vivo', function () {
     return redirect($link);
 });
 
-Route::get('/teste', [HomeController::class, 'teste'])
+Route::get('/teste/{assessment}', [AssessmentController::class, 'teste'])
     ->name('teste');

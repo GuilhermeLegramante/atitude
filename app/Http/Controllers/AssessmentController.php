@@ -133,4 +133,35 @@ class AssessmentController extends Controller
 
         return view('partials.user-answers', compact('questions', 'correctAnswers', 'totalQuestions', 'scorePercent'));
     }
+
+      public function teste(Assessment $assessment)
+    {
+        $userId = auth()->id();
+
+        $questions = $assessment->questions()
+            ->with([
+                'answers' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)->with('alternative');
+                },
+                'alternatives'
+            ])
+            ->get();
+
+        // Calcula pontuação
+        $totalQuestions = $questions->count();
+        $correctAnswers = 0;
+
+        foreach ($questions as $question) {
+            $answer = $question->answers->first();
+            if ($answer && $answer->is_correct) {
+                $correctAnswers++;
+            }
+        }
+
+        dd($questions); 
+
+        $scorePercent = $totalQuestions > 0 ? round(($correctAnswers / $totalQuestions) * 100) : 0;
+
+        return view('partials.user-answers', compact('questions', 'correctAnswers', 'totalQuestions', 'scorePercent'));
+    }
 }

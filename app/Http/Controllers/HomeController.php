@@ -72,12 +72,13 @@ class HomeController extends Controller
         if (Auth::check()) {
             $student = Auth::user()->student;
 
-            dd($student);
-
             if ($student) {
                 $lastLesson = $student->lastWatchedLesson();
                 $currentCourse = $lastLesson?->class?->course;
             }
+
+            dd($currentCourse);
+            
 
             // Busca XP e posição no ranking
             $xp = DB::table('experiences')

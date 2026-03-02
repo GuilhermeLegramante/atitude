@@ -77,8 +77,8 @@ class HomeController extends Controller
                 $currentCourse = $lastLesson?->class?->course;
             }
 
-            dd($currentCourse);
-            
+            dd($currentCourse->progress);
+
 
             // Busca XP e posição no ranking
             $xp = DB::table('experiences')

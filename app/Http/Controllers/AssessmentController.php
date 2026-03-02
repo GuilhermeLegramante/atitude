@@ -41,6 +41,8 @@ class AssessmentController extends Controller
                 'user_id' => $user->id,
             ];
 
+            $checked = false;
+
             switch ($question->questionType->type_name) {
                 case 'Objetiva':
                     // Se for objetiva, o valor é o ID da alternativa diretamente e já corrige a questão
@@ -51,6 +53,7 @@ class AssessmentController extends Controller
                     if ($alternative) {
                         $data['alternative_id'] = $alternative->id;
                         $data['is_correct'] = $alternative->is_correct;
+                        $checked = true;
                     }
                     break;
 
@@ -75,7 +78,7 @@ class AssessmentController extends Controller
             }
 
             Answer::updateOrCreate(
-                ['question_id' => $questionId, 'user_id' => $user->id],
+                ['question_id' => $questionId, 'user_id' => $user->id, 'checked' => $checked],
                 $data
             );
         }

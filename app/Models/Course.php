@@ -33,7 +33,7 @@ class Course extends Model
      */
     public function getProgressAttribute()
     {
-        $student = Auth::user(); // ou Auth::user()->student se você tiver relacionamento
+        $student = Auth::user()->student; // ou Auth::user()->student se você tiver relacionamento
 
         if (!$student) {
             return 0;

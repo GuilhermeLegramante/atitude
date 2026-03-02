@@ -54,7 +54,7 @@
     <!-- 🔹 Grid de cursos -->
     <div id="courses-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($courses as $course)
-            @if ($student->language == $course->language || $student->language == 'both')
+            @if ($student?->language == $course->language || $student?->language == 'both')
                 @php
                     $formattedTitle = Str::slug($course->name, '+');
                     $thumb =

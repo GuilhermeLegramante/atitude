@@ -43,8 +43,15 @@ class AssessmentController extends Controller
 
             switch ($question->questionType->type_name) {
                 case 'Objetiva':
-                    // Se for objetiva, o valor é o ID da alternativa diretamente
-                    $data['alternative_id'] = $value;
+                    // Se for objetiva, o valor é o ID da alternativa diretamente e já corrige a questão
+                    $alternative = $question->alternatives()
+                        ->where('id', $value)
+                        ->first();
+
+                    if ($alternative) {
+                        $data['alternative_id'] = $alternative->id;
+                        $data['is_correct'] = $alternative->is_correct;
+                    }
                     break;
 
                 case 'Discursiva':
@@ -151,10 +158,7 @@ class AssessmentController extends Controller
         $totalQuestions = $questions->count();
         $correctAnswers = 0;
 
-        dd($questions); 
-
         foreach ($questions as $question) {
-            dd($question->answers);
             $answer = $question->answers->first();
 
             dd($answer);

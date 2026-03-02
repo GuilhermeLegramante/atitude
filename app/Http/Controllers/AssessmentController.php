@@ -138,8 +138,6 @@ class AssessmentController extends Controller
     {
         $userId = auth()->id();
 
-        dd($userId);
-
         $questions = $assessment->questions()
             ->with([
                 'answers' => function ($q) use ($userId) {
@@ -152,6 +150,8 @@ class AssessmentController extends Controller
         // Calcula pontuação
         $totalQuestions = $questions->count();
         $correctAnswers = 0;
+
+        dd($questions); 
 
         foreach ($questions as $question) {
             dd($question->answers);

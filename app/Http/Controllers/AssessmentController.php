@@ -153,6 +153,8 @@ class AssessmentController extends Controller
 
         foreach ($questions as $question) {
             $answer = $question->answers->first();
+
+            dd($answer);
             if ($answer && $answer->is_correct) {
                 $correctAnswers++;
             }

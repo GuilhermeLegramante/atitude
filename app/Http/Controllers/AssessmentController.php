@@ -152,6 +152,7 @@ class AssessmentController extends Controller
         $correctAnswers = 0;
 
         foreach ($questions as $question) {
+            dd($question->answers);
             $answer = $question->answers->first();
 
             dd($answer);

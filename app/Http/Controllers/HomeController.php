@@ -43,6 +43,7 @@ class HomeController extends Controller
         }
 
         return view('home', compact(
+            'student',
             'courses',
             'lastLesson',
             'currentCourse',

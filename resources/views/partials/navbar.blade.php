@@ -215,138 +215,168 @@ $watch('open', value => {
     </div>
 
     <!-- SIDEBAR MOBILE -->
-    <div x-show="open" x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
-        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-x-0"
-        x-transition:leave-end="translate-x-full"
-        class="fixed top-0 right-0 w-[300px] h-full
-            bg-[#1f2033] shadow-2xl z-50 md:hidden
-            flex flex-col">
+    <div x-data="{ open: false }">
 
-        <!-- HEADER -->
-        <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
-            <span class="font-semibold text-lg">Menu</span>
+        <!-- BOTÃO ABRIR MENU -->
+        <button @click="open = true" class="p-2 rounded-md hover:bg-white/10 md:hidden">
+            ☰
+        </button>
 
-            <button @click="open = false" class="p-2 rounded-md hover:bg-white/5">
-                ✕
-            </button>
+        <!-- OVERLAY -->
+        <div x-show="open" x-transition.opacity @click="open=false" class="fixed inset-0 bg-black/50 z-40 md:hidden">
         </div>
 
-        <!-- LINKS -->
-        <div class="flex-1 px-6 py-6 space-y-6 text-sm font-medium">
+        <!-- MENU -->
+        <div x-show="open" x-transition:enter="transform transition ease-out duration-300"
+            x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+            x-transition:leave="transform transition ease-in duration-200" x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full"
+            class="fixed top-0 right-0 w-[320px] h-full
+        bg-[#1f2033] shadow-2xl z-50 md:hidden
+        flex flex-col">
 
-            <a href="{{ route('home') }}" class="block hover:text-[#c0ff01] transition">
-                Início
-            </a>
+            <!-- HEADER -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
 
-            <a href="{{ route('home') }}" class="block hover:text-[#c0ff01] transition">
-                Meus Cursos
-            </a>
+                <span class="font-semibold text-lg">
+                    Menu
+                </span>
 
-            <a href="{{ route('translator.index') }}" class="block hover:text-[#c0ff01] transition">
-                Tradutor
-            </a>
+                <button @click="open=false"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition">
+                    ✕
+                </button>
 
-            <a href="{{ route('texts.index') }}" class="block hover:text-[#c0ff01] transition">
-                Textos
-            </a>
+            </div>
 
-            <a href="{{ route('dictionary.index') }}" class="block hover:text-[#c0ff01] transition">
-                Meu Dicionário
-            </a>
+            <!-- LINKS -->
+            <div class="flex-1 px-6 py-6 space-y-2 text-sm font-medium">
 
-            @auth
-                <div class="pt-4 border-t border-white/10 space-y-4">
+                <a href="{{ route('home') }}"
+                    class="block px-4 py-3 rounded-lg hover:bg-white/5 hover:text-[#c0ff01] transition">
+                    Início
+                </a>
 
-                    <p class="text-sm text-white/60">
-                        Aulas ao Vivo
-                    </p>
+                <a href="{{ route('home') }}"
+                    class="block px-4 py-3 rounded-lg hover:bg-white/5 hover:text-[#c0ff01] transition">
+                    Meus Cursos
+                </a>
 
-                    @forelse($liveClasses as $class)
-                        @php
-                            $start = \Carbon\Carbon::parse($class->time);
-                            $end = \Carbon\Carbon::parse($class->time)->addHour();
-                            $isLive = $class->weekday === $today && $now->between($start, $end);
-                        @endphp
+                <a href="{{ route('translator.index') }}"
+                    class="block px-4 py-3 rounded-lg hover:bg-white/5 hover:text-[#c0ff01] transition">
+                    Tradutor
+                </a>
 
-                        <a href="{{ $class->link }}" target="_blank"
-                            class="flex items-center justify-between p-3 rounded-xl transition
-               {{ $isLive ? 'bg-red-600/20 border border-red-500/40' : 'hover:bg-white/5' }}">
+                <a href="{{ route('texts.index') }}"
+                    class="block px-4 py-3 rounded-lg hover:bg-white/5 hover:text-[#c0ff01] transition">
+                    Textos
+                </a>
 
-                            <div class="flex items-center gap-3">
+                <a href="{{ route('dictionary.index') }}"
+                    class="block px-4 py-3 rounded-lg hover:bg-white/5 hover:text-[#c0ff01] transition">
+                    Meu Dicionário
+                </a>
 
-                                <!-- Bandeira -->
-                                <img src="{{ $class->language === 'es' ? 'https://flagcdn.com/w20/es.png' : 'https://flagcdn.com/w20/us.png' }}"
-                                    class="rounded shadow-md">
+                @auth
 
-                                <div>
-                                    <p class="text-sm font-semibold">
-                                        {{ $class->description ?? 'Aula ao Vivo' }}
-                                    </p>
+                    <div class="pt-6 mt-6 border-t border-white/10 space-y-3">
 
-                                    <p class="text-xs text-white/60">
-                                        {{ ucfirst($class->weekday) }} •
-                                        {{ $start->format('H\hi') }}
-                                    </p>
+                        <p class="text-xs text-white/50 uppercase tracking-wider">
+                            Aulas ao vivo
+                        </p>
+
+                        @forelse($liveClasses as $class)
+                            @php
+                                $start = \Carbon\Carbon::parse($class->time);
+                                $end = \Carbon\Carbon::parse($class->time)->addHour();
+                                $isLive = $class->weekday === $today && $now->between($start, $end);
+                            @endphp
+
+                            <a href="{{ $class->link }}" target="_blank"
+                                class="flex items-center justify-between p-3 rounded-xl transition
+                            {{ $isLive ? 'bg-red-600/20 border border-red-500/40' : 'hover:bg-white/5' }}">
+
+                                <div class="flex items-center gap-3">
+
+                                    <img src="{{ $class->language === 'es' ? 'https://flagcdn.com/w20/es.png' : 'https://flagcdn.com/w20/us.png' }}"
+                                        class="rounded shadow-md">
+
+                                    <div>
+
+                                        <p class="text-sm font-semibold">
+                                            {{ $class->description ?? 'Aula ao Vivo' }}
+                                        </p>
+
+                                        <p class="text-xs text-white/60">
+                                            {{ ucfirst($class->weekday) }}
+                                            •
+                                            {{ $start->format('H\hi') }}
+                                        </p>
+
+                                    </div>
+
                                 </div>
 
-                            </div>
+                                @if ($isLive)
+                                    <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
+                                        AO VIVO
+                                    </span>
+                                @endif
 
-                            @if ($isLive)
-                                <span class="text-xs bg-red-600 px-2 py-0.5 rounded-full animate-pulse">
-                                    AO VIVO
-                                </span>
-                            @endif
+                            </a>
 
-                        </a>
+                        @empty
 
-                    @empty
-                        <p class="text-xs text-white/50">
-                            Nenhuma aula cadastrada.
-                        </p>
-                    @endforelse
+                            <p class="text-xs text-white/50">
+                                Nenhuma aula cadastrada.
+                            </p>
+                        @endforelse
 
-                </div>
-            @endauth
+                    </div>
+
+                @endauth
+
+            </div>
 
         </div>
 
-        <!-- FOOTER AUTH -->
-        <div class="px-6 py-6 border-t border-white/10 space-y-4">
+    </div>
+    <!-- FOOTER AUTH -->
+    <div class="px-6 py-6 border-t border-white/10 space-y-4">
 
-            @auth
-                <p class="text-white/60 text-sm">
-                    Olá, {{ Auth::user()->name }}
-                </p>
+        @auth
+            <p class="text-white/60 text-sm">
+                Olá, {{ Auth::user()->name }}
+            </p>
 
-                <a href="{{ route('filament.admin.pages.dashboard') }}"
-                    class="block w-full text-center py-2 rounded-xl
+            <a href="{{ route('filament.admin.pages.dashboard') }}"
+                class="block w-full text-center py-2 rounded-xl
                       bg-[#c0ff01] text-[#111827] font-semibold">
-                    Área Administrativa
-                </a>
+                Área Administrativa
+            </a>
 
-                <form action="{{ route('filament.admin.auth.logout') }}" method="POST">
-                    @csrf
-                    <button type="submit"
-                        class="w-full text-center py-2 rounded-xl
+            <form action="{{ route('filament.admin.auth.logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="w-full text-center py-2 rounded-xl
                                border border-white/10">
-                        Sair
-                    </button>
-                </form>
-            @else
-                <a href="{{ route('filament.admin.auth.login') }}"
-                    class="block text-center py-2 border border-white/10 rounded-xl">
-                    Entrar
-                </a>
+                    Sair
+                </button>
+            </form>
+        @else
+            <a href="{{ route('filament.admin.auth.login') }}"
+                class="block text-center py-2 border border-white/10 rounded-xl">
+                Entrar
+            </a>
 
-                <a href="{{ route('register') }}"
-                    class="block text-center py-2 rounded-xl
+            <a href="{{ route('register') }}"
+                class="block text-center py-2 rounded-xl
                       bg-[#c0ff01] text-[#111827] font-semibold">
-                    Cadastre-se
-                </a>
-            @endauth
+                Cadastre-se
+            </a>
+        @endauth
 
-        </div>
+    </div>
 
     </div>
 </nav>

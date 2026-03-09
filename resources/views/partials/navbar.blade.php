@@ -256,7 +256,7 @@ $watch('open', value => {
             </a>
 
             @auth
-                <div class="pt-4 border-t border-white/10 space-y-4">
+                <div class="pt-4 border-t border-white/10 space-y-4 max-h-64 overflow-y-auto pr-2">
 
                     <p class="text-sm text-white/60">
                         Aulas ao Vivo
@@ -312,7 +312,7 @@ $watch('open', value => {
         </div>
 
         <!-- FOOTER AUTH -->
-        <div class="px-6 py-6 border-t border-white/10 space-y-4">
+        <div class="px-6 py-6 border-t border-white/10 space-y-4 max-h-64 overflow-y-auto pr-2">
 
             @auth
                 <p class="text-white/60 text-sm">

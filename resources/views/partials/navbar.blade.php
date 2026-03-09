@@ -196,7 +196,7 @@ $watch('open', value => {
         </div>
 
         <!-- MOBILE BUTTON -->
-        <div class="md:hidden">
+        {{-- <div class="md:hidden">
             <button @click="open = !open" class="p-2 rounded-md hover:bg-white/5">
                 <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -205,7 +205,7 @@ $watch('open', value => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-        </div>
+        </div> --}}
 
     </div>
 

@@ -87,6 +87,41 @@
             padding-top: 10px;
             width: 400px;
         }
+
+        /* Container das Assinaturas */
+        .assinaturas-container {
+            position: absolute;
+            bottom: 120px;
+            /* Ajuste para alinhar com as linhas da imagem */
+            width: 100%;
+            text-align: center;
+        }
+
+        .assinatura-box {
+            display: inline-block;
+            width: 40%;
+            /* Divide o espaço entre as duas assinaturas */
+            vertical-align: top;
+            margin: 0 20px;
+        }
+
+        .assinatura-img {
+            height: 70px;
+            /* Altura fixa para manter proporção */
+            width: auto;
+            margin-bottom: -10px;
+            opacity: 0.9;
+        }
+
+        .dados-assinatura {
+            font-size: 11px;
+            /* Fonte menor para caber no layout */
+            color: #ffffff;
+            line-height: 1.4;
+            text-transform: uppercase;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 5px;
+        }
     </style>
 </head>
 
@@ -99,19 +134,27 @@
     <div class="texto-conclusao">
         Concluiu com êxito o <strong>{{ $module }}</strong> do curso de
         <strong>{{ $course }}</strong> da Escola Atitude Idiomas,
-        com carga horária de 50 horas.
+        com carga horária de {{ $hours }} horas.
     </div>
 
-    <div class="footer-info">
-        <div>
-            <img src="{{ public_path('img/assinatura.png') }}" class="assinatura-img" alt="Assinatura">
+    <div class="assinaturas-container">
+        <div class="assinatura-box">
+            <img src="{{ public_path('img/assinatura_diretor.png') }}" class="assinatura-img">
+            <div class="dados-assinatura">
+                <strong>EDUARDO SILVEIRA BATISTA</strong><br>
+                DIRETOR - ESCOLA ATITUDE IDIOMAS<br>
+                CNPJ: 44.698.899/0001-33
+            </div>
         </div>
 
-        {{-- <div class="dados-empresa">
-            EDUARDO SILVEIRA BATISTA<br>
-            ESCOLA ATITUDE IDIOMAS<br>
-            CNPJ: 44.698.899/0001-33
-        </div> --}}
+        <div class="assinatura-box">
+            <img src="{{ public_path('img/assinatura_coord.png') }}" class="assinatura-img">
+            <div class="dados-assinatura">
+                <strong>CAROLINA TONELOTTO LORENZONI</strong><br>
+                COORDENADORA<br>
+                ESCOLA ATITUDE IDIOMAS
+            </div>
+        </div>
     </div>
 
 </body>

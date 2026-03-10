@@ -112,7 +112,8 @@ Route::get('/modulo/{class}/certificado', function (ClassModel $class) {
         'student' => $student,
         'module'  => $class->name,
         'course'  => $class->course->name ?? 'Curso Atitude Idiomas',
-        'date'    => now()->format('d/m/Y')
+        'date'    => now()->format('d/m/Y'),
+        'hours'   => $class->lessons()->count() * 1.0, // Você pode calcular isso dinamicamente com base nas aulas do módulo
     ];
 
     $pdf = Pdf::loadView('certificates.default', $data)

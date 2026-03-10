@@ -63,7 +63,6 @@
             font-size: 14px;
             line-height: 1.6;
             text-transform: uppercase;
-            [cite: 4]
         }
     </style>
 </head>
@@ -71,20 +70,20 @@
 <body>
 
     <div class="nome-aluno">
-        {{ mb_strtoupper($student->name) }} [cite: 3]
+        {{ mb_strtoupper($student->name) }}
     </div>
 
     <div class="texto-conclusao">
         Concluiu com êxito o <strong>{{ $module }}</strong> do curso de
         <strong>{{ $course }}</strong> da Escola Atitude Idiomas,
-        com carga horária de 50 horas. [cite: 3]
+        com carga horária de 50 horas.
     </div>
 
-    <div class="footer-info">
+    {{-- <div class="footer-info">
         EDUARDO SILVEIRA BATISTA<br>
         ESCOLA ATITUDE IDIOMAS<br>
-        CNPJ: 44.698.899/0001-33 [cite: 4]
-    </div>
+        CNPJ: 44.698.899/0001-33
+    </div> --}}
 
 </body>
 

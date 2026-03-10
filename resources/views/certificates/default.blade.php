@@ -59,7 +59,7 @@
         /* Container do rodapé */
         .footer-info {
             position: absolute;
-            bottom: 60px;
+            bottom: 200px;
             /* Ajuste para subir ou descer o bloco todo */
             width: 100%;
             text-align: center;

@@ -224,11 +224,10 @@
             </main>
 
             <!-- RIGHT SIDEBAR (on lg screens) -->
-            <div class="bg-white rounded-2xl shadow border p-4 w-80">
+            <div class="bg-white rounded-2xl shadow border p-4 w-80 h-fit">
                 <h4 class="text-sm font-semibold">Certificado do Módulo</h4>
 
                 @php
-                    // Pegamos o progresso do módulo atual
                     $moduleProgress = $lesson->class->progress ?? 0;
                 @endphp
 
@@ -237,14 +236,13 @@
                         Parabéns! Você concluiu este módulo.
                     </p>
 
-                    {{-- Passamos o ID da CLASS (Módulo) para a rota --}}
                     <a href="{{ route('student.module.certificate', ['class' => $lesson->class->id]) }}" target="_blank"
                         class="mt-3 inline-block px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm transition-colors w-full text-center">
                         🎓 Baixar Certificado
                     </a>
                 @else
                     <p class="text-xs text-slate-500 mt-2">
-                        Conclua 95% das aulas deste módulo para liberar seu certificado.
+                        Conclua 95% das aulas para liberar seu certificado.
                         <span class="block mt-1 font-semibold text-sky-600">Progresso atual: {{ $moduleProgress }}%</span>
                     </p>
 

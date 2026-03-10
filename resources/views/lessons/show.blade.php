@@ -238,7 +238,7 @@
 
                     <a href="{{ route('student.module.certificate', ['class' => $lesson->class->id]) }}" target="_blank"
                         class="mt-3 inline-block px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm transition-colors w-full text-center">
-                        🎓 Baixar Certificado
+                        🎓 Emitir Certificado
                     </a>
                 @else
                     <p class="text-xs text-slate-500 mt-2">

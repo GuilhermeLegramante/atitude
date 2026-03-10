@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Http;
 
 use Datlechin\GoogleTranslate\Facades\GoogleTranslate;
 use App\Http\Controllers\TranslatorController;
+use App\Models\ClassModel;
+use App\Models\Course;
 use App\Models\Settings;
 
 
@@ -93,3 +95,28 @@ Route::get('/aula-ao-vivo', function () {
 
 Route::get('/teste/{assessment}', [AssessmentController::class, 'teste'])
     ->name('teste');
+
+
+// Criamos uma rota que recebe o ID do curso. Ela exige que o usuário esteja logado (auth).
+Route::get('/modulo/{class}/certificado', function (ClassModel $class) {
+    $student = auth()->user();
+
+    // Verificação de segurança: O aluno realmente tem progresso no módulo?
+    // Aqui assume-se que seu Model Class tem o atributo 'progress' calculado
+    if (($class->progress ?? 0) < 95) {
+        return redirect()->back()->with('error', 'Progresso insuficiente para gerar certificado.');
+    }
+
+    // Dados para o certificado
+    $data = [
+        'student' => $student,
+        'module'  => $class->name,
+        'course'  => $class->course->name ?? 'Curso Atitude Idiomas',
+        'date'    => now()->format('d/m/Y')
+    ];
+
+    $pdf = Pdf::loadView('certificates.modelo_modulo', $data)
+        ->setPaper('a4', 'landscape');
+
+    return $pdf->stream("Certificado_{$class->name}.pdf");
+})->name('student.module.certificate')->middleware('auth');

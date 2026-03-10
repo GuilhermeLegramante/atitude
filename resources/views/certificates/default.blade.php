@@ -47,7 +47,7 @@
         /* Texto de conclusão - Abaixo do nome */
         .texto-conclusao {
             position: absolute;
-            top: 520px;
+            top: 460px;
             left: 15%;
             width: 70%;
             font-size: 20px;

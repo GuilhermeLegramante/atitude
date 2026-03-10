@@ -56,13 +56,36 @@
         }
 
         /* Rodapé com assinatura e CNPJ */
+        /* Container do rodapé */
         .footer-info {
             position: absolute;
-            bottom: 80px;
+            bottom: 60px;
+            /* Ajuste para subir ou descer o bloco todo */
             width: 100%;
+            text-align: center;
+        }
+
+        /* Estilização da Assinatura Digital */
+        .assinatura-img {
+            width: 250px;
+            /* Tamanho proporcional à linha */
+            height: auto;
+            margin-bottom: -15px;
+            /* Puxa a assinatura para cima da linha branca */
+            opacity: 0.9;
+            /* Deixa levemente suave no fundo escuro */
+        }
+
+        .dados-empresa {
             font-size: 14px;
+            color: #ffffff;
             line-height: 1.6;
             text-transform: uppercase;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            /* Linha sutil acima do nome */
+            display: inline-block;
+            padding-top: 10px;
+            width: 400px;
         }
     </style>
 </head>
@@ -79,11 +102,17 @@
         com carga horária de 50 horas.
     </div>
 
-    {{-- <div class="footer-info">
-        EDUARDO SILVEIRA BATISTA<br>
-        ESCOLA ATITUDE IDIOMAS<br>
-        CNPJ: 44.698.899/0001-33
-    </div> --}}
+    <div class="footer-info">
+        <div>
+            <img src="{{ public_path('img/assinatura.png') }}" class="assinatura-img" alt="Assinatura">
+        </div>
+
+        {{-- <div class="dados-empresa">
+            EDUARDO SILVEIRA BATISTA<br>
+            ESCOLA ATITUDE IDIOMAS<br>
+            CNPJ: 44.698.899/0001-33
+        </div> --}}
+    </div>
 
 </body>
 

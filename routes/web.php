@@ -115,7 +115,7 @@ Route::get('/modulo/{class}/certificado', function (ClassModel $class) {
         'date'    => now()->format('d/m/Y')
     ];
 
-    $pdf = Pdf::loadView('certificates.course_completed', $data)
+    $pdf = Pdf::loadView('certificates.default', $data)
         ->setPaper('a4', 'landscape');
 
     return $pdf->stream("Certificado_{$class->name}.pdf");

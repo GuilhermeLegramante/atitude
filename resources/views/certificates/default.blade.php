@@ -36,7 +36,7 @@
         /* Nome do Aluno - Posicionado acima da primeira linha branca */
         .nome-aluno {
             position: absolute;
-            top: 400px;
+            top: 300px;
             /* Ajuste conforme a posição da linha na imagem */
             width: 100%;
             font-size: 45px;

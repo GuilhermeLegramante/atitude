@@ -67,7 +67,7 @@
 
 
  <!-- ⭐ Botão SUPER CHAMATIVO aulas ao vivo -->
- <div class="fixed bottom-36 right-5 z-50 hidden md:flex flex flex-col items-end">
+ {{-- <div class="fixed bottom-36 right-5 z-50 hidden md:flex flex flex-col items-end">
 
      <!-- Balão de texto -->
      <div
@@ -88,7 +88,7 @@
              <path d="M17 10.5V7a2 2 0 0 0-2-2H5A2 2 0 0 0 3 7v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3.5l4 4v-11l-4 4z" />
          </svg>
      </a>
- </div>
+ </div> --}}
 
 
  <!-- 💬 Botão Flutuante WhatsApp -->

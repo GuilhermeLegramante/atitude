@@ -83,9 +83,11 @@ class AssessmentController extends Controller
             );
         }
 
-        $emails = [
-            'guilhermelegramante@gmail.com',
-        ];
+        // $emails = [
+        //     'guilhermelegramante@gmail.com',
+        // ];
+
+        $emails = [];
 
         $language = $assessment->lesson->class->course->language ?? null;
 

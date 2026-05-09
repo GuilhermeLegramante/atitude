@@ -173,11 +173,12 @@
 
                             @auth
                                 @php
-                                    // Se a última aula pertence a este curso
+                                    $firstClass = $course->classes->first();
+
                                     $continueLesson =
                                         $lastLesson && $lastLesson->class->course_id === $course->id
                                             ? $lastLesson
-                                            : optional($course->classes->first())?->lessons->first();
+                                            : $firstClass?->lessons?->first();
                                 @endphp
 
                                 @if ($continueLesson)

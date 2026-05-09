@@ -12,7 +12,7 @@ class HomeController extends Controller
     public function index()
     {
         // Carrega todos os cursos com classes e lições
-        $courses = Course::with(['classes.lessons'])->latest()->get();
+        $courses = Course::with(['classes.lessons'])->oldest()->get();
 
         // Variáveis padrão (para visitante)
         $student = null;

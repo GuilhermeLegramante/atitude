@@ -80,7 +80,6 @@ class ClassModel extends Model
         return round(($watchedLessons / $totalLessons) * 100);
     }
 
-
     /**
      * Verifica se o aluno completou todas as avaliações deste módulo.
      */

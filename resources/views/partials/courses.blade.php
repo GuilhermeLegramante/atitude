@@ -52,21 +52,52 @@
         @foreach ($courses as $course)
             @if ($student?->language == $course->language || $student?->language == 'both')
                 @php
+                    $isCourseLocked = false;
+                    if (auth()->check()) {
+                        // Validação de curso anterior do mesmo idioma
+                        $isCourseLocked = !$course->isReleasedForStudent(auth()->user()->student->id);
+                    }
+
                     $formattedTitle = Str::slug($course->name, '+');
                     $thumb =
                         'https://placehold.co/600x400/2b2c43/ffffff?text=' .
                         urlencode(ucwords(str_replace('+', ' ', $formattedTitle)));
                 @endphp
 
-                <div class="course-card bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
+                {{-- Adicionado grayscale e pointer-events-none se o curso estiver travado --}}
+                <div class="course-card bg-white rounded-2xl shadow-sm transition-all duration-300 {{ $isCourseLocked ? 'opacity-75 grayscale pointer-events-none' : 'hover:shadow-md' }}"
                     data-language="{{ $course->language }}">
 
-                    <img src="{{ $course->image_path ? Storage::url($course->image_path) : $thumb }}"
-                        alt="{{ $course->name }}" class="w-full h-40 object-cover rounded-t-2xl">
+                    <div class="relative">
+                        <img src="{{ $course->image_path ? Storage::url($course->image_path) : $thumb }}"
+                            alt="{{ $course->name }}" class="w-full h-40 object-cover rounded-t-2xl">
+
+                        {{-- Overlay visual de bloqueio --}}
+                        @if ($isCourseLocked)
+                            <div
+                                class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center rounded-t-2xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                <span
+                                    class="text-white font-bold text-[10px] mt-2 uppercase tracking-widest">Bloqueado</span>
+                            </div>
+                        @endif
+                    </div>
 
                     <div class="p-5">
                         <h4 class="font-semibold text-lg mb-1 text-[#2b2c43] truncate">{{ $course->name }}</h4>
-                        <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ $course->description }}</p>
+
+                        @if ($isCourseLocked)
+                            <p class="text-[11px] text-red-500 font-bold mb-3 italic">
+                                🔒 Conclua o curso anterior de {{ $course->language == 'en' ? 'Inglês' : 'Espanhol' }}
+                                primeiro.
+                            </p>
+                        @else
+                            <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ $course->description }}</p>
+                        @endif
 
                         @auth
                             <div class="bg-gray-200 rounded-full h-2 mb-1">
@@ -89,15 +120,14 @@
                             <div class="modules-list hidden space-y-2 text-sm">
                                 @forelse ($course->classes as $index => $class)
                                     @php
-                                        $isLocked = false;
+                                        $isModuleLocked = false;
                                         $reason = '';
 
-                                        // Lógica de bloqueio: Se não for o primeiro módulo, verifica o anterior
+                                        // Lógica de bloqueio de módulo dentro do curso
                                         if (auth()->check() && $index > 0) {
                                             $previousClass = $course->classes[$index - 1];
-                                            // Assume-se que o método isCompletedByStudent(id) existe no Model ClassModel
                                             if (!$previousClass->isCompletedByStudent(auth()->user()->student->id)) {
-                                                $isLocked = true;
+                                                $isModuleLocked = true;
                                                 $reason =
                                                     "Complete o módulo '" .
                                                     $previousClass->name .
@@ -107,10 +137,10 @@
                                     @endphp
 
                                     <div
-                                        class="bg-gray-50 rounded-xl border border-gray-100 overflow-hidden {{ $isLocked ? 'opacity-60' : '' }}">
+                                        class="bg-gray-50 rounded-xl border border-gray-100 overflow-hidden {{ $isModuleLocked ? 'opacity-60' : '' }}">
                                         <div class="p-3 flex justify-between items-center bg-gray-50">
                                             <span class="font-medium flex items-center gap-2">
-                                                @if ($isLocked)
+                                                @if ($isModuleLocked)
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="w-4 h-4 text-gray-400" viewBox="0 0 20 20"
                                                         fill="currentColor">
@@ -125,7 +155,7 @@
                                                 aulas</span>
                                         </div>
 
-                                        @if ($isLocked)
+                                        @if ($isModuleLocked)
                                             <div
                                                 class="px-4 py-2 text-[10px] text-red-500 bg-red-50 border-t border-red-100 italic">
                                                 {{ $reason }}
@@ -152,7 +182,6 @@
                                                                 {{ $lesson->title }}
                                                             </a>
                                                         @else
-                                                            {{-- Código para visitantes omitido por brevidade, mas mantido conforme seu original --}}
                                                             <div
                                                                 class="flex items-center gap-2 text-gray-500 cursor-not-allowed">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +247,6 @@
 </section>
 
 <script>
-    // Filtros e Toggle mantidos conforme seu original
     const filterButtons = document.querySelectorAll('.filter-btn');
     const courseCards = document.querySelectorAll('.course-card');
 
@@ -229,7 +257,13 @@
                 const visible = language === 'all' || card.dataset.language === language;
                 card.style.opacity = visible ? '1' : '0';
                 card.style.transform = visible ? 'scale(1)' : 'scale(0.97)';
-                card.style.pointerEvents = visible ? 'auto' : 'none';
+                // Mantém o bloqueio de pointer events se o curso estiver travado, senão libera conforme o filtro
+                if (visible) {
+                    card.style.pointerEvents = card.classList.contains('pointer-events-none') ?
+                        'none' : 'auto';
+                } else {
+                    card.style.pointerEvents = 'none';
+                }
             });
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
@@ -246,7 +280,6 @@
 </script>
 
 <style>
-    /* Estilos mantidos conforme seu original */
     .filter-btn {
         display: flex;
         align-items: center;

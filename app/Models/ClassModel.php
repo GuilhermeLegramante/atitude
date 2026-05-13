@@ -79,4 +79,29 @@ class ClassModel extends Model
 
         return round(($watchedLessons / $totalLessons) * 100);
     }
+
+
+    /**
+     * Verifica se o aluno completou todas as avaliações deste módulo.
+     */
+    public function isCompletedByStudent()
+    {
+        // 1. Pega todas as avaliações deste módulo
+        $assessmentIds = $this->lessons()->with('assessments')->get()
+            ->pluck('assessments.*.id')->flatten()->unique();
+
+        if ($assessmentIds->isEmpty()) return true;
+
+        // 2. Conta quantas dessas o aluno já respondeu (is_correct ou simplesmente checked)
+        $completedAnswers = \App\Models\Answer::where('user_id', auth()->id())
+            ->whereIn('question_id', function ($query) use ($assessmentIds) {
+                $query->select('id')->from('questions')
+                    ->whereIn('assessment_id', $assessmentIds);
+            })
+            ->count();
+
+        $totalQuestions = \App\Models\Question::whereIn('assessment_id', $assessmentIds)->count();
+
+        return $completedAnswers >= $totalQuestions;
+    }
 }

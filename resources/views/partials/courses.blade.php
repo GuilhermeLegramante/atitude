@@ -50,39 +50,40 @@
 
     <div id="courses-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($courses as $course)
-            @if ($student?->language == $course->language || $student?->language == 'both')
+            @php
+                $student = auth()->user()?->student;
+                $isLanguageMatch = $student?->language == $course->language || $student?->language == 'both';
+            @endphp
+
+            @if ($isLanguageMatch)
                 @php
                     $isCourseLocked = false;
                     if (auth()->check()) {
                         // Validação de curso anterior do mesmo idioma
-                        $isCourseLocked = !$course->isReleasedForStudent(auth()->user()->student->id);
+                        $isCourseLocked = !$course->isReleasedForStudent($student->id);
                     }
 
                     $formattedTitle = Str::slug($course->name, '+');
-                    $thumb =
-                        'https://placehold.co/600x400/2b2c43/ffffff?text=' .
-                        urlencode(ucwords(str_replace('+', ' ', $formattedTitle)));
+                    $thumb = 'https://placehold.co/600x400/2b2c43/ffffff?text=' . urlencode($course->name);
                 @endphp
 
-                {{-- Adicionado grayscale e pointer-events-none se o curso estiver travado --}}
-                <div class="course-card bg-white rounded-2xl shadow-sm transition-all duration-300 {{ $isCourseLocked ? 'opacity-75 grayscale pointer-events-none' : 'hover:shadow-md' }}"
+                <div class="course-card bg-white rounded-2xl shadow-sm transition-all duration-300 {{ $isCourseLocked ? 'opacity-85 grayscale-[0.5] pointer-events-none' : 'hover:shadow-md' }}"
                     data-language="{{ $course->language }}">
 
                     <div class="relative">
                         <img src="{{ $course->image_path ? Storage::url($course->image_path) : $thumb }}"
                             alt="{{ $course->name }}" class="w-full h-40 object-cover rounded-t-2xl">
 
-                        {{-- Overlay visual de bloqueio --}}
                         @if ($isCourseLocked)
                             <div
-                                class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center rounded-t-2xl">
+                                class="absolute inset-0 bg-[#2b2c43]/60 flex flex-col items-center justify-center rounded-t-2xl backdrop-blur-[2px]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
-                                <span
-                                    class="text-white font-bold text-[10px] mt-2 uppercase tracking-widest">Bloqueado</span>
+                                <span class="text-white font-bold text-[10px] mt-2 uppercase tracking-widest">Curso
+                                    Bloqueado</span>
                             </div>
                         @endif
                     </div>
@@ -91,22 +92,30 @@
                         <h4 class="font-semibold text-lg mb-1 text-[#2b2c43] truncate">{{ $course->name }}</h4>
 
                         @if ($isCourseLocked)
-                            <p class="text-[11px] text-red-500 font-bold mb-3 italic">
-                                🔒 Conclua o curso anterior de {{ $course->language == 'en' ? 'Inglês' : 'Espanhol' }}
-                                primeiro.
-                            </p>
+                            <div class="bg-amber-50 border-l-4 border-amber-400 p-3 mb-4">
+                                <p class="text-[11px] text-amber-800 leading-tight">
+                                    <strong>🔒 Atenção:</strong> Conclua 100% do curso anterior de
+                                    <u>{{ $course->language == 'en' ? 'Inglês' : 'Espanhol' }}</u> primeiro para
+                                    liberar este.
+                                </p>
+                            </div>
                         @else
                             <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ $course->description }}</p>
                         @endif
 
                         @auth
-                            <div class="bg-gray-200 rounded-full h-2 mb-1">
-                                <div class="bg-green-500 h-2 rounded-full transition-all duration-500"
-                                    style="width: {{ $course->progress }}%">
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-gray-500">Progresso</span>
+                                    <span class="font-semibold text-sky-600">{{ $course->progress }}%</span>
                                 </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-green-500 h-1.5 rounded-full transition-all duration-500"
+                                        style="width: {{ $course->progress }}%">
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-1">{{ $course->total_lessons }} aulas totais</p>
                             </div>
-                            <p class="text-xs text-gray-500 mb-3">{{ $course->progress }}% concluído •
-                                {{ $course->total_lessons }} aulas</p>
                         @else
                             <p class="text-xs text-gray-500 mb-3">{{ $course->total_lessons }} aulas disponíveis</p>
                         @endauth
@@ -121,29 +130,38 @@
                                 @forelse ($course->classes as $index => $class)
                                     @php
                                         $isModuleLocked = false;
-                                        $reason = '';
+                                        $pendingLessons = collect();
 
                                         // Lógica de bloqueio de módulo dentro do curso
                                         if (auth()->check() && $index > 0) {
                                             $previousClass = $course->classes[$index - 1];
-                                            if (!$previousClass->isCompletedByStudent(auth()->user()->student->id)) {
+                                            if (!$previousClass->isCompletedByStudent(auth()->id())) {
                                                 $isModuleLocked = true;
-                                                $reason =
-                                                    "Complete o módulo '" .
-                                                    $previousClass->name .
-                                                    "' para liberar este.";
+
+                                                // Identifica quais aulas do módulo anterior têm avaliações pendentes
+                                                foreach ($previousClass->lessons as $l) {
+                                                    if ($l->assessments->isNotEmpty()) {
+                                                        $qIds = $l->assessments->flatMap->questions->pluck('id');
+                                                        $ansCount = \App\Models\Answer::where('user_id', auth()->id())
+                                                            ->whereIn('question_id', $qIds)
+                                                            ->count();
+                                                        if ($ansCount < $qIds->count()) {
+                                                            $pendingLessons->push($l->title);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     @endphp
 
                                     <div
-                                        class="bg-gray-50 rounded-xl border border-gray-100 overflow-hidden {{ $isModuleLocked ? 'opacity-60' : '' }}">
-                                        <div class="p-3 flex justify-between items-center bg-gray-50">
-                                            <span class="font-medium flex items-center gap-2">
+                                        class="rounded-xl border transition-colors {{ $isModuleLocked ? 'bg-red-50/50 border-red-100 opacity-70' : 'bg-gray-50 border-gray-100' }}">
+                                        <div class="p-3 flex justify-between items-center">
+                                            <span
+                                                class="font-medium flex items-center gap-2 {{ $isModuleLocked ? 'text-red-700' : 'text-gray-700' }}">
                                                 @if ($isModuleLocked)
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="w-4 h-4 text-gray-400" viewBox="0 0 20 20"
-                                                        fill="currentColor">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-400"
+                                                        viewBox="0 0 20 20" fill="currentColor">
                                                         <path fill-rule="evenodd"
                                                             d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
                                                             clip-rule="evenodd" />
@@ -156,9 +174,23 @@
                                         </div>
 
                                         @if ($isModuleLocked)
-                                            <div
-                                                class="px-4 py-2 text-[10px] text-red-500 bg-red-50 border-t border-red-100 italic">
-                                                {{ $reason }}
+                                            <div class="px-3 pb-3">
+                                                <div class="bg-white rounded-lg p-2 border border-red-100">
+                                                    <p class="text-[9px] font-bold text-red-600 uppercase mb-1">
+                                                        Avaliações pendentes no anterior:</p>
+                                                    <ul class="space-y-0.5">
+                                                        @forelse($pendingLessons->unique() as $pTitle)
+                                                            <li
+                                                                class="text-[10px] text-gray-600 flex items-center gap-1">
+                                                                <div class="w-1 h-1 bg-red-400 rounded-full"></div>
+                                                                {{ $pTitle }}
+                                                            </li>
+                                                        @empty
+                                                            <li class="text-[10px] text-gray-500 italic">Conclua o
+                                                                módulo anterior: {{ $previousClass->name }}</li>
+                                                        @endforelse
+                                                    </ul>
+                                                </div>
                                             </div>
                                         @elseif ($class->lessons->count())
                                             <ul class="border-t border-gray-100 bg-white px-4 py-2 space-y-1 text-xs">
@@ -201,8 +233,7 @@
                                         @else
                                             <p
                                                 class="px-4 py-2 text-xs text-gray-400 bg-gray-50 border-t border-gray-100 italic">
-                                                Nenhuma aula disponível.
-                                            </p>
+                                                Nenhuma aula disponível.</p>
                                         @endif
                                     </div>
                                 @empty
@@ -228,15 +259,13 @@
                                     </a>
                                 @else
                                     <button
-                                        class="inline-block bg-gray-300 text-gray-600 text-sm font-medium px-6 py-2 rounded-lg cursor-not-allowed">
-                                        Sem aulas
-                                    </button>
+                                        class="inline-block bg-gray-300 text-gray-600 text-sm font-medium px-6 py-2 rounded-lg cursor-not-allowed">Sem
+                                        aulas</button>
                                 @endif
                             @else
                                 <a href="{{ route('login') }}"
-                                    class="inline-block bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">
-                                    Acessar curso
-                                </a>
+                                    class="inline-block bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">Acessar
+                                    curso</a>
                             @endauth
                         </div>
                     </div>
@@ -257,11 +286,15 @@
                 const visible = language === 'all' || card.dataset.language === language;
                 card.style.opacity = visible ? '1' : '0';
                 card.style.transform = visible ? 'scale(1)' : 'scale(0.97)';
-                // Mantém o bloqueio de pointer events se o curso estiver travado, senão libera conforme o filtro
+
                 if (visible) {
+                    card.style.display = 'block';
                     card.style.pointerEvents = card.classList.contains('pointer-events-none') ?
                         'none' : 'auto';
                 } else {
+                    setTimeout(() => {
+                        if (card.style.opacity === '0') card.style.display = 'none';
+                    }, 400);
                     card.style.pointerEvents = 'none';
                 }
             });

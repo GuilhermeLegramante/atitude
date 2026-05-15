@@ -109,22 +109,24 @@ class Course extends Model
         return $this->classes->sum(fn($class) => $class->lessons->count());
     }
 
+    /**
+     * Verifica se o curso está disponível para o aluno.
+     * Regra: Se houver um curso anterior do mesmo idioma, ele deve estar 100% concluído.
+     */
     public function isReleasedForStudent($studentId)
     {
-        // Busca o curso anterior do mesmo idioma baseado no ID ou 'created_at'
-        // Se você tiver muitos cursos, o ideal é adicionar uma coluna 'order' na tabela courses
-        $previousCourse = \App\Models\Course::where('language', $this->language)
+        // Busca o curso anterior do mesmo idioma baseado no ID
+        $previousCourse = self::where('language', $this->language)
             ->where('id', '<', $this->id)
             ->orderBy('id', 'desc')
             ->first();
 
-        // Se não existir curso anterior, este é o primeiro e está liberado
+        // Se não existir curso anterior, este é o primeiro da trilha e está livre
         if (!$previousCourse) {
             return true;
         }
 
-        // Verifica o progresso do curso anterior (deve ser 100)
-        // Você já usa $course->progress no Blade, certifique-se que essa lógica reflete a conclusão real
-        return $this->calculateProgress($studentId) >= 100;
+        // O curso atual só liberta se o progresso do ANTERIOR for 100%
+        return $previousCourse->calculateProgress($studentId) >= 100;
     }
 }

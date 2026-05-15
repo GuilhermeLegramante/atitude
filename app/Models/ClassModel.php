@@ -81,26 +81,40 @@ class ClassModel extends Model
     }
 
     /**
-     * Verifica se o aluno completou todas as avaliações deste módulo.
+     * Verifica se o aluno completou todas as avaliações deste módulo específico.
      */
-    public function isCompletedByStudent()
+    public function isCompletedByStudent($userId = null)
     {
-        // 1. Pega todas as avaliações deste módulo
+        // Se não passar ID (ex: no Blade), usa o do utilizador logado
+        $userId = $userId ?: auth()->id();
+
+        if (!$userId) return false;
+
+        // 1. Pega os IDs de todas as avaliações vinculadas às aulas deste módulo
         $assessmentIds = $this->lessons()->with('assessments')->get()
-            ->pluck('assessments.*.id')->flatten()->unique();
+            ->pluck('assessments.*.id')
+            ->flatten()
+            ->unique();
 
-        if ($assessmentIds->isEmpty()) return true;
+        // Se o módulo não tiver provas, considera-se concluído
+        if ($assessmentIds->isEmpty()) {
+            return true;
+        }
 
-        // 2. Conta quantas dessas o aluno já respondeu (is_correct ou simplesmente checked)
-        $completedAnswers = \App\Models\Answer::where('user_id', auth()->id())
+        // 2. Conta quantas questões existem nessas avaliações
+        $totalQuestions = \App\Models\Question::whereIn('assessment_id', $assessmentIds)->count();
+
+        if ($totalQuestions === 0) return true;
+
+        // 3. Conta quantas respostas o aluno específico enviou para estas questões
+        $completedAnswers = \App\Models\Answer::where('user_id', $userId)
             ->whereIn('question_id', function ($query) use ($assessmentIds) {
                 $query->select('id')->from('questions')
                     ->whereIn('assessment_id', $assessmentIds);
             })
             ->count();
 
-        $totalQuestions = \App\Models\Question::whereIn('assessment_id', $assessmentIds)->count();
-
+        // O módulo só é considerado completo se ele respondeu a TODAS as questões
         return $completedAnswers >= $totalQuestions;
     }
 }

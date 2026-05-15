@@ -124,58 +124,79 @@ Route::get('/modulo/{class}/certificado', function (ClassModel $class) {
 
 
 Route::get('/debug-student/{id}', function ($id) {
-    $user = User::findOrFail($id);
+    // Busca o usuário e o aluno relacionado
+    $user = User::with('student')->findOrFail($id);
     $student = $user->student;
 
     if (!$student) {
-        return response()->json(['error' => 'Usuário não é um aluno'], 404);
+        return response()->json(['error' => 'Usuário não possui perfil de aluno'], 404);
     }
 
     $courses = Course::all();
     $debugData = [
         'aluno' => $student->name,
         'idioma_aluno' => $student->language,
-        'situacao_cursos' => []
+        'relatorio' => []
     ];
 
     foreach ($courses as $course) {
-        // Verifica se o curso é do idioma do aluno
+        // Valida se o curso é do idioma do aluno
         $isLanguageMatch = ($student->language == $course->language || $student->language == 'both');
 
-        $courseStatus = [
-            'nome' => $course->name,
-            'idioma' => $course->language,
-            'compativel_com_aluno' => $isLanguageMatch,
-            'liberado' => $course->isReleasedForStudent($student->id),
-            'progresso_atual' => $course->calculateProgress($student->id) . '%',
+        if (!$isLanguageMatch) continue;
+
+        $isCourseReleased = $course->isReleasedForStudent($student->id); //
+
+        $courseInfo = [
+            'curso' => $course->name,
+            'liberado' => $isCourseReleased ? 'Sim' : 'Não (Conclua o curso anterior de ' . $course->language . ')',
+            'progresso_total' => $course->calculateProgress($student->id) . '%',
             'modulos' => []
         ];
 
-        if ($isLanguageMatch) {
-            foreach ($course->classes as $index => $class) {
-                $isModuleLocked = false;
-                $reason = 'Liberado';
+        foreach ($course->classes as $index => $class) {
+            $isModuleLocked = false;
+            if ($index > 0) {
+                $previousClass = $course->classes[$index - 1];
+                // Verifica conclusão baseada em avaliações
+                if (!$previousClass->isCompletedByStudent($student->id)) {
+                    $isModuleLocked = true;
+                }
+            }
 
-                // Lógica de bloqueio de módulo (conforme seu courses.blade.php)
-                if ($index > 0) {
-                    $previousClass = $course->classes[$index - 1];
-                    if (!$previousClass->isCompletedByStudent($student->id)) {
-                        $isModuleLocked = true;
-                        $reason = "Bloqueado: módulo anterior '{$previousClass->name}' incompleto.";
+            // Busca avaliações pendentes específicas deste módulo/classe
+            $pendingInModule = [];
+
+            // Coleta todas as lições deste módulo que têm avaliações
+            foreach ($class->lessons as $lesson) {
+                foreach ($lesson->assessments as $assessment) {
+                    $totalQuestions = $assessment->questions->count(); //
+
+                    // Conta respostas do aluno para as questões desta avaliação
+                    $answeredCount = Answer::where('user_id', $user->id)
+                        ->whereIn('question_id', $assessment->questions->pluck('id'))
+                        ->count();
+
+                    if ($answeredCount < $totalQuestions) {
+                        $pendingInModule[] = [
+                            'licao' => $lesson->title,
+                            'avaliacao_id' => $assessment->id,
+                            'questoes_faltantes' => $totalQuestions - $answeredCount
+                        ];
                     }
                 }
-
-                $courseStatus['modulos'][] = [
-                    'nome' => $class->name,
-                    'status' => $isModuleLocked ? 'Travado' : 'Liberado',
-                    'detalhe' => $reason,
-                    'avaliacoes_completas' => $class->isCompletedByStudent($student->id)
-                ];
             }
+
+            $courseInfo['modulos'][] = [
+                'nome' => $class->name,
+                'acesso' => $isModuleLocked ? 'Bloqueado' : 'Liberado',
+                'concluido' => $class->isCompletedByStudent($student->id),
+                'avaliacoes_pendentes' => $pendingInModule
+            ];
         }
 
-        $debugData['situacao_cursos'][] = $courseStatus;
+        $debugData['relatorio'][] = $courseInfo;
     }
 
-    return response()->json($debugData, 200, [], JSON_PRETTY_PRINT);
+    return response()->json($debugData, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 })->middleware(['auth']);

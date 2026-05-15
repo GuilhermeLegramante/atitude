@@ -18,7 +18,7 @@ use App\Http\Controllers\TranslatorController;
 use App\Models\ClassModel;
 use App\Models\Course;
 use App\Models\Settings;
-
+use App\Models\User;
 
 Livewire::setScriptRoute(function ($handle) {
     return Route::get('/atitude/public/livewire/livewire.js', $handle);
@@ -121,3 +121,61 @@ Route::get('/modulo/{class}/certificado', function (ClassModel $class) {
 
     return $pdf->stream("Certificado_{$class->name}.pdf");
 })->name('student.module.certificate')->middleware('auth');
+
+
+Route::get('/debug-student/{id}', function ($id) {
+    $user = User::findOrFail($id);
+    $student = $user->student;
+
+    if (!$student) {
+        return response()->json(['error' => 'Usuário não é um aluno'], 404);
+    }
+
+    $courses = Course::all();
+    $debugData = [
+        'aluno' => $student->name,
+        'idioma_aluno' => $student->language,
+        'situacao_cursos' => []
+    ];
+
+    foreach ($courses as $course) {
+        // Verifica se o curso é do idioma do aluno
+        $isLanguageMatch = ($student->language == $course->language || $student->language == 'both');
+
+        $courseStatus = [
+            'nome' => $course->name,
+            'idioma' => $course->language,
+            'compativel_com_aluno' => $isLanguageMatch,
+            'liberado' => $course->isReleasedForStudent($student->id),
+            'progresso_atual' => $course->calculateProgress($student->id) . '%',
+            'modulos' => []
+        ];
+
+        if ($isLanguageMatch) {
+            foreach ($course->classes as $index => $class) {
+                $isModuleLocked = false;
+                $reason = 'Liberado';
+
+                // Lógica de bloqueio de módulo (conforme seu courses.blade.php)
+                if ($index > 0) {
+                    $previousClass = $course->classes[$index - 1];
+                    if (!$previousClass->isCompletedByStudent($student->id)) {
+                        $isModuleLocked = true;
+                        $reason = "Bloqueado: módulo anterior '{$previousClass->name}' incompleto.";
+                    }
+                }
+
+                $courseStatus['modulos'][] = [
+                    'nome' => $class->name,
+                    'status' => $isModuleLocked ? 'Travado' : 'Liberado',
+                    'detalhe' => $reason,
+                    'avaliacoes_completas' => $class->isCompletedByStudent($student->id)
+                ];
+            }
+        }
+
+        $debugData['situacao_cursos'][] = $courseStatus;
+    }
+
+    return response()->json($debugData, 200, [], JSON_PRETTY_PRINT);
+})->middleware(['auth']);

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Http;
 
 use Datlechin\GoogleTranslate\Facades\GoogleTranslate;
 use App\Http\Controllers\TranslatorController;
+use App\Models\Answer;
 use App\Models\ClassModel;
 use App\Models\Course;
 use App\Models\Settings;

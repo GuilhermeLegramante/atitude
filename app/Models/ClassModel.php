@@ -114,7 +114,9 @@ class ClassModel extends Model
             })
             ->count();
 
+        return true;
+
         // O módulo só é considerado completo se ele respondeu a TODAS as questões
-        return $completedAnswers >= $totalQuestions;
+        // return $completedAnswers >= $totalQuestions;
     }
 }

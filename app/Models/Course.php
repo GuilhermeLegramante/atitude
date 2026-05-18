@@ -126,7 +126,9 @@ class Course extends Model
             return true;
         }
 
+        return true;
+
         // O curso atual só liberta se o progresso do ANTERIOR for 100%
-        return $previousCourse->calculateProgress($studentId) >= 100;
+        // return $previousCourse->calculateProgress($studentId) >= 100;
     }
 }

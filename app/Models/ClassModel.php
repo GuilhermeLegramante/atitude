@@ -88,6 +88,10 @@ class ClassModel extends Model
         // Se não passar ID (ex: no Blade), usa o do utilizador logado
         $userId = $userId ?: auth()->id();
 
+        if (auth()->user()?->hasFullAccess()) {
+            return true;
+        }
+
         if (!$userId) return false;
 
         // 1. Pega os IDs de todas as avaliações vinculadas às aulas deste módulo
@@ -114,9 +118,7 @@ class ClassModel extends Model
             })
             ->count();
 
-        return true;
-
         // O módulo só é considerado completo se ele respondeu a TODAS as questões
-        // return $completedAnswers >= $totalQuestions;
+        return $completedAnswers >= $totalQuestions;
     }
 }

@@ -53,9 +53,12 @@
             @php
                 $student = auth()->user()?->student;
                 $isLanguageMatch = $student?->language == $course->language || $student?->language == 'both';
+
+                // 🔹 Nova checagem de Acesso Total
+                $hasFullAccess = auth()->check() && auth()->user()->hasFullAccess();
             @endphp
 
-            @if ($isLanguageMatch)
+            @if ($isLanguageMatch || $hasFullAccess)
                 @php
                     $isCourseLocked = false;
                     if (auth()->check()) {
@@ -65,6 +68,7 @@
 
                     $formattedTitle = Str::slug($course->name, '+');
                     $thumb = 'https://placehold.co/600x400/2b2c43/ffffff?text=' . urlencode($course->name);
+
                 @endphp
 
                 <div class="course-card bg-white rounded-2xl shadow-sm transition-all duration-300 {{ $isCourseLocked ? 'opacity-85 grayscale-[0.5] pointer-events-none' : 'hover:shadow-md' }}"
@@ -132,8 +136,8 @@
                                         $isModuleLocked = false;
                                         $pendingLessons = collect();
 
-                                        // Lógica de bloqueio de módulo dentro do curso
-                                        if (auth()->check() && $index > 0) {
+                                        // Lógica de bloqueio de módulo só roda se NÃO for acesso total
+                                        if (auth()->check() && !$hasFullAccess && $index > 0) {
                                             $previousClass = $course->classes[$index - 1];
                                             if (!$previousClass->isCompletedByStudent(auth()->id())) {
                                                 $isModuleLocked = true;

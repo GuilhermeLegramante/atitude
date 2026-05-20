@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
+        'has_full_access', // Nova coluna para controle de acesso total aos cursos e aulas sem passar pelo progresso dos cursos anteriores e avaliações
     ];
 
     /**
@@ -53,5 +54,13 @@ class User extends Authenticatable
     public function dictionaryEntries()
     {
         return $this->hasMany(DictionaryEntry::class);
+    }
+
+    /**
+     * Verifica se o usuário possui acesso total liberado.
+     */
+    public function hasFullAccess(): bool
+    {
+        return (bool) $this->has_full_access;
     }
 }

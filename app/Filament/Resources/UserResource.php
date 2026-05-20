@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,6 +55,11 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->label('E-mail')
                     ->searchable(),
+                ToggleColumn::make('has_full_access')
+                    ->label('Acesso Total')
+                    ->tooltip('Libera todos os cursos e módulos sem restrições')
+                    ->onColor('success')
+                    ->offColor('danger'),
                 TableColumns::createdAt(),
                 TableColumns::updatedAt(),
             ])

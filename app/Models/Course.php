@@ -115,6 +115,11 @@ class Course extends Model
      */
     public function isReleasedForStudent($studentId)
     {
+        // 1. Se o usuário logado tiver acesso total, o curso está liberado
+        if (auth()->user()?->hasFullAccess()) {
+            return true;
+        }
+
         // Busca o curso anterior do mesmo idioma baseado no ID
         $previousCourse = self::where('language', $this->language)
             ->where('id', '<', $this->id)
@@ -126,9 +131,7 @@ class Course extends Model
             return true;
         }
 
-        return true;
-
         // O curso atual só liberta se o progresso do ANTERIOR for 100%
-        // return $previousCourse->calculateProgress($studentId) >= 100;
+        return $previousCourse->calculateProgress($studentId) >= 100;
     }
 }

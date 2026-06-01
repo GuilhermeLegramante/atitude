@@ -1,6 +1,6 @@
 {
     "name": "Atitude Idiomas",
-    "short_name": "Atitude",
+    "short_name": "Atitude Idiomas",
     "start_url": "/",
     "background_color": "#020916",
     "theme_color": "#2b2c43",
@@ -8,13 +8,13 @@
     "orientation": "portrait",
     "icons": [
         {
-            "src": "/img/icone_app.png",
+            "src": "/img/icone512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "/img/icone_app.png",
+            "src": "/img/icone512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"

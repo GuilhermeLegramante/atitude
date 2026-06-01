@@ -1,16 +1,16 @@
 <section id="meuscursos" class="max-w-7xl mx-auto px-4 py-12">
     <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <h3 class="text-2xl font-bold text-[#2b2c43]">Meus Cursos</h3>
+        <h3 class="text-2xl font-bold text-white">Meus Cursos</h3>
 
         @auth
-            <div class="text-sm text-gray-600">
-                👋 Olá, <strong>{{ auth()->user()->name }}</strong>!
+            <div class="text-sm text-gray-400">
+                👋 Olá, <strong class="text-white">{{ auth()->user()->name }}</strong>!
             </div>
         @else
-            <div class="text-sm text-gray-600">
-                👋 Olá, visitante! <a href="{{ route('login') }}" class="text-sky-600 font-semibold hover:underline">
+            <div class="text-sm text-gray-400">
+                👋 Olá, visitante! <a href="{{ route('login') }}" class="text-[#82cd29] font-semibold hover:underline">
                     Faça login</a> para acompanhar seu progresso ou <a href="{{ route('login') }}"
-                    class="text-sky-600 font-semibold hover:underline">
+                    class="text-[#82cd29] font-semibold hover:underline">
                     Cadastre-se</a> para se tornar nosso aluno.
             </div>
         @endauth
@@ -19,30 +19,31 @@
     <div class="flex flex-wrap gap-3 mb-8">
         <button class="filter-btn active" data-language="all">🌐 Todos</button>
         <button class="filter-btn" data-language="en">
-            <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm"> Inglês
+            <img src="https://flagcdn.com/us.svg" alt="Inglês" class="w-5 h-5 rounded-sm object-cover"> Inglês
         </button>
         <button class="filter-btn" data-language="es">
-            <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm"> Espanhol
+            <img src="https://flagcdn.com/es.svg" alt="Espanhol" class="w-5 h-5 rounded-sm object-cover"> Espanhol
         </button>
     </div>
 
     @auth
         @if ($currentCourse)
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-10 max-w-md">
-                <div class="flex justify-between items-center text-sm font-semibold mb-1">
-                    <span>{{ $currentCourse->name }}</span>
-                    <span>{{ $currentCourse->progress }}%</span>
+            <div class="bg-[#0b1528]/80 backdrop-blur-md rounded-2xl border border-white/5 p-5 mb-10 max-w-md shadow-2xl">
+                <div class="flex justify-between items-center text-sm font-semibold mb-2">
+                    <span class="text-white">{{ $currentCourse->name }}</span>
+                    <span class="text-[#82cd29]">{{ $currentCourse->progress }}%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-sky-500 h-2 rounded-full transition-all duration-500"
+                <div class="w-full bg-white/10 rounded-full h-2">
+                    <div class="bg-[#82cd29] h-2 rounded-full transition-all duration-500 shadow-sm shadow-[#82cd29]/20"
                         style="width: {{ $currentCourse->progress }}%">
                     </div>
                 </div>
-                <div class="text-xs text-gray-500 mt-2">
-                    XP: <strong>{{ $userPoints ?? 0 }}</strong>
+                <div class="text-xs text-gray-400 mt-2">
+                    XP: <strong class="text-white">{{ $userPoints ?? 0 }}</strong>
                 </div>
                 @if ($lastLesson)
-                    <p class="text-xs text-gray-500 mt-1 italic">Última aula: {{ $lastLesson->title }}</p>
+                    <p class="text-xs text-gray-400 mt-1 italic">Última aula: <span
+                            class="text-gray-300">{{ $lastLesson->title }}</span></p>
                 @endif
             </div>
         @endif
@@ -53,8 +54,6 @@
             @php
                 $student = auth()->user()?->student;
                 $isLanguageMatch = $student?->language == $course->language || $student?->language == 'both';
-
-                // 🔹 Nova checagem de Acesso Total
                 $hasFullAccess = auth()->check() && auth()->user()->hasFullAccess();
             @endphp
 
@@ -62,16 +61,15 @@
                 @php
                     $isCourseLocked = false;
                     if (auth()->check()) {
-                        // Validação de curso anterior do mesmo idioma
                         $isCourseLocked = !$course->isReleasedForStudent($student->id);
                     }
 
                     $formattedTitle = Str::slug($course->name, '+');
-                    $thumb = 'https://placehold.co/600x400/2b2c43/ffffff?text=' . urlencode($course->name);
-
+                    // Placehold atualizado para herdar o fundo escuro do layout caso a imagem falte
+                    $thumb = 'https://placehold.co/600x400/0b1528/ffffff?text=' . urlencode($course->name);
                 @endphp
 
-                <div class="course-card bg-white rounded-2xl shadow-sm transition-all duration-300 {{ $isCourseLocked ? 'opacity-85 grayscale-[0.5] pointer-events-none' : 'hover:shadow-md' }}"
+                <div class="course-card bg-[#0b1528] rounded-2xl border border-white/5 transition-all duration-300 {{ $isCourseLocked ? 'opacity-50 grayscale-[0.7] pointer-events-none' : 'hover:border-white/20 hover:shadow-2xl' }}"
                     data-language="{{ $course->language }}">
 
                     <div class="relative">
@@ -80,53 +78,54 @@
 
                         @if ($isCourseLocked)
                             <div
-                                class="absolute inset-0 bg-[#2b2c43]/60 flex flex-col items-center justify-center rounded-t-2xl backdrop-blur-[2px]">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
+                                class="absolute inset-0 bg-[#020916]/80 flex flex-col items-center justify-center rounded-t-2xl backdrop-blur-[3px]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-red-500 animate-pulse"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
-                                <span class="text-white font-bold text-[10px] mt-2 uppercase tracking-widest">Curso
+                                <span class="text-red-400 font-bold text-[10px] mt-2 uppercase tracking-widest">Curso
                                     Bloqueado</span>
                             </div>
                         @endif
                     </div>
 
                     <div class="p-5">
-                        <h4 class="font-semibold text-lg mb-1 text-[#2b2c43] truncate">{{ $course->name }}</h4>
+                        <h4 class="font-semibold text-lg mb-2 text-white truncate">{{ $course->name }}</h4>
 
                         @if ($isCourseLocked)
-                            <div class="bg-amber-50 border-l-4 border-amber-400 p-3 mb-4">
-                                <p class="text-[11px] text-amber-800 leading-tight">
+                            <div class="bg-red-500/10 border-l-4 border-red-500 p-3 mb-4 rounded-r-xl">
+                                <p class="text-[11px] text-red-300 leading-tight">
                                     <strong>🔒 Atenção:</strong> Conclua 100% do curso anterior de
                                     <u>{{ $course->language == 'en' ? 'Inglês' : 'Espanhol' }}</u> primeiro para
                                     liberar este.
                                 </p>
                             </div>
                         @else
-                            <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ $course->description }}</p>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-2 leading-relaxed">
+                                {{ $course->description }}</p>
                         @endif
 
                         @auth
                             <div class="mb-4">
                                 <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-gray-500">Progresso</span>
-                                    <span class="font-semibold text-sky-600">{{ $course->progress }}%</span>
+                                    <span class="text-gray-400">Progresso</span>
+                                    <span class="font-semibold text-[#82cd29]">{{ $course->progress }}%</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div class="bg-green-500 h-1.5 rounded-full transition-all duration-500"
+                                <div class="w-full bg-white/10 rounded-full h-1.5">
+                                    <div class="bg-[#82cd29] h-1.5 rounded-full transition-all duration-500"
                                         style="width: {{ $course->progress }}%">
                                     </div>
                                 </div>
-                                <p class="text-[10px] text-gray-400 mt-1">{{ $course->total_lessons }} aulas totais</p>
+                                <p class="text-[10px] text-gray-500 mt-1.5">{{ $course->total_lessons }} aulas totais</p>
                             </div>
                         @else
-                            <p class="text-xs text-gray-500 mb-3">{{ $course->total_lessons }} aulas disponíveis</p>
+                            <p class="text-xs text-gray-400 mb-4">{{ $course->total_lessons }} aulas disponíveis</p>
                         @endauth
 
                         <div class="space-y-3">
                             <button
-                                class="toggle-modules-btn w-full text-sm font-semibold text-[#2b2c43] hover:text-sky-600 transition">
+                                class="toggle-modules-btn w-full text-sm font-semibold text-gray-300 hover:text-[#82cd29] transition flex items-center justify-center gap-1">
                                 Ver módulos ↓
                             </button>
 
@@ -136,13 +135,11 @@
                                         $isModuleLocked = false;
                                         $pendingLessons = collect();
 
-                                        // Lógica de bloqueio de módulo só roda se NÃO for acesso total
                                         if (auth()->check() && !$hasFullAccess && $index > 0) {
                                             $previousClass = $course->classes[$index - 1];
                                             if (!$previousClass->isCompletedByStudent(auth()->id())) {
                                                 $isModuleLocked = true;
 
-                                                // Identifica quais aulas do módulo anterior têm avaliações pendentes
                                                 foreach ($previousClass->lessons as $l) {
                                                     if ($l->assessments->isNotEmpty()) {
                                                         $qIds = $l->assessments->flatMap->questions->pluck('id');
@@ -159,13 +156,14 @@
                                     @endphp
 
                                     <div
-                                        class="rounded-xl border transition-colors {{ $isModuleLocked ? 'bg-red-50/50 border-red-100 opacity-70' : 'bg-gray-50 border-gray-100' }}">
+                                        class="rounded-xl border transition-colors {{ $isModuleLocked ? 'bg-red-500/5 border-red-500/20 opacity-80' : 'bg-white/5 border-white/5' }}">
                                         <div class="p-3 flex justify-between items-center">
                                             <span
-                                                class="font-medium flex items-center gap-2 {{ $isModuleLocked ? 'text-red-700' : 'text-gray-700' }}">
+                                                class="font-medium flex items-center gap-2 {{ $isModuleLocked ? 'text-red-400' : 'text-gray-200' }}">
                                                 @if ($isModuleLocked)
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-400"
-                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="w-4 h-4 text-red-500 shrink-0" viewBox="0 0 20 20"
+                                                        fill="currentColor">
                                                         <path fill-rule="evenodd"
                                                             d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
                                                             clip-rule="evenodd" />
@@ -179,14 +177,14 @@
 
                                         @if ($isModuleLocked)
                                             <div class="px-3 pb-3">
-                                                <div class="bg-white rounded-lg p-2 border border-red-100">
-                                                    <p class="text-[9px] font-bold text-red-600 uppercase mb-1">
+                                                <div class="bg-[#020916] rounded-lg p-2 border border-red-500/20">
+                                                    <p class="text-[9px] font-bold text-red-400 uppercase mb-1">
                                                         Avaliações pendentes no anterior:</p>
                                                     <ul class="space-y-0.5">
                                                         @forelse($pendingLessons->unique() as $pTitle)
                                                             <li
-                                                                class="text-[10px] text-gray-600 flex items-center gap-1">
-                                                                <div class="w-1 h-1 bg-red-400 rounded-full"></div>
+                                                                class="text-[10px] text-gray-400 flex items-center gap-1">
+                                                                <div class="w-1 h-1 bg-red-500 rounded-full"></div>
                                                                 {{ $pTitle }}
                                                             </li>
                                                         @empty
@@ -197,38 +195,43 @@
                                                 </div>
                                             </div>
                                         @elseif ($class->lessons->count())
-                                            <ul class="border-t border-gray-100 bg-white px-4 py-2 space-y-1 text-xs">
+                                            <ul
+                                                class="border-t border-white/5 bg-[#020916]/40 px-4 py-2 space-y-2 text-xs">
                                                 @foreach ($class->lessons as $lesson)
                                                     <li class="flex items-center gap-2">
                                                         @auth
                                                             <a href="{{ route('lessons.show', $lesson->id) }}"
-                                                                class="flex items-center gap-2 hover:text-sky-600 transition">
-                                                                <span class="w-4 h-4 flex items-center justify-center">
+                                                                class="flex items-center gap-2 text-gray-300 hover:text-[#82cd29] transition py-0.5 w-full">
+                                                                <span
+                                                                    class="w-4 h-4 flex items-center justify-center shrink-0">
                                                                     @if ($lesson->watched_by_student ?? false)
                                                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                                                            class="w-4 h-4 text-green-500 flex-shrink-0"
-                                                                            fill="none" viewBox="0 0 24 24"
-                                                                            stroke="currentColor" stroke-width="3">
+                                                                            class="w-4 h-4 text-[#82cd29]" fill="none"
+                                                                            viewBox="0 0 24 24" stroke="currentColor"
+                                                                            stroke-width="3">
                                                                             <path stroke-linecap="round"
                                                                                 stroke-linejoin="round"
                                                                                 d="M5 13l4 4L19 7" />
                                                                         </svg>
+                                                                    @else
+                                                                        <div class="w-1.5 h-1.5 rounded-full bg-gray-600">
+                                                                        </div>
                                                                     @endif
                                                                 </span>
-                                                                {{ $lesson->title }}
+                                                                <span class="truncate">{{ $lesson->title }}</span>
                                                             </a>
                                                         @else
                                                             <div
-                                                                class="flex items-center gap-2 text-gray-500 cursor-not-allowed">
+                                                                class="flex items-center gap-2 text-gray-500 cursor-not-allowed py-0.5">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    class="w-4 h-4 text-gray-400" fill="none"
+                                                                    class="w-4 h-4 text-gray-600 shrink-0" fill="none"
                                                                     viewBox="0 0 24 24" stroke="currentColor"
                                                                     stroke-width="2">
                                                                     <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     <path
                                                                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                                 </svg>
-                                                                {{ $lesson->title }}
+                                                                <span class="truncate">{{ $lesson->title }}</span>
                                                             </div>
                                                         @endauth
                                                     </li>
@@ -236,17 +239,17 @@
                                             </ul>
                                         @else
                                             <p
-                                                class="px-4 py-2 text-xs text-gray-400 bg-gray-50 border-t border-gray-100 italic">
+                                                class="px-4 py-2 text-xs text-gray-500 bg-[#020916]/20 border-t border-white/5 italic">
                                                 Nenhuma aula disponível.</p>
                                         @endif
                                     </div>
                                 @empty
-                                    <p class="text-gray-400 text-xs text-center">Nenhum módulo disponível.</p>
+                                    <p class="text-gray-500 text-xs text-center py-2">Nenhum módulo disponível.</p>
                                 @endforelse
                             </div>
                         </div>
 
-                        <div class="mt-4 text-center">
+                        <div class="mt-5 text-center">
                             @auth
                                 @php
                                     $firstClass = $course->classes->first();
@@ -258,18 +261,20 @@
 
                                 @if ($continueLesson)
                                     <a href="{{ route('lessons.show', $continueLesson->id) }}"
-                                        class="inline-block bg-[#2b2c43] hover:bg-[#003f51] text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">
-                                        Continuar
+                                        class="inline-block w-full bg-[#82cd29] hover:bg-[#76c022] text-[#020916] text-sm font-bold py-2.5 rounded-xl shadow-md shadow-[#82cd29]/5 transition duration-300">
+                                        Continuar Curso
                                     </a>
                                 @else
                                     <button
-                                        class="inline-block bg-gray-300 text-gray-600 text-sm font-medium px-6 py-2 rounded-lg cursor-not-allowed">Sem
-                                        aulas</button>
+                                        class="inline-block w-full bg-white/5 text-gray-500 text-sm font-medium py-2.5 rounded-xl cursor-not-allowed border border-white/5">
+                                        Sem aulas disponíveis
+                                    </button>
                                 @endif
                             @else
                                 <a href="{{ route('login') }}"
-                                    class="inline-block bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-6 py-2 rounded-lg shadow-sm transition">Acessar
-                                    curso</a>
+                                    class="inline-block w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 text-sm font-medium py-2.5 rounded-xl transition duration-300">
+                                    Acessar curso
+                                </a>
                             @endauth
                         </div>
                     </div>
@@ -320,28 +325,30 @@
     .filter-btn {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
-        padding: 0.4rem 0.9rem;
-        border-radius: 0.6rem;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
         font-weight: 600;
-        font-size: 0.9rem;
-        background-color: #f1f5f9;
-        color: #374151;
-        border: 1px solid transparent;
-        transition: all 0.25s ease;
+        font-size: 0.875rem;
+        background-color: #0b1528;
+        color: #94a3b8;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.25s ease-in-out;
     }
 
     .filter-btn:hover {
-        background-color: #e2e8f0;
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #fff;
     }
 
     .filter-btn.active {
-        background-color: #2b2c43;
-        color: #fff;
-        border-color: #2b2c43;
+        background-color: #82cd29;
+        color: #020916;
+        border-color: #82cd29;
+        box-shadow: 0 4px 12px rgba(130, 205, 41, 0.15);
     }
 
     .course-card {
-        transition: all 0.4s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 </style>

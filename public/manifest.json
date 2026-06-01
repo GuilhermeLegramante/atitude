@@ -1,0 +1,38 @@
+{
+    "name": "Atitude Idiomas",
+    "short_name": "Atitude",
+    "start_url": "/",
+    "background_color": "#020916",
+    "theme_color": "#2b2c43",
+    "display": "standalone",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/img/icone_app.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/img/icone_app.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/img/screenshot-desktop.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Plataforma de Ensino - Computador"
+        },
+        {
+            "src": "/img/screenshot-mobile.png",
+            "sizes": "720x1280",
+            "type": "image/png",
+            "label": "Plataforma de Ensino - Celular"
+        }
+    ]
+}

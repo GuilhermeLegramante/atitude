@@ -1,5 +1,5 @@
  {{-- <!-- 💬 Botão Flutuante WhatsApp -->
- <a href="https://wa.me/55999181805?text=Olá!%20Quero%20falar%20sobre%20a%20plataforma%20de%20idiomas." target="_blank"
+ <a href="https://wa.me/55991575856?text=Olá!%20Quero%20falar%20sobre%20a%20plataforma%20de%20idiomas." target="_blank"
      rel="noopener"
      class="fixed bottom-5 right-5 z-50 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-110 w-14 h-14 animate-bounce"
      aria-label="Contato via WhatsApp">
@@ -92,7 +92,7 @@
 
 
  <!-- 💬 Botão Flutuante WhatsApp -->
- <a href="https://wa.me/55999181805?text=Olá!%20Quero%20falar%20sobre%20a%20plataforma%20de%20idiomas." target="_blank"
+ <a href="https://wa.me/55991575856?text=Olá!%20Quero%20falar%20sobre%20a%20plataforma%20de%20idiomas." target="_blank"
      rel="noopener"
      class="fixed bottom-5 right-5 z-50 flex items-center justify-center 
           bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg 

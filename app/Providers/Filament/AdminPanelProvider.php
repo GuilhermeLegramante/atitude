@@ -32,9 +32,21 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin;
 use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function boot(): void
+    {
+        FilamentAsset::register([
+            Js::make(
+                'select-backspace-fix',
+                resource_path('js/filament/select-backspace-fix.js'),
+            ),
+        ]);
+    }
+
     public function panel(Panel $panel): Panel
     {
         Select::configureUsing(function (Select $select): void {

@@ -27,6 +27,9 @@ class ClassForm
                 ->searchable()
                 ->columnSpanFull()
                 ->relationship('students', 'name')
+                ->extraAttributes([
+                    'class' => 'prevent-student-select-backspace-delete',
+                ])
                 ->createOptionForm(StudentForm::form(hasSection: false)),
             FormFields::name(),
             TextInput::make('order')

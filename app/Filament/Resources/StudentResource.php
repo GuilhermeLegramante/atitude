@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -38,14 +39,18 @@ class StudentResource extends Resource
     {
         return $form
             ->schema(StudentForm::form());
-        }
+    }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns(StudentTable::table())
             ->filters([
-                //
+                TernaryFilter::make('is_active')
+                    ->label('Status')
+                    ->trueLabel('Somente ativos')
+                    ->falseLabel('Somente inativos')
+                    ->native(false),
             ])
             ->actions([
                 ActionGroup::make([

@@ -3,6 +3,7 @@
 namespace App\Filament\Tables;
 
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -19,6 +20,9 @@ class StudentTable
                     'es' => 'Espanhol',
                     'both' => 'Ambos',
                 ]),
+            IconColumn::make('is_active')
+                ->label('Ativo')
+                ->boolean(),
             // ImageColumn::make('photo')
             //     ->size(50)
             //     ->circular()

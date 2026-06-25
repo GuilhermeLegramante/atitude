@@ -39,6 +39,19 @@ class Login extends FilamentLogin
 
         $user = Filament::auth()->user();
 
+        // Se for aluno e estiver inativo, bloqueia o acesso
+        if ($user?->student && ! $user->student->is_active) {
+            Filament::auth()->logout();
+
+            Notification::make()
+                ->title('Acesso bloqueado')
+                ->body('Seu cadastro de aluno está inativo. Entre em contato com a administração.')
+                ->danger()
+                ->send();
+
+            return null;
+        }
+
         if (
             ($user instanceof FilamentUser) &&
             (! $user->canAccessPanel(Filament::getCurrentPanel()))

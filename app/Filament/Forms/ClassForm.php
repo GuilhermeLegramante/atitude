@@ -26,7 +26,11 @@ class ClassForm
                 ->preload()
                 ->searchable()
                 ->columnSpanFull()
-                ->relationship('students', 'name')
+                ->relationship(
+                    'students',
+                    'name',
+                    modifyQueryUsing: fn($query) => $query->where('is_active', true)
+                )
                 ->extraAttributes([
                     'class' => 'prevent-student-select-backspace-delete',
                 ])

@@ -28,7 +28,11 @@ class Student extends Model
         'phone',
         'note',
         'language',
+        'is_active',
+    ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public function user()

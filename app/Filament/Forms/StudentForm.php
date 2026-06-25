@@ -10,6 +10,7 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\Hash;
 use Leandrocfe\FilamentPtbrFormFields\Document;
 use Leandrocfe\FilamentPtbrFormFields\PhoneNumber;
@@ -31,6 +32,10 @@ class StudentForm
                 ->required()
                 ->default('both')
                 ->native(false),
+            Toggle::make('is_active')
+                ->label('Aluno ativo')
+                ->default(true)
+                ->inline(false),
             FileUpload::make('photo')
                 ->label('Foto')
                 ->avatar()

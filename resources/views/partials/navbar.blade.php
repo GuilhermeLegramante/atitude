@@ -20,10 +20,9 @@
         ->get();
 
     // OTIMIZAÇÃO: Processa a lógica de horários e status "AO VIVO" apenas uma vez aqui no topo
-    $liveClasses = $rawLiveClasses->map(function ($class) use ($now, $today, $timezone) {
-        // Converte a string de hora do banco em um objeto Carbon ajustado para o fuso e dia atual
-        $start = Carbon::createFromFormat('H:i:s', $class->time, $timezone)->today();
-        $end = (clone $start)->addHour();
+    $liveClasses = $rawLiveClasses->map(function ($class) use ($now, $today) {
+        $start = $now->copy()->setTimeFromTimeString($class->time);
+        $end = $start->copy()->addHour();
 
         $class->is_live = $class->weekday === $today && $now->between($start, $end);
         $class->formatted_start = $start->format('H\hi');

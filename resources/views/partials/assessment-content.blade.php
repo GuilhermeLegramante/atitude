@@ -137,7 +137,7 @@
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'Enviar Avaliação';
+                submitBtn.innerText = 'Concluir';
             });
     }
 

@@ -62,7 +62,7 @@ class ViewAssessment extends EditRecord
     protected function getSaveFormAction(): Action
     {
         return Action::make('save')
-            ->label('Enviar avaliação')
+            ->label('Concluir')
             ->submit('save')
             ->keyBindings(['mod+s']);
     }

@@ -90,7 +90,7 @@ class LessonForm
                     ->required()
                     ->maxLength(255)
                     ->hiddenOn('create'),
-                    
+
                 // FormFields::note(),
                 RichEditor::make('note')
                     ->label('Observação')
@@ -111,6 +111,19 @@ class LessonForm
                     ])
                     ->columnSpanFull()
                     ->nullable(),
+
+                Toggle::make('published')
+                    ->label('Publicar aula')
+                    ->onColor('success')
+                    ->offColor('gray')
+                    ->onIcon('heroicon-m-eye')
+                    ->offIcon('heroicon-m-eye-slash')
+                    ->helperText(
+                        fn($state) => $state
+                            ? 'Esta aula está disponível para os alunos.'
+                            : 'Esta aula não está disponível para os alunos.'
+                    )
+                    ->default(true),
 
             ])->columns(2),
 

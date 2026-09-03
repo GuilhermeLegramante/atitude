@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Datlechin\GoogleTranslate\Facades\GoogleTranslate;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class TranslatorController extends Controller
 {
@@ -21,24 +21,20 @@ class TranslatorController extends Controller
         ]);
 
         try {
-            // Option 1: Use auto-detection if source is 'auto' or standard codes
-            $translatedText = GoogleTranslate::source($request->source)
-                ->target($request->target)
-                ->translate($request->text);
+            $tr = new GoogleTranslate();
+            $tr->setSource($request->source === 'auto' ? null : $request->source);
+            $tr->setTarget($request->target);
 
-            // If the package method returns a string directly:
-            $resultText = is_object($translatedText) && method_exists($translatedText, 'getTranslatedText')
-                ? $translatedText->getTranslatedText()
-                : $translatedText;
+            $translatedText = $tr->translate($request->text);
 
             return view('translator', [
-                'translatedText' => $resultText,
+                'translatedText' => $translatedText,
                 'source' => $request->source,
                 'target' => $request->target,
                 'originalText' => $request->text,
             ]);
-        } catch (\Throwable $e) {
-            return back()->withErrors(['error' => 'Erro ao traduzir: Servidor indisponível ou parâmetros inválidos.']);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Erro ao traduzir: ' . $e->getMessage()]);
         }
     }
 
@@ -52,14 +48,21 @@ class TranslatorController extends Controller
         ]);
 
         try {
-            $translator = GoogleTranslate::source($request->source)
-                ->target($request->target)
-                ->translate($request->text);
+            $tr = new GoogleTranslate();
+
+            // Trata detecção automática caso venha 'auto' no source
+            $source = strtolower($request->source) === 'auto' ? null : $request->source;
+
+            $tr->setSource($source);
+            $tr->setTarget($request->target);
+
+            $translatedText = $tr->translate($request->text);
 
             return response()->json([
-                'translatedText' => $translator->getTranslatedText(),
+                'translatedText' => $translatedText,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            // Captura Throwable para evitar fatal errors/TypeError do PHP
             return response()->json([
                 'error' => 'Erro ao traduzir: ' . $e->getMessage()
             ], 500);

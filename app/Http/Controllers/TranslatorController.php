@@ -15,24 +15,30 @@ class TranslatorController extends Controller
     public function translate(Request $request)
     {
         $request->validate([
-            'source' => 'required',
-            'target' => 'required',
+            'source' => 'required|string',
+            'target' => 'required|string',
             'text' => 'required|string|max:5000',
         ]);
 
         try {
-            $translator = GoogleTranslate::source($request->source)
+            // Option 1: Use auto-detection if source is 'auto' or standard codes
+            $translatedText = GoogleTranslate::source($request->source)
                 ->target($request->target)
                 ->translate($request->text);
 
+            // If the package method returns a string directly:
+            $resultText = is_object($translatedText) && method_exists($translatedText, 'getTranslatedText')
+                ? $translatedText->getTranslatedText()
+                : $translatedText;
+
             return view('translator', [
-                'translatedText' => $translator->getTranslatedText(),
+                'translatedText' => $resultText,
                 'source' => $request->source,
                 'target' => $request->target,
                 'originalText' => $request->text,
             ]);
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Erro ao traduzir: ' . $e->getMessage()]);
+        } catch (\Throwable $e) {
+            return back()->withErrors(['error' => 'Erro ao traduzir: Servidor indisponível ou parâmetros inválidos.']);
         }
     }
 

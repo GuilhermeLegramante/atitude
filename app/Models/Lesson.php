@@ -19,6 +19,7 @@ class Lesson extends Model
         'note',
         'image_path',
         'order',
+        'published',  
     ];
 
     public function class()

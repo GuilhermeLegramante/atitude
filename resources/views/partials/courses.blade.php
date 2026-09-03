@@ -199,41 +199,72 @@
                                                 class="border-t border-white/5 bg-[#020916]/40 px-4 py-2 space-y-2 text-xs">
                                                 @foreach ($class->lessons as $lesson)
                                                     <li class="flex items-center gap-2">
-                                                        @auth
-                                                            <a href="{{ route('lessons.show', $lesson->id) }}"
-                                                                class="flex items-center gap-2 text-gray-300 hover:text-[#82cd29] transition py-0.5 w-full">
+                                                        @if ($lesson->published)
+                                                            @auth
+                                                                <a href="{{ route('lessons.show', $lesson->id) }}"
+                                                                    class="flex items-center gap-2 text-gray-300 hover:text-[#82cd29] transition py-0.5 w-full">
+
+                                                                    <span
+                                                                        class="w-4 h-4 flex items-center justify-center shrink-0">
+                                                                        @if ($lesson->watched_by_student ?? false)
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                class="w-4 h-4 text-[#82cd29]"
+                                                                                fill="none" viewBox="0 0 24 24"
+                                                                                stroke="currentColor" stroke-width="3">
+                                                                                <path stroke-linecap="round"
+                                                                                    stroke-linejoin="round"
+                                                                                    d="M5 13l4 4L19 7" />
+                                                                            </svg>
+                                                                        @else
+                                                                            <div
+                                                                                class="w-1.5 h-1.5 rounded-full bg-gray-600">
+                                                                            </div>
+                                                                        @endif
+                                                                    </span>
+
+                                                                    <span class="truncate">{{ $lesson->title }}</span>
+                                                                </a>
+                                                            @else
+                                                                <div
+                                                                    class="flex items-center gap-2 text-gray-500 cursor-not-allowed py-0.5">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="w-4 h-4 text-gray-600 shrink-0"
+                                                                        fill="none" viewBox="0 0 24 24"
+                                                                        stroke="currentColor" stroke-width="2">
+                                                                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                        <path
+                                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542-7z" />
+                                                                    </svg>
+
+                                                                    <span class="truncate">{{ $lesson->title }}</span>
+                                                                </div>
+                                                            @endauth
+                                                        @else
+                                                            {{-- Aula não publicada --}}
+                                                            <div
+                                                                class="flex items-center gap-2 text-gray-500 cursor-not-allowed py-0.5 w-full">
+
                                                                 <span
                                                                     class="w-4 h-4 flex items-center justify-center shrink-0">
-                                                                    @if ($lesson->watched_by_student ?? false)
-                                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                                            class="w-4 h-4 text-[#82cd29]" fill="none"
-                                                                            viewBox="0 0 24 24" stroke="currentColor"
-                                                                            stroke-width="3">
-                                                                            <path stroke-linecap="round"
-                                                                                stroke-linejoin="round"
-                                                                                d="M5 13l4 4L19 7" />
-                                                                        </svg>
-                                                                    @else
-                                                                        <div class="w-1.5 h-1.5 rounded-full bg-gray-600">
-                                                                        </div>
-                                                                    @endif
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="w-4 h-4 text-yellow-500" fill="none"
+                                                                        viewBox="0 0 24 24" stroke="currentColor"
+                                                                        stroke-width="2">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round"
+                                                                            d="M12 9v4m0 4h.01M10.29 3.86l-8.82 15a2 2 0 001.73 3h17.6a2 2 0 001.73-3l-8.82-15a2 2 0 00-3.42 0z" />
+                                                                    </svg>
                                                                 </span>
-                                                                <span class="truncate">{{ $lesson->title }}</span>
-                                                            </a>
-                                                        @else
-                                                            <div
-                                                                class="flex items-center gap-2 text-gray-500 cursor-not-allowed py-0.5">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    class="w-4 h-4 text-gray-600 shrink-0" fill="none"
-                                                                    viewBox="0 0 24 24" stroke="currentColor"
-                                                                    stroke-width="2">
-                                                                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                    <path
-                                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                                </svg>
-                                                                <span class="truncate">{{ $lesson->title }}</span>
+
+                                                                <span class="truncate">
+                                                                    {{ $lesson->title }}
+                                                                </span>
+
+                                                                <span class="text-xs text-yellow-500 ml-auto shrink-0">
+                                                                    Em breve
+                                                                </span>
                                                             </div>
-                                                        @endauth
+                                                        @endif
                                                     </li>
                                                 @endforeach
                                             </ul>

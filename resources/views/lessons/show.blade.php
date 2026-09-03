@@ -44,16 +44,27 @@ Aqui está o código 100% corrigido, limpo e pronto para colar. Pode substituir 
                                         {{ $lesson->class->course->name ?? '' }}
                                     </p>
 
+                                    @php
+                                        $user = $lesson->class?->course?->user;
+                                    @endphp
+
                                     <div class="mt-4 flex items-center gap-4 text-sm">
                                         <div class="flex items-center gap-3">
-                                            <img src="{{ $lesson->class->course->user->avatar ? asset('storage/' . $lesson->class->course->user->avatar) : asset('img/mascote.png') }}"
-                                                alt="{{ $lesson->class->course->user->name }}"
+
+                                            <img src="{{ $user?->avatar ? asset('storage/' . $user->avatar) : asset('img/mascote.png') }}"
+                                                alt="{{ $user?->name ?? 'Professor' }}"
                                                 class="w-12 h-12 rounded-full border border-white/10 object-cover shadow-md">
+
                                             <div>
                                                 <div class="font-semibold text-white">
-                                                    {{ $lesson->class->course->user->name ?? 'Professor' }}</div>
-                                                <div class="text-xs text-gray-400">Instrutor principal</div>
+                                                    {{ $user?->name ?? 'Professor' }}
+                                                </div>
+
+                                                <div class="text-xs text-gray-400">
+                                                    Instrutor principal
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
